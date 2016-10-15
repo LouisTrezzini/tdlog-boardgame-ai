@@ -1,0 +1,187 @@
+#include "Game.h"
+
+
+Game::Game(int size, IPlayer* whitePlayer, IPlayer* blackPlayer)
+        : gameState(Board(size), Color::BLACK), whitePlayer(whitePlayer), blackPlayer(blackPlayer) {
+
+    assert(whitePlayer->getColor() == Color::WHITE && blackPlayer->getColor() == Color::BLACK);
+}
+
+
+const GameState& Game::getGameState() const {
+    return gameState;
+}
+
+void Game::playGame() {
+    display();
+
+    while (getWinner(gameState) == Color::EMPTY) {
+        Move pickedMove = pickMove(gameState);
+        playMove(pickedMove);
+
+        display();
+    }
+}
+
+Move Game::pickMove(const GameState& gameState) const {
+    Color color = gameState.getColorPlaying();
+    auto moves = legalMoves(gameState);
+
+    if (color == Color::WHITE) {
+        return whitePlayer->getAction(gameState, moves);
+    }
+    else if (color == Color::BLACK) {
+        return blackPlayer->getAction(gameState, moves);
+    }
+//    else {
+//        throw InvalidColorException();
+//    }
+}
+
+std::vector<Move> Game::legalMoves(const GameState& gameState) {
+    std::vector<Move> moves;
+
+    if (gameState.getBoard().isFull())
+        return moves;
+
+    for (int i = 0; i < gameState.getBoard().getSize(); i++) {
+        for (int j = 0; j < gameState.getBoard().getSize(); j++) {
+            Move move(i, j);
+
+            if (isValidMove(gameState, move))
+                moves.push_back(move);
+        }
+    }
+
+    return moves;
+}
+
+bool Game::isValidMove(const GameState& gameState, const Move& move) {
+    int x = move.getX();
+    int y = move.getY();
+
+    Board board = gameState.getBoard();
+
+    Color piece = board.pieceAt(x, y);
+
+    if (piece != Color::EMPTY)
+        return false;
+
+    Color colorPlaying = gameState.getColorPlaying();
+
+    for (int dx = -1; dx <= 1; dx++) {
+        for (int dy = -1; dy <= 1; dy++) {
+            if (dx == 0 && dy == 0)
+                continue;
+
+            int distance = 1;
+            int xp = x + distance * dx;
+            int yp = y + distance * dy;
+
+            while (board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorOpponent(colorPlaying)) {
+                distance++;
+                xp = x + distance * dx;
+                yp = y + distance * dy;
+            };
+
+            if (distance > 1 && board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorPlaying) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+// TODO
+GameState Game::applyMove(const GameState& gameState, const Move& move) {
+    if(move.isPassing()) {
+        return GameState(gameState.getBoard(), colorOpponent(gameState.getColorPlaying()));
+    }
+
+    int x = move.getX();
+    int y = move.getY();
+    Color colorPlaying = gameState.getColorPlaying();
+    Color opponent = colorOpponent(colorPlaying);
+    Board board = gameState.getBoard();
+
+    board.placeStoneAt(x, y, colorPlaying);
+
+    std::vector<Move> toFlip;
+
+    for (int dx = -1; dx <= 1; dx++) {
+        for (int dy = -1; dy <= 1; dy++) {
+            if (dx == 0 && dy == 0)
+                continue;
+
+            std::vector<Move> flipCandidates;
+
+            int distance = 1;
+            int xp = x + distance * dx;
+            int yp = y + distance * dy;
+
+            while (board.inBounds(xp, yp) && board.pieceAt(xp, yp) == opponent) {
+                flipCandidates.emplace_back(xp, yp);
+                distance++;
+                xp = x + distance * dx;
+                yp = y + distance * dy;
+            };
+
+            if (distance > 1 && board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorPlaying) {
+                toFlip.insert(toFlip.end(), flipCandidates.begin(), flipCandidates.end());
+            }
+        }
+    }
+
+    for(auto it = toFlip.begin(); it != toFlip.end(); it++){
+        board.flipStoneAt(it->getX(), it->getY());
+    }
+
+    return GameState(board, opponent);
+
+}
+
+void Game::playMove(const Move& move) {
+    std::cout << "Playing at " << move.getX() << " " << move.getY() << std::endl;
+
+    gameState = applyMove(gameState, move);
+}
+
+Color Game::getWinner(const GameState& gameState) {
+    Board board = gameState.getBoard();
+
+    if (board.isFull()) {
+        if (board.getBlackStones() > board.getWhiteStones()) {
+            return Color::BLACK;
+        }
+
+        // ties go to white
+        else {
+            return Color::WHITE;
+        }
+    }
+
+    if(legalMoves(GameState(board, Color::BLACK)).size() > 0) {
+        return Color::EMPTY;
+    }
+
+    if(legalMoves(GameState(board, Color::WHITE)).size() > 0) {
+        return Color::EMPTY;
+    }
+
+    if (board.getBlackStones() > board.getWhiteStones()) {
+        return Color::BLACK;
+    }
+
+    // ties go to white
+    else {
+        return Color::WHITE;
+    }
+}
+
+
+void Game::display() const {
+    gameState.getBoard().display();
+}
+
+
