@@ -15,7 +15,7 @@ Move RandomPlayer::getAction(const GameState& gameState, const std::vector<Move>
         return legalMoves[distrib(gen)];
     }
 
-    return Move(-1, -1);
+    return Move::passing();
 }
 
 

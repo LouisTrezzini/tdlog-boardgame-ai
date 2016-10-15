@@ -21,6 +21,10 @@ public:
         return y;
     }
 
+    static Move passing() {
+        return Move(-1, -1);
+    }
+
     bool isPassing() const{
         return x == -1 && y == -1;
     }
