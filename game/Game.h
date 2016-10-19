@@ -1,7 +1,3 @@
-//
-// Created by till034 on 10/15/16.
-//
-
 #ifndef TDLOG_BOARDGAME_AI_GAME_H
 #define TDLOG_BOARDGAME_AI_GAME_H
 
@@ -9,6 +5,8 @@
 #include "../players/IPlayer.h"
 #include "GameState.h"
 #include "Move.h"
+
+#include <string>
 
 /**
  * A class that enforces the game rules
@@ -27,7 +25,7 @@ public:
 
     void playMove(const Move& move);
 
-    void display() const;
+    std::string toString() const;
 
     const GameState& getGameState() const;
 
@@ -39,6 +37,5 @@ public:
 
     static Color getWinner(const GameState& gameState);
 };
-
 
 #endif //TDLOG_BOARDGAME_AI_GAME_H

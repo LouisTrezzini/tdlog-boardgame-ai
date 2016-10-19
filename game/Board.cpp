@@ -1,28 +1,5 @@
 #include "Board.h"
 
-std::ostream& operator<<(std::ostream& stream, const Board& board) {
-    for(int i = 0; i < board.getSize(); i++){
-        stream << i << " | ";
-        for(int j = 0; j < board.getSize(); j++) {
-            switch (board.pieceAt(i, j)) {
-                case Color::EMPTY:
-                    stream << ". ";
-                    break;
-                case Color::WHITE:
-                    stream << "O ";
-                    break;
-                case Color::BLACK:
-                    stream << "X ";
-                    break;
-            }
-        }
-        stream << std::endl;
-    }
-
-    return stream;
-}
-
-
 Board::Board(int size) : grid(size) {
     assert(size >= 4 && size % 2 == 0);
 
@@ -59,8 +36,28 @@ void Board::flipStoneAt(int i, int j) {
     }
 }
 
-void Board::display() const {
-    std::cout << *this << std::endl;
+std::string Board::toString() const {
+    std::string result = "";
+
+    for(int i = 0; i < grid.size(); i++){
+        result += std::to_string(i) + " | ";
+        for(int j = 0; j < grid.size(); j++) {
+            switch (pieceAt(i, j)) {
+                case Color::EMPTY:
+                    result += ". ";
+                    break;
+                case Color::WHITE:
+                    result += "O ";
+                    break;
+                case Color::BLACK:
+                    result += "X ";
+                    break;
+            }
+        }
+        result += "\n";
+    }
+
+    return result;
 }
 
 
