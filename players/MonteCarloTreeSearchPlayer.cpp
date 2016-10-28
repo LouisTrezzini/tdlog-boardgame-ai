@@ -27,7 +27,7 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
         // If we are not already at the final state, expand the tree with a new node and move there.
         if (node->hasUntriedMoves()) {
             auto move = node->getUntriedMove();
-            Game::applyMove(curState, node->getMove());
+            Game::applyMove(curState, move);
             node = node->addChild(move, curState);
         }
 
@@ -36,8 +36,7 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
             Game::applyMove(curState, Game::getRandomMove(curState));
         }
 
-        // We have now reached a final state. Backpropagate the result
-        // up the tree to the root node.
+        // We have now reached a final state. Backpropagate the result up the tree to the root node.
         while (node != nullptr) {
             node->update(Game::getWinner(curState) == getColor());
             node = node->getParent();
@@ -58,6 +57,8 @@ Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) const {
         return Move::passing();
     if(moves.size() == 1)
         return moves[0];
+
+    // TODO parallelization
 
     auto root = computeTree(gameState);
 
