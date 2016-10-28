@@ -2,9 +2,13 @@
 
 
 Game::Game(int size, IPlayer* whitePlayer, IPlayer* blackPlayer)
-        : gameState(Board(size), Color::BLACK), whitePlayer(whitePlayer), blackPlayer(blackPlayer) {
+        : gameState(Board(size), Color::BLACK),
+          whitePlayer(whitePlayer),
+          blackPlayer(blackPlayer)
+{
 
-    assert(whitePlayer->getColor() == Color::WHITE && blackPlayer->getColor() == Color::BLACK);
+    whitePlayer->setColor(Color::WHITE);
+    blackPlayer->setColor(Color::BLACK);
 }
 
 

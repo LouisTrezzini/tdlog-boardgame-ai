@@ -2,10 +2,6 @@
 #include "RandomPlayer.h"
 
 
-RandomPlayer::RandomPlayer(Color color) : IPlayer(color) {
-
-}
-
 Move RandomPlayer::getAction(const GameState& gameState, const std::vector<Move>& legalMoves) const {
     if (legalMoves.size() > 0){
         std::random_device rd;
@@ -17,7 +13,6 @@ Move RandomPlayer::getAction(const GameState& gameState, const std::vector<Move>
 
     return Move::passing();
 }
-
 
 RandomPlayer::~RandomPlayer() {
 

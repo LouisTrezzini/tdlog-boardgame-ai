@@ -15,12 +15,12 @@ class IPlayer {
     IPlayer() {};
 
 public:
-    IPlayer(Color color) : color(color) {
-
-    };
-
     Color getColor(){
         return color;
+    }
+
+    void setColor(Color color) {
+        IPlayer::color = color;
     }
 
     virtual Move getAction(const GameState& gameState, const std::vector<Move>& legalMoves) const = 0;
