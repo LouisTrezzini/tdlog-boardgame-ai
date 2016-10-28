@@ -28,6 +28,19 @@ public:
     bool isPassing() const{
         return x == -1 && y == -1;
     }
+
+    bool operator==(const Move& other) const {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(const Move& other) const {
+        return !operator==(other);
+    }
+
+    bool operator<(const Move& other) const {
+        // Lexical order
+        return x < other.x || x == other.x && y < other.y;
+    }
 };
 
 #endif //TDLOG_BOARDGAME_AI_MOVE_H

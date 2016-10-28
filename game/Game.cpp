@@ -1,5 +1,7 @@
-#include "Game.h"
+#include <random>
+#include <exception>
 
+#include "Game.h"
 
 Game::Game(int size, IPlayer* whitePlayer, IPlayer* blackPlayer)
         : gameState(Board(size), Color::BLACK),
@@ -29,20 +31,52 @@ void Game::playGame() {
 
 Move Game::pickMove(const GameState& gameState) const {
     Color color = gameState.getColorPlaying();
-    auto moves = legalMoves(gameState);
 
     if (color == Color::WHITE) {
-        return whitePlayer->getAction(gameState, moves);
+        return whitePlayer->getAction(gameState);
     }
     else if (color == Color::BLACK) {
-        return blackPlayer->getAction(gameState, moves);
+        return blackPlayer->getAction(gameState);
     }
-//    else {
-//        throw InvalidColorException();
-//    }
+    // TODO
+    else {
+        throw std::exception();
+    }
 }
 
-std::vector<Move> Game::legalMoves(const GameState& gameState) {
+
+Move Game::getRandomMove(const GameState& gameState) {
+    std::vector<Move> legalMoves = getLegalMoves(gameState);
+
+    if (legalMoves.empty()){
+        return Move::passing();
+    }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<std::size_t> distrib(0, legalMoves.size() - 1);
+
+    return legalMoves[distrib(gen)];
+}
+
+bool Game::hasLegalMoves(const GameState& gameState) {
+    if (gameState.getBoard().isFull())
+        return false;
+
+    for (int i = 0; i < gameState.getBoard().getSize(); i++) {
+        for (int j = 0; j < gameState.getBoard().getSize(); j++) {
+            Move move(i, j);
+
+            if (isValidMove(gameState, move))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+// TODO passing is a legal move !
+std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
     std::vector<Move> moves;
 
     if (gameState.getBoard().isFull())
@@ -98,16 +132,18 @@ bool Game::isValidMove(const GameState& gameState, const Move& move) {
 }
 
 // TODO
-GameState Game::applyMove(const GameState& gameState, const Move& move) {
+void Game::applyMove(GameState& gameState, const Move& move) {
+    Color colorPlaying = gameState.getColorPlaying();
+    Color opponent = colorOpponent(colorPlaying);
+
     if(move.isPassing()) {
-        return GameState(gameState.getBoard(), colorOpponent(gameState.getColorPlaying()));
+        gameState.setColorPlaying(opponent);
+        return;
     }
 
     int x = move.getX();
     int y = move.getY();
-    Color colorPlaying = gameState.getColorPlaying();
-    Color opponent = colorOpponent(colorPlaying);
-    Board board = gameState.getBoard();
+    Board& board = gameState.getBoard();
 
     board.placeStoneAt(x, y, colorPlaying);
 
@@ -141,14 +177,13 @@ GameState Game::applyMove(const GameState& gameState, const Move& move) {
         board.flipStoneAt(it->getX(), it->getY());
     }
 
-    return GameState(board, opponent);
-
+    gameState.setColorPlaying(opponent);
 }
 
 void Game::playMove(const Move& move) {
-    std::cout << "Playing at " << move.getX() << " " << move.getY() << std::endl;
+    std::cout << gameState.getColorPlaying() << " plays at " << move.getX() << " " << move.getY() << std::endl;
 
-    gameState = applyMove(gameState, move);
+    applyMove(gameState, move);
 }
 
 Color Game::getWinner(const GameState& gameState) {
@@ -165,11 +200,11 @@ Color Game::getWinner(const GameState& gameState) {
         }
     }
 
-    if(legalMoves(GameState(board, Color::BLACK)).size() > 0) {
+    if(hasLegalMoves(GameState(board, Color::BLACK))) {
         return Color::EMPTY;
     }
 
-    if(legalMoves(GameState(board, Color::WHITE)).size() > 0) {
+    if(hasLegalMoves(GameState(board, Color::WHITE))) {
         return Color::EMPTY;
     }
 

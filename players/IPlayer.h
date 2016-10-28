@@ -12,10 +12,8 @@
 class IPlayer {
     Color color;
 
-    IPlayer() {};
-
 public:
-    Color getColor(){
+    Color getColor() const {
         return color;
     }
 
@@ -23,7 +21,7 @@ public:
         IPlayer::color = color;
     }
 
-    virtual Move getAction(const GameState& gameState, const std::vector<Move>& legalMoves) const = 0;
+    virtual Move getAction(const GameState& gameState) const = 0;
     virtual ~IPlayer() = 0;
 };
 

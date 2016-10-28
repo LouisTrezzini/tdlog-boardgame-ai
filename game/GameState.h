@@ -19,8 +19,16 @@ public:
         return board;
     }
 
+    Board& getBoard() {
+        return board;
+    }
+
     Color getColorPlaying() const {
         return colorPlaying;
+    }
+
+    void setColorPlaying(Color colorPlaying) {
+        GameState::colorPlaying = colorPlaying;
     }
 };
 
