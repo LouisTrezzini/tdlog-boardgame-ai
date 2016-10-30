@@ -31,11 +31,15 @@ public:
 
     const GameState& getGameState() const;
 
-    static std::vector<Move> legalMoves(const GameState& gameState);
+    static Move getRandomMove(const GameState& gameState);
+
+    static bool hasLegalMoves(const GameState& gameState);
+
+    static std::vector<Move> getLegalMoves(const GameState& gameState);
 
     static bool isValidMove(const GameState& gameState, const Move& move);
 
-    static GameState applyMove(const GameState& gameState, const Move& move);
+    static void applyMove(GameState& gameState, const Move& move);
 
     static Color getWinner(const GameState& gameState);
 };

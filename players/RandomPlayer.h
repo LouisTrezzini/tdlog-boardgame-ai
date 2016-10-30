@@ -10,9 +10,7 @@
  */
 class RandomPlayer : public IPlayer {
 public:
-    RandomPlayer(Color color);
-
-    virtual Move getAction(const GameState& gameState, const std::vector<Move>& legalMoves) const;
+    virtual Move getAction(const GameState& gameState) const;
 
     virtual ~RandomPlayer();
 };
