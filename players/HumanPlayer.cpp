@@ -3,7 +3,30 @@
 
 
 Move HumanPlayer::getAction(const GameState& gameState) const {
-    return Game::getRandomMove(gameState);
+    auto moves = Game::getLegalMoves(gameState);
+
+    bool moveUnavailable = true;
+    // Nid à problème si passing devient un legalMove...
+    Move askedMove = Move::passing();
+
+    while (moveUnavailable) {
+        // On demande une entrée à l'utilisateur
+        std::cout << "Entrez une abscisse et une ordonnée" << std::endl;
+        int x, y;
+        std::cin >> x;
+        std::cin >> y;
+
+        askedMove = Move(y, x);
+
+        // On vérifie si l'entrée est valide
+        for (int i = 0; i < moves.size(); ++ i) {
+            if (askedMove == moves[i]) {
+                moveUnavailable = false;
+            }
+        }
+    }
+
+    return askedMove;
 }
 
 HumanPlayer::~HumanPlayer() {
