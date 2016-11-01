@@ -1,5 +1,6 @@
 #include "HumanPlayer.h"
 #include "../game/Game.h"
+#include <stdexcept>
 
 
 Move HumanPlayer::getAction(const GameState& gameState) const {
@@ -19,7 +20,7 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
         try {
             askedMove = Move(std::stoi(y), std::stoi(x));
         }
-        catch (std::invalid_argument exception) {
+        catch (const std::invalid_argument& exception) {
             std::cout << "Mouvement invalide !" << std::endl;
             continue;
         }
