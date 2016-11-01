@@ -12,11 +12,17 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
     while (moveUnavailable) {
         // On demande une entrée à l'utilisateur
         std::cout << "Entrez une abscisse et une ordonnée" << std::endl;
-        int x, y;
+        std::string x, y;
         std::cin >> x;
         std::cin >> y;
 
-        askedMove = Move(y, x);
+        try {
+            askedMove = Move(std::stoi(y), std::stoi(x));
+        }
+        catch (std::invalid_argument exception) {
+            std::cout << "Mouvement invalide !" << std::endl;
+            continue;
+        }
 
         // On vérifie si l'entrée est valide
         for (int i = 0; i < moves.size(); ++ i) {
