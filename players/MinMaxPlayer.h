@@ -13,8 +13,10 @@ struct MinMaxOutput {
     float value;
 
     MinMaxOutput(Move move, float value);
-    bool operator<(const MinMaxOutput &other);
+    void max(const MinMaxOutput &other);
+    void min(const MinMaxOutput &other);
 };
+
 
 /*
  * This IA will follow the minmax principle

@@ -1,15 +1,23 @@
 #include "MinMaxPlayer.h"
 #include "../game/Game.h"
 
-bool MinMaxOutput::operator<(const MinMaxOutput &other) {
-    if (value < other.value) {
-        return true;
-    }
-}
-
 MinMaxOutput::MinMaxOutput(Move move, float value) {
     MinMaxOutput::move = move;
     MinMaxOutput::value = value;
+}
+
+void MinMaxOutput::max(const MinMaxOutput &other) {
+    if (value < other.value) {
+        value = other.value;
+        move = other.move;
+    }
+}
+
+void MinMaxOutput::min(const MinMaxOutput &other) {
+    if (value > other.value) {
+        value = other.value;
+        move = other.move;
+    }
 }
 
 
