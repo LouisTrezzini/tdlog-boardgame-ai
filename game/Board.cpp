@@ -1,6 +1,16 @@
 #include "Board.h"
 
 std::ostream& operator<<(std::ostream& stream, const Board& board) {
+    stream << "    ";
+    for(int j = 0; j < board.getSize(); j++) {
+        stream << j << " ";
+    }
+    stream << std::endl;
+    stream << "   ";
+    for(int j = 0; j < board.getSize(); j++) {
+        stream << "__";
+    }
+    stream << std::endl;
     for(int i = 0; i < board.getSize(); i++){
         stream << i << " | ";
         for(int j = 0; j < board.getSize(); j++) {
