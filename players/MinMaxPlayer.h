@@ -5,12 +5,14 @@
 #include "../game/Move.h"
 #include "../game/GameState.h"
 
+float INF = 1 / 0.f;
+
 // Structure for outputing the right thing
 struct MinMaxOutput {
     Move move;
-    int value;
+    float value;
 
-    MinMaxOutput(Move move, int value);
+    MinMaxOutput(Move move, float value);
     bool operator<(const MinMaxOutput &other);
 };
 

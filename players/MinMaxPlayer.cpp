@@ -7,7 +7,7 @@ bool MinMaxOutput::operator<(const MinMaxOutput &other) {
     }
 }
 
-MinMaxOutput::MinMaxOutput(Move move, int value) {
+MinMaxOutput::MinMaxOutput(Move move, float value) {
     MinMaxOutput::move = move;
     MinMaxOutput::value = value;
 }
