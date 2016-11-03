@@ -91,6 +91,10 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
         }
     }
 
+    if (moves.empty()) {
+        moves.push_back(Move::passing());
+    }
+
     return moves;
 }
 
