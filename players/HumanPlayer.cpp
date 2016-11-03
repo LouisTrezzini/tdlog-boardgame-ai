@@ -17,6 +17,7 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
         std::cin >> x;
         std::cin >> y;
 
+        // On entre le Move(y, x) et non Move(x, y) pour correspondre à la notation tableau, plus simple pour l'utilisateur
         try {
             askedMove = Move(std::stoi(y), std::stoi(x));
         }

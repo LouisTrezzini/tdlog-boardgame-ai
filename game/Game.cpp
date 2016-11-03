@@ -181,7 +181,8 @@ void Game::applyMove(GameState& gameState, const Move& move) {
 }
 
 void Game::playMove(const Move& move) {
-    std::cout << gameState.getColorPlaying() << " plays at " << move.getX() << " " << move.getY() << std::endl;
+    // On affiche y puis x pour correspondre à la noation tableau plus simple pour l'utilisateur
+    std::cout << gameState.getColorPlaying() << " plays at " << move.getY() << " " << move.getX() << std::endl;
 
     applyMove(gameState, move);
 }
