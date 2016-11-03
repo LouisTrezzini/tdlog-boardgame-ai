@@ -5,6 +5,15 @@
 #include "../game/Move.h"
 #include "../game/GameState.h"
 
+// Structure for outputing the right thing
+struct MinMaxOutput {
+    Move move;
+    int value;
+
+    MinMaxOutput(Move move, int value);
+    bool operator<(const MinMaxOutput &other);
+};
+
 /*
  * This IA will follow the minmax principle
  */
