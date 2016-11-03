@@ -6,13 +6,15 @@
 #include "../game/GameState.h"
 
 /*
- * A random Othello player thats chooses random legal moves
+ * This IA will follow the minmax principle
  */
-class RandomPlayer : public IPlayer {
+class MinMaxPlayer : public IPlayer {
 public:
+
+
     virtual Move getAction(const GameState& gameState) const;
 
-    virtual ~RandomPlayer();
+    virtual ~MinMaxPlayer();
 };
 
 
