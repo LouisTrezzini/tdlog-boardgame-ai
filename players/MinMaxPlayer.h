@@ -23,7 +23,7 @@ struct MinMaxOutput {
  */
 class MinMaxPlayer : public IPlayer {
 public:
-
+    MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn) const;
 
     virtual Move getAction(const GameState& gameState) const;
 
