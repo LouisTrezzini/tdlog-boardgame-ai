@@ -7,7 +7,6 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
     auto moves = Game::getLegalMoves(gameState);
 
     bool moveUnavailable = true;
-    // Nid à problème si passing devient un legalMove...
     Move askedMove = Move::passing();
 
     while (moveUnavailable) {
