@@ -1,6 +1,7 @@
 #include <iostream>
 #include "players/RandomPlayer.h"
 #include "players/HumanPlayer.h"
+#include "players/MinMaxPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "game/Game.h"
 
