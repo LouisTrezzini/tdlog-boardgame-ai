@@ -13,6 +13,10 @@ class Move {
 public:
     Move(int x, int y) : x(x), y(y) { };
 
+    Move() {
+
+    }
+
     int getX() const {
         return x;
     }
