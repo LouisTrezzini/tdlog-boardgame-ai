@@ -1,36 +1,42 @@
-#include <boost/python.hpp>
-
 #include "game/Game.h"
 
-using namespace boost::python;
+#include <pybind11/pybind11.h>
 
-BOOST_PYTHON_MODULE(boardgame)
-{
-
-    enum_<Color>("Color")
-            .value("WHITE", Color::WHITE)
-            .value("BLACK", Color::BLACK)
-            .value("EMPTY", Color::EMPTY)
-            .export_values()
-            ;
+namespace py = pybind11;
 
 
-    class_<Board>("Board", init<int>())
-            .def("__str__", &Board::toString)
-            .def("getColor", &Board::pieceAt)
-            ;
+PYBIND11_PLUGIN(boardgame_ai_py) {
+    py::module m("boardgame_ai_py", "TDLOG Boardgame AI Python binding with pybind11");
+
+    py::enum_<Color>(m, "Color")
+        .value("WHITE", Color::WHITE)
+        .value("BLACK", Color::BLACK)
+        .value("EMPTY", Color::EMPTY)
+        .export_values()
+    ;
 
 
-    class_<GameState>("GameState", init<const Board&, Color>()
-            // FIXME
-            // Ambiguïté car 2 fonctions getBoard
-            //.add_property("Board", make_function(&GameState::getBoard, return_internal_reference<>()))
-            ;
+    py::class_<Board>(m, "Board")
+        .def(py::init<int>())
+        .def("__str__", &Board::toString)
+        .def("getColor", &Board::pieceAt)
+    ;
 
 
-    class_<Game>("Game", init<int, IPlayer*, IPlayer*>())
-            .def("__str__", &Game::toString)
-            .def("__getitem__", &Game::pieceAt)
-            .add_property("GameState", make_function(&Game::getGameState, return_internal_reference<>()))
-            ;
-};
+    py::class_<GameState>(m, "GameState")
+        .def(py::init<const Board&, Color>())
+        // FIXME
+        // Ambiguïté car 2 fonctions getBoard
+        .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
+    ;
+
+
+    py::class_<Game>(m, "Game")
+        .def(py::init<int, IPlayer*, IPlayer*>())
+        .def("__str__", &Game::toString)
+        .def("__getitem__", &Game::pieceAt)
+        .def_property_readonly("GameState", &Game::getGameState)
+    ;
+
+    return m.ptr();
+}
