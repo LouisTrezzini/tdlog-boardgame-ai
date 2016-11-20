@@ -1,5 +1,5 @@
-#ifndef TDLOG_BOARDGAME_AI_RANDOMPLAYER_H
-#define TDLOG_BOARDGAME_AI_RANDOMPLAYER_H
+#ifndef TDLOG_BOARDGAME_AI_HUMANPLAYER_H
+#define TDLOG_BOARDGAME_AI_HUMANPLAYER_H
 
 #include "IPlayer.h"
 #include "../game/Move.h"
@@ -8,12 +8,12 @@
 /*
  * A random Othello player thats chooses random legal moves
  */
-class RandomPlayer : public IPlayer {
+class HumanPlayer : public IPlayer {
 public:
     virtual Move getAction(const GameState& gameState) const;
 
-    virtual ~RandomPlayer();
+    virtual ~HumanPlayer();
 };
 
 
-#endif //TDLOG_BOARDGAME_AI_RANDOMPLAYER_H
+#endif //TDLOG_BOARDGAME_AI_HUMANPLAYER_H

@@ -1,9 +1,10 @@
 #include <iostream>
 #include "players/RandomPlayer.h"
+#include "players/HumanPlayer.h"
+#include "players/MonteCarloTreeSearchPlayer.h"
 #include "game/Game.h"
 
 #include <boost/python.hpp>
-#include <frameobject.h>
 
 using namespace boost::python;
 
@@ -16,8 +17,8 @@ extern "C" PyObject* INIT_MODULE();
 #endif
 
 int main(int argc, char *argv[]) {
-    RandomPlayer whitePlayer(Color::WHITE);
-    RandomPlayer blackPlayer(Color::BLACK);
+    RandomPlayer whitePlayer;
+    RandomPlayer blackPlayer;
 
     Game game(8, &whitePlayer, &blackPlayer);
 
