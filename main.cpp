@@ -24,11 +24,14 @@ int main(int argc, char *argv[]) {
     object main_module, boardgame_module;
     dict main_namespace;
 
+
+    // FIXME
 //    try {
         PyImport_AppendInittab((char*)"boardgame", INIT_MODULE);
         Py_Initialize();
         main_module = import("__main__");
         main_namespace = extract<dict>(main_module.attr("__dict__"));
+        // Que fait cette ligne ?
         boardgame_module = import("boardgame");
 
         main_namespace["game"] = game;
@@ -44,6 +47,7 @@ int main(int argc, char *argv[]) {
     std::cout << game.getWinner(game.getGameState()) << std::endl;
 
     main_namespace["game"] = game;
+    // Deuxième exécution
     exec_file("gui/main.py", main_namespace);
 
     return 0;
