@@ -20,14 +20,17 @@ BOOST_PYTHON_MODULE(boardgame)
             .def("getColor", &Board::pieceAt)
             ;
 
-    class_<GameState>("GameState", init<const Board&, Color>())
-            .add_property("Board", make_function(&GameState::getBoard, return_internal_reference<>()))
+
+    class_<GameState>("GameState", init<const Board&, Color>()
+            // FIXME
+            // Ambiguïté car 2 fonctions getBoard
+            //.add_property("Board", make_function(&GameState::getBoard, return_internal_reference<>()))
             ;
+
 
     class_<Game>("Game", init<int, IPlayer*, IPlayer*>())
             .def("__str__", &Game::toString)
             .def("__getitem__", &Game::pieceAt)
             .add_property("GameState", make_function(&Game::getGameState, return_internal_reference<>()))
             ;
-
 };
