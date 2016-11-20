@@ -12,6 +12,10 @@ const GameState& Game::getGameState() const {
     return gameState;
 }
 
+Color Game::pieceAt(int i, int j) const {
+    return getGameState().getBoard().pieceAt(i, j);
+}
+
 void Game::playGame() {
     std::cout << toString() << std::endl;
 

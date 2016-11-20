@@ -29,6 +29,8 @@ public:
 
     const GameState& getGameState() const;
 
+    Color pieceAt(int i, int j) const;
+
     static std::vector<Move> legalMoves(const GameState& gameState);
 
     static bool isValidMove(const GameState& gameState, const Move& move);

@@ -1,17 +1,20 @@
 #include <boost/python.hpp>
 
 #include "game/Game.h"
-#include "game/Board.h"
 
 using namespace boost::python;
 
-const GameState& Game_GameState(Game& self)
-{
-   return self.getGameState();
-};
-
 BOOST_PYTHON_MODULE(boardgame)
 {
+
+    enum_<Color>("Color")
+            .value("WHITE", Color::WHITE)
+            .value("BLACK", Color::BLACK)
+            .value("EMPTY", Color::EMPTY)
+            .export_values()
+            ;
+
+
     class_<Board>("Board", init<int>())
             .def("__str__", &Board::toString)
             .def("getColor", &Board::pieceAt)
@@ -23,6 +26,7 @@ BOOST_PYTHON_MODULE(boardgame)
 
     class_<Game>("Game", init<int, IPlayer*, IPlayer*>())
             .def("__str__", &Game::toString)
+            .def("__getitem__", &Game::pieceAt)
             .add_property("GameState", make_function(&Game::getGameState, return_internal_reference<>()))
             ;
 
