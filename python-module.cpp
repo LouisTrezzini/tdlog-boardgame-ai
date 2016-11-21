@@ -1,4 +1,5 @@
 #include "game/Game.h"
+#include "players/RandomPlayer.h"
 
 #include <pybind11/pybind11.h>
 
@@ -15,6 +16,12 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .export_values()
     ;
 
+    py::class_<IPlayer>(m, "IPlayer")
+    ;
+
+    py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
+        .def(py::init<>())
+    ;
 
     py::class_<Board>(m, "Board")
         .def(py::init<int>())
