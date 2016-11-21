@@ -16,6 +16,12 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .export_values()
     ;
 
+    py::class_<Move>(m, "Move")
+        .def(py::init<int, int>())
+        .def_property_readonly("x", &Move::getX)
+        .def_property_readonly("y", &Move::getY)
+    ;
+
     py::class_<IPlayer>(m, "IPlayer")
     ;
 
