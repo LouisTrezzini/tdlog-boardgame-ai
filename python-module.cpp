@@ -35,7 +35,6 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("getColor", &Board::pieceAt)
     ;
 
-
     py::class_<GameState>(m, "GameState")
         .def(py::init<const Board&, Color>())
         // FIXME
@@ -43,11 +42,12 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
     ;
 
-
     py::class_<Game>(m, "Game")
         .def(py::init<int, IPlayer*, IPlayer*>())
         .def("__str__", &Game::toString)
         .def("__getitem__", &Game::pieceAt)
+        .def("getLegalMoves", &Game::getLegalMoves)
+        .def("getWinner", &Game::getWinner)
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 
