@@ -26,8 +26,6 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
         }
 
         // On vérifie si l'entrée est valide
-        bool b = moves.empty();
-        bool c = false;
         for (int i = 0; i < moves.size(); ++ i) {
             if (askedMove == moves[i]) {
                 moveUnavailable = false;
