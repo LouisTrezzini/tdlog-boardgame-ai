@@ -6,9 +6,9 @@ player1 = RandomPlayer()
 player2 = RandomPlayer()
 game = Game(8, player1, player2)
 
-b = Board(8)
-g = GameState(b, Color.EMPTY)
 
-print(Game.getWinner(g) == Color.EMPTY)
-print(game)
+while (Game.getWinner(game.GameState) == Color.EMPTY):
+    pickedMove = game.pickMove(game.GameState)
+    game.playMove(pickedMove)
+    print(game)
 

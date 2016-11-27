@@ -48,6 +48,8 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("__getitem__", &Game::pieceAt)
         .def("getLegalMoves", &Game::getLegalMoves)
         .def("getWinner", &Game::getWinner)
+        .def("pickMove", &Game::pickMove)
+        .def("playMove", &Game::playMove)
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 
