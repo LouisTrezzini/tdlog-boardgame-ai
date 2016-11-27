@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
     RandomPlayer whitePlayer;
-    RandomPlayer blackPlayer;
+    HumanPlayer blackPlayer;
 
     Game game(8, &whitePlayer, &blackPlayer);
 

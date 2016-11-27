@@ -1,6 +1,10 @@
 #include "game/Game.h"
+#include "game/Node.h"
 #include "players/RandomPlayer.h"
+#include "players/HumanPlayer.h"
+#include "players/MonteCarloTreeSearchPlayer.h"
 
+#include <memory>
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -18,15 +22,29 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<Move>(m, "Move")
         .def(py::init<int, int>())
+        .def("passing", &Move::passing)
         .def_property_readonly("x", &Move::getX)
         .def_property_readonly("y", &Move::getY)
     ;
+
+    /*py::class_<Node>(m, "Node")
+        .def(py::init<GameState, unsigned int, unsigned int
+                      std::vector<Node*>, Node* const>)
+    ;*/
 
     py::class_<IPlayer>(m, "IPlayer")
     ;
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
         .def(py::init<>())
+    ;
+
+    py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
+         .def(py::init<>())
+    ;
+
+    py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
+         .def(py::init<const std::unique_ptr<Node>())
     ;
 
     py::class_<Board>(m, "Board")
@@ -39,7 +57,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<const Board&, Color>())
         // FIXME
         // Ambiguïté car 2 fonctions getBoard
-        .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
+        //.def_property_readonly("Board", &GameState::getBoard)
     ;
 
     py::class_<Game>(m, "Game")
@@ -50,6 +68,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("getWinner", &Game::getWinner)
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
+        .def("playGame", &Game::playGame)
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 
