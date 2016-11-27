@@ -1,10 +1,7 @@
 #include "game/Game.h"
-#include "game/Node.h"
 #include "players/RandomPlayer.h"
 #include "players/HumanPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
-
-#include <memory>
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -26,12 +23,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def_property_readonly("x", &Move::getX)
         .def_property_readonly("y", &Move::getY)
     ;
-
-    /*py::class_<Node>(m, "Node")
-        .def(py::init<GameState, unsigned int, unsigned int
-                      std::vector<Node*>, Node* const>)
-    ;*/
-
+    
     py::class_<IPlayer>(m, "IPlayer")
     ;
 
@@ -41,10 +33,6 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
          .def(py::init<>())
-    ;
-
-    py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
-         .def(py::init<const std::unique_ptr<Node>())
     ;
 
     py::class_<Board>(m, "Board")
