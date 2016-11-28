@@ -32,7 +32,6 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
             }
         }
     }
-
     return askedMove;
 }
 

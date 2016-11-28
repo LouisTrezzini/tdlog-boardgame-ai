@@ -18,14 +18,18 @@ const GameState& Game::getGameState() const {
     return gameState;
 }
 
+Color Game::pieceAt(int i, int j) const {
+    return getGameState().getBoard().pieceAt(i, j);
+}
+
 void Game::playGame() {
-    display();
+    std::cout << toString() << std::endl;
 
     while (getWinner(gameState) == Color::EMPTY) {
         Move pickedMove = pickMove(gameState);
         playMove(pickedMove);
 
-        display();
+        std::cout << toString() << std::endl;
     }
 }
 
@@ -224,8 +228,8 @@ Color Game::getWinner(const GameState& gameState) {
 }
 
 
-void Game::display() const {
-    gameState.getBoard().display();
+std::string Game::toString() const {
+    return gameState.getBoard().toString();
 }
 
 
