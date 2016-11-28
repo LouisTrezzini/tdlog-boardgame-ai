@@ -5,9 +5,9 @@
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "game/Game.h"
 
-int main() {
-    HumanPlayer whitePlayer;
-    MonteCarloTreeSearchPlayer blackPlayer;
+int main(int argc, char *argv[]) {
+    RandomPlayer whitePlayer;
+    HumanPlayer blackPlayer;
 
     Game game(8, &whitePlayer, &blackPlayer);
 
