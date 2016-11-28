@@ -7,6 +7,7 @@
 
 #include <string>
 #include "Grid.h"
+#include "Color.h"
 
 /*
  * A class that represents the game board
@@ -46,6 +47,13 @@ public:
 
     int getWhiteStones() const {
         return whiteStones;
+    };
+
+    int getStonesByColor(Color color) {
+        if (color == Color::WHITE) {
+            return whiteStones;
+        }
+        return blackStones;
     };
 
     bool isFull() const {
