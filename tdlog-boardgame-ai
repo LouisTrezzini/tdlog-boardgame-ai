@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+export PYTHONPATH=$PWD
+cd InterfaceGraphique
+python3 InterfaceGraphique.py

@@ -2,6 +2,7 @@
 
 import sys
 from PyQt4 import QtGui, uic
+from boardgame_ai_py import *
 
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
