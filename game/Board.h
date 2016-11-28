@@ -5,8 +5,9 @@
 #ifndef TDLOG_BOARDGAME_AI_BOARD_H
 #define TDLOG_BOARDGAME_AI_BOARD_H
 
-#include <iostream>
+#include <string>
 #include "Grid.h"
+#include "Color.h"
 
 /*
  * A class that represents the game board
@@ -48,6 +49,13 @@ public:
         return whiteStones;
     };
 
+    int getStonesByColor(Color color) {
+        if (color == Color::WHITE) {
+            return whiteStones;
+        }
+        return blackStones;
+    };
+
     bool isFull() const {
         return blackStones + whiteStones == grid.size() * grid.size();
     };
@@ -56,13 +64,11 @@ public:
         return grid.size();
     };
 
-    void display() const;
+    std::string toString() const;
 
     bool inBounds(int i, int j) const {
         return 0 <= i &&  i < grid.size() && 0 <= j && j < grid.size();
     }
 };
-
-std::ostream& operator<<(std::ostream& stream, const Board& board);
 
 #endif //TDLOG_BOARDGAME_AI_BOARD_H

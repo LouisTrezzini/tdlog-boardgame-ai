@@ -34,7 +34,7 @@ public:
               parent(parent)
     {
 
-    };
+    }
 
     Node* addChild(const Move& move, const GameState& gameState) {
         Node* child = new Node(gameState, move, this);
@@ -45,7 +45,7 @@ public:
         moves.erase(itr);
 
         return child;
-    };
+    }
 
     Node* selectChildUCT() const {
         for (auto child: children) {

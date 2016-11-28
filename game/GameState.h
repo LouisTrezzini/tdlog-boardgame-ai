@@ -13,7 +13,7 @@ class GameState {
     Color colorPlaying;
 
 public:
-    GameState(const Board& board, Color colorPlaying) : board(board), colorPlaying(colorPlaying) { };
+    GameState(const Board& board, Color colorPlaying) : board(board), colorPlaying(colorPlaying) { }
 
     const Board& getBoard() const {
         return board;
