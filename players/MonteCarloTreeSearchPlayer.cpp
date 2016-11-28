@@ -9,11 +9,12 @@
 std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& rootState) const {
     auto root = std::unique_ptr<Node>(new Node(rootState));
 
-    unsigned long int nbSim = 0;
     std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
 
-    while(std::chrono::system_clock::now() - start < std::chrono::duration<double>(0.1) ){
+    start = std::chrono::system_clock::now();
+    end = start + std::chrono::seconds(1);
+
+    while(std::chrono::system_clock::now() < end){
         auto node = root.get();
         GameState curState = rootState;
 
@@ -45,7 +46,9 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
 
     end = std::chrono::system_clock::now();
 
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+
+    std::cerr << "MonteCarlo played " << root.get()->getPlays() << " in " << elapsedSeconds << "s" << std::endl;
 
     return root;
 }

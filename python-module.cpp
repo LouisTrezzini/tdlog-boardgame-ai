@@ -35,6 +35,10 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
          .def(py::init<>())
     ;
 
+    py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
+        .def(py::init<>())
+    ;
+
     py::class_<Board>(m, "Board")
         .def(py::init<int>())
         .def("__str__", &Board::toString)
