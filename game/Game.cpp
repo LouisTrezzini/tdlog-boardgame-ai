@@ -106,7 +106,7 @@ bool Game::isValidMove(const GameState& gameState, const Move& move) {
     int x = move.getX();
     int y = move.getY();
 
-    Board board = gameState.getBoard();
+    const Board& board = gameState.getBoard();
 
     Color piece = board.pieceAt(x, y);
 
