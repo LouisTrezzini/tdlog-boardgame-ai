@@ -29,7 +29,7 @@ public:
         return Move(-1, -1);
     }
 
-    bool isPassing() const{
+    bool isPassing() const {
         return x == -1 && y == -1;
     }
 
@@ -44,6 +44,10 @@ public:
     bool operator<(const Move& other) const {
         // Lexical order
         return x < other.x || x == other.x && y < other.y;
+    }
+
+    std::string toString() const {
+        return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     }
 };
 

@@ -20,8 +20,6 @@ void MinMaxOutput::min(const MinMaxOutput &other) {
     }
 }
 
-
-
 MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         // Fonction d'évaluation trèèèèès mauvaise
