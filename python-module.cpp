@@ -1,6 +1,7 @@
 #include "game/Game.h"
 #include "players/RandomPlayer.h"
 #include "players/HumanPlayer.h"
+#include "players/MinMaxPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include <pybind11/pybind11.h>
 
@@ -32,6 +33,10 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
+         .def(py::init<>())
+    ;
+
+    py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
          .def(py::init<>())
     ;
 
