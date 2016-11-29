@@ -12,34 +12,41 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
     start = std::chrono::system_clock::now();
-    end = start + std::chrono::seconds(1);
+    end = start + std::chrono::seconds(3);
 
     while(std::chrono::system_clock::now() < end){
         auto node = root.get();
-        GameState curState = rootState;
 
+        // 1. Selection
         // Select a path through the tree to a leaf node.
         while(!node->hasUntriedMoves() && node->hasChildren()){
             node = node->selectChildUCT();
 
-            Game::applyMove(curState, node->getMove());
+            // Game::applyMove(curState, node->getMove());
         }
 
+        // 2. Expansion
         // If we are not already at the final state, expand the tree with a new node and move there.
         if (node->hasUntriedMoves()) {
             auto move = node->getUntriedMove();
-            Game::applyMove(curState, move);
-            node = node->addChild(move, curState);
+            GameState newState = node->getGameState();
+            Game::applyMove(newState, move);
+            node = node->addChild(move, newState);
         }
 
+        // 3. Simulation
         // We now play randomly until the game ends.
+        GameState curState = node->getGameState();
+
         while (Game::hasLegalMoves(curState)) {
             Game::applyMove(curState, Game::getRandomMove(curState));
         }
 
+        // 4. Backpropagation
         // We have now reached a final state. Backpropagate the result up the tree to the root node.
+        bool hasWon = Game::getWinner(curState) == getColor();
         while (node != nullptr) {
-            node->update(Game::getWinner(curState) == getColor());
+            node->update(hasWon);
             node = node->getParent();
         }
     }
@@ -48,7 +55,11 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
 
     auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
 
-    std::cerr << "MonteCarlo played " << root.get()->getPlays() << " in " << elapsedSeconds << "s" << std::endl;
+    std::cerr << "MonteCarlo played " << root.get()->getPlays() << " games in " << elapsedSeconds << "s" << std::endl;
+
+    for (auto child: root.get()->getChildren()) {
+        std::cerr << child->getMove().toString() << ": (" << child->getWins() << "/" << child->getPlays() << ")" << std::endl;
+    }
 
     return root;
 }
