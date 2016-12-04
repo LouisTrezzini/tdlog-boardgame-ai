@@ -12,6 +12,10 @@ class HumanPlayer : public IPlayer {
 public:
     virtual Move getAction(const GameState& gameState) const;
 
+    virtual bool isHuman() {
+        return true;
+    }
+
     virtual ~HumanPlayer();
 };
 

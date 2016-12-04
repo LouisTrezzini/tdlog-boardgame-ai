@@ -25,6 +25,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
     
     py::class_<IPlayer>(m, "IPlayer")
+        .def("isHuman", &IPlayer::isHuman)
     ;
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
@@ -57,7 +58,6 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
-
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 
