@@ -46,6 +46,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<const Board&, Color>())
         // FIXME
         // Ambiguïté car 2 fonctions getBoard
+        .def("getColorPlaying", &GameState::getColorPlaying)
         .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
     ;
 
@@ -58,6 +59,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
+        .def("isValidMove", &Game::isValidMove)
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 

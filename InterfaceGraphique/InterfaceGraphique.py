@@ -51,16 +51,19 @@ class Plateau(QtGui.QWidget):
                 pix = pix.scaled(self.tailleImage, self.tailleImage)
                 self.cases[i + j * taille].setPixmap(pix)
                 self.grid.addWidget(self.cases[i + j * taille], i, j)
-                self.cases[i + j * taille].mousePressEvent = lambda x, k = self.cases[i + j * taille]: self.change(k)
+                self.cases[i + j * taille].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
 
         self.update()
         self.show()
-        self.playTurn()
+        if not self.humanTurn():
+            self.playTurn()
 
-    def change(self, label):
-        pix = QtGui.QPixmap("white.png")
-        pix = pix.scaled(self.tailleImage, self.tailleImage)
-        #label.setPixmap(pix)
+    def change(self, i, j):
+        move = Move(i, j)
+        if (Game.isValidMove(self.game.GameState, move)) and self.humanTurn():
+            self.game.playMove(move)
+            self.update()
+            QtCore.QTimer.singleShot(1000, self.playTurn)
 
 
     def update(self):
@@ -91,21 +94,25 @@ class Plateau(QtGui.QWidget):
         if (Game.getWinner(self.game.GameState) != Color.EMPTY):
             return
 
-        pickedMove = self.game.pickMove(self.game.GameState)
-        self.game.playMove(pickedMove)
-        self.update()
+        if not self.humanTurn():
+            pickedMove = self.game.pickMove(self.game.GameState)
+            self.game.playMove(pickedMove)
+            self.update()
+            if not self.humanTurn():
+                QtCore.QTimer.singleShot(1000, self.playTurn)
 
-        # On rappelle la fonction au bout d'un certain nombre de millisecondes
-        QtCore.QTimer.singleShot(1, self.playTurn)
-
-
-
-
-
+    def humanTurn(self):
+        """
+        Fonction renvoyant true si c'est au tour d'un joueur humain de jouer et false sinon
+        :return:
+        """
+        case1 = player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
+        case2 = player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
+        return case1 or case2
 
 
 app = QtGui.QApplication(sys.argv)
 player1 = RandomPlayer()
-player2 = RandomPlayer()
+player2 = HumanPlayer()
 Plateau(player1, player2, 8)
 app.exec_()
