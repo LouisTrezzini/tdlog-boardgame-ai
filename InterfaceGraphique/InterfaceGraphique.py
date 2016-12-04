@@ -26,9 +26,41 @@ class InterfaceGraphique(QtGui.QWidget):
 
         self.widget.show()
 
+class Plateau(QtGui.QWidget):
+    def __init__(self, player1, player2, taille):
+        super(Plateau, self).__init__()
+
+        # Création du layout
+        self.grid = QtGui.QGridLayout()
+        self.grid.setSpacing(0)
+        self.setLayout(self.grid)
+
+        # Création du jeu
+        self.taille = taille
+        self.game = Game(taille, player1, player2)
+        self.cases = [QtGui.QLabel() for i in range(taille ** 2)]
+
+
+        for i in range(taille):
+            for j in range(taille):
+                pix = QtGui.QPixmap("noir.png")
+                pix = pix.scaled(50, 50)
+                self.cases[i + j * taille].setPixmap(pix)
+                self.grid.addWidget(self.cases[i + j * taille], i, j)
+                self.cases[i + j * taille].mousePressEvent = lambda x, k = self.cases[i + j * taille]: self.change(k)
+
+        self.show()
+
+    def change(self, label):
+        pix = QtGui.QPixmap("white.png")
+        pix = pix.scaled(50, 50)
+        label.setPixmap(pix)
+
 
 
 
 app = QtGui.QApplication(sys.argv)
-InterfaceGraphique()
+player1 = RandomPlayer()
+player2 = HumanPlayer()
+Plateau(player1, player2, 8)
 app.exec_()
