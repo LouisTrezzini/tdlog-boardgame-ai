@@ -57,6 +57,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
+
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 
