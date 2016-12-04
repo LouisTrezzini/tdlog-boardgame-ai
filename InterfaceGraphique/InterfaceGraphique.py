@@ -2,30 +2,59 @@
 
 import sys
 import time
+import ConfigurationDialog as cd
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
+class InterfaceGraphique():
+    """ Defines the graphism for the Game. """
 
-class InterfaceGraphique(QtGui.QWidget):
-    def __init__(self):
-        super(InterfaceGraphique, self).__init__()
-        self.widget = uic.loadUi("mainwindow.ui")
+    def __init__(self, wiget):
+        """ Initialises the graphism for the Game thank to a pre-design widget.
+            The class is also composed of the various parameters to
+            launch a Party. """
 
-        self.widget.RulesButton.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_2))
-        self.widget.RulesButtonTab3.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_2))
-        self.widget.RulesButtonTab4.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_2))
-        self.widget.RulesButtonTab5.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_2))
-
-        self.widget.ComeBackButtonTab3.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab))
-        self.widget.ComeBackButtonTab4.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab))
-        self.widget.ComeBackButtonTab5.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab))
-        self.widget.playButton.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab))
-
-        self.widget.TwoPlayersButton.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_3))
-        self.widget.OnePlayerButton.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_4))
-        self.widget.ZeroPlayerButton.clicked.connect(lambda _ : self.widget.tabWidget.setCurrentWidget(self.widget.tab_5))
-
+        self.widget = widget
+        self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
+        self.widget.configureBtn.clicked.connect(self.ConfigurationDialog)
+        self.widget.returnBtn.clicked.connect(lambda _ : self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration))
+        self.player1 = 0
+        self.player2 = 0
+        self.plateau = 0
+        self.configure_dialog = cd.ConfigureDialog()
         self.widget.show()
+
+    def realTypeOfPlayer(self, string, number_of_player):
+        """ Configures the type of player with a string. """
+        if string == "HumanPlayer":
+            print('ok')
+            player_type = HumanPlayer()
+        if string == "RandomPlayer":
+            player_type = RandomPlayer()
+        if string == "MonteCarloPlayer":
+            player_type = MonteCarloPlayer()
+        if number_of_player == 1:
+            self.player1 = player_type
+        if number_of_player == 2:
+            self.player2 = player_type
+
+    def ConfigurationDialog(self):
+        """ Opens several Dialogs to input the information
+            for the type of the players. It mades thanks to the
+            class ConfigureDialog in the eponym module. """
+        self.configure_dialog.initUI()
+        self.realTypeOfPlayer(self.configure_dialog.player1, 1)
+        self.realTypeOfPlayer(self.configure_dialog.player2, 2)
+        self.play()
+
+    def play(self):
+        """ Launchs the game """
+        self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
+        self.plateau = Plateau(self.player1, self.player2, 8)
+        self.widget.boxGame.addWidget(self.plateau)
+        self.plateau.play()
+
+
 
 class Plateau(QtGui.QWidget):
     # Constante de classe
@@ -38,6 +67,10 @@ class Plateau(QtGui.QWidget):
         self.grid = QtGui.QGridLayout()
         self.grid.setSpacing(0)
         self.setLayout(self.grid)
+
+        #players
+        self.player1 = player1
+        self.player2 = player2
 
         # Création du jeu
         self.taille = taille
@@ -52,9 +85,10 @@ class Plateau(QtGui.QWidget):
                 self.cases[i + j * taille].setPixmap(pix)
                 self.grid.addWidget(self.cases[i + j * taille], i, j)
                 self.cases[i + j * taille].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
-
         self.update()
         self.show()
+
+    def play (self):
         if not self.humanTurn():
             self.playTurn()
 
@@ -106,13 +140,12 @@ class Plateau(QtGui.QWidget):
         Fonction renvoyant true si c'est au tour d'un joueur humain de jouer et false sinon
         :return:
         """
-        case1 = player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
-        case2 = player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
+        case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
+        case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
         return case1 or case2
 
 
 app = QtGui.QApplication(sys.argv)
-player1 = RandomPlayer()
-player2 = HumanPlayer()
-Plateau(player1, player2, 8)
+widget = uic.loadUi("mainwindow.ui")
+InterfaceGraphique(widget)
 app.exec_()
