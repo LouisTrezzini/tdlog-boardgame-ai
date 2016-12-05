@@ -71,6 +71,10 @@ class Plateau(QtGui.QWidget):
         self.player1 = player1
         self.player2 = player2
 
+        # Création du thème du plateau
+        self.themePlateau = ThemePlateau("empty.png", "white.png", "black.png")
+        self.themePlateau.scale(self.tailleImage)
+
         # Création du jeu
         self.taille = taille
         self.game = Game(taille, player1, player2)
@@ -79,9 +83,6 @@ class Plateau(QtGui.QWidget):
         # Création des boutons
         for i in range(taille):
             for j in range(taille):
-                pix = QtGui.QPixmap("vide.png")
-                pix = pix.scaled(self.tailleImage, self.tailleImage)
-                self.cases[i + j * taille].setPixmap(pix)
                 self.grid.addWidget(self.cases[i + j * taille], i, j)
                 self.cases[i + j * taille].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
         self.update()
@@ -107,17 +108,11 @@ class Plateau(QtGui.QWidget):
         for i in range(self.taille):
             for j in range(self.taille):
                 if (self.game.__getitem__(i, j) == Color.WHITE):
-                    pix = QtGui.QPixmap("white.png")
-                    pix = pix.scaled(self.tailleImage, self.tailleImage)
-                    self.cases[i + j * self.taille].setPixmap(pix)
+                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.whitePawnImage)
                 if (self.game.__getitem__(i, j) == Color.BLACK):
-                    pix = QtGui.QPixmap("black.png")
-                    pix = pix.scaled(self.tailleImage, self.tailleImage)
-                    self.cases[i + j * self.taille].setPixmap(pix)
+                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.blackPawnImage)
                 if (self.game.__getitem__(i, j) == Color.EMPTY):
-                    pix = QtGui.QPixmap("empty.png")
-                    pix = pix.scaled(self.tailleImage, self.tailleImage)
-                    self.cases[i + j * self.taille].setPixmap(pix)
+                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.emptySquareImage)
 
     def playTurn(self):
         """
@@ -142,6 +137,16 @@ class Plateau(QtGui.QWidget):
         case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
         case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
         return case1 or case2
+
+class ThemePlateau():
+    def __init__(self, emptySquareName, whitePawnImageName, blackPawnImageName):
+        self.emptySquareImage = QtGui.QPixmap(emptySquareName)
+        self.whitePawnImage = QtGui.QPixmap(whitePawnImageName)
+        self.blackPawnImage = QtGui.QPixmap(blackPawnImageName)
+    def scale(self, tailleImages):
+        self.emptySquareImage = self.emptySquareImage.scaled(tailleImages, tailleImages)
+        self.whitePawnImage = self.whitePawnImage.scaled(tailleImages, tailleImages)
+        self.blackPawnImage = self.blackPawnImage.scaled(tailleImages, tailleImages)
 
 
 app = QtGui.QApplication(sys.argv)
