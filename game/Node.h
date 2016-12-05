@@ -33,7 +33,9 @@ public:
               move(move),
               parent(parent)
     {
-
+        plays = 0;
+        wins = 0;
+        UCTScore = 0.0;
     }
 
     Node* addChild(const Move& move, const GameState& gameState) {
@@ -97,6 +99,10 @@ public:
 
     const Move& getMove() const {
         return move;
+    }
+
+    const GameState& getGameState() const {
+        return gameState;
     }
 
     ~Node() {
