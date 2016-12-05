@@ -8,7 +8,7 @@ from boardgame_ai_py import *
 class InterfaceGraphique():
     """ Defines the graphism for the Game. """
 
-    def __init__(self, wiget):
+    def __init__(self, wiget, tailleImage):
         """ Initialises the graphism for the Game thank to a pre-design widget.
             The class is also composed of the various parameters to
             launch a Party. """
@@ -19,6 +19,7 @@ class InterfaceGraphique():
         self.widget.returnBtn.clicked.connect(lambda _ : self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration))
         self.player1 = 0
         self.player2 = 0
+        self.tailleImage = tailleImage
         self.plateau = 0
         self.configure_dialog = ConfigurationDialog.ConfigureDialog()
         self.widget.show()
@@ -35,8 +36,10 @@ class InterfaceGraphique():
     def play(self):
         """ Launchs the game """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
-        self.plateau = Plateau(self.player1, self.player2, 8)
-        self.widget.boxGame.addWidget(self.plateau)
+        self.plateau = Plateau(self.player1, self.player2, self.tailleImage)
+        self.plateau.setParent(self.widget.boxGame)
+        self.widget.boxGame.childAt(*(50,50))
+        self.plateau.show()
         self.plateau.play()
 
 
@@ -137,5 +140,5 @@ class ThemePlateau():
 
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
-InterfaceGraphique(widget)
+InterfaceGraphique(widget, 8)
 app.exec_()
