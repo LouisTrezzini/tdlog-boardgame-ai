@@ -23,27 +23,13 @@ class InterfaceGraphique():
         self.configure_dialog = ConfigurationDialog.ConfigureDialog()
         self.widget.show()
 
-    def realTypeOfPlayer(self, string, number_of_player):
-        """ Configures the type of player with a string. """
-        if string == "HumanPlayer":
-            print('ok')
-            player_type = HumanPlayer()
-        if string == "RandomPlayer":
-            player_type = RandomPlayer()
-        if string == "MonteCarloPlayer":
-            player_type = MonteCarloPlayer()
-        if number_of_player == 1:
-            self.player1 = player_type
-        if number_of_player == 2:
-            self.player2 = player_type
-
     def ConfigurationDialog(self):
         """ Opens several Dialogs to input the information
             for the type of the players. It mades thanks to the
             class ConfigureDialog in the eponym module. """
         self.configure_dialog.initUI()
-        self.realTypeOfPlayer(self.configure_dialog.player1, 1)
-        self.realTypeOfPlayer(self.configure_dialog.player2, 2)
+        self.player1 = self.configure_dialog.player1
+        self.player2 = self.configure_dialog.player2
         self.play()
 
     def play(self):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui
+from boardgame_ai_py import *
 
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
@@ -19,18 +20,21 @@ class ConfigureDialog(QtGui.QWidget):
         self.player1 = 0
         self.player2 = 0
         self.depth = 0
-        self.setGeometry(300, 300, 290, 150)
+        self.setGeometry(300, 300, 500, 200)
 
     def initUI(self):
         """ Launchs several Dialogs in which the user can enter the value wanted
             for the Game. """
         self.player1 = self.setPlayer()
         self.player2 = self.setPlayer()
+        self.realTypeOfPlayer(str(self.player1), 1)
+        self.realTypeOfPlayer(str(self.player2), 2)
 
     def setPlayer(self):
         """ Launchs a Dialog in which the user can enter the number of
             players wanted. """
-        players_list = list(["HumanPlayer", "RandomPlayer", "MonteCarloPlayer"])
+        players_list = list(["HumanPlayer", "RandomPlayer",
+                             "MonteCarloTreeSearchPlayer", "MinMaxPlayer" ])
         player, ok1 = QtGui.QInputDialog.getItem(self, 'Choice of the type of the Player',
                                               'Type of the player :',
                                               players_list, editable = False)
@@ -41,3 +45,19 @@ class ConfigureDialog(QtGui.QWidget):
         force, ok1 = QtGui.QInputDialog.getInt(self, 'Parameters',
                                   'Enter the force of the IA:', min = 1)
         self.depth = int(force)
+
+    def realTypeOfPlayer(self, string, number_of_player):
+        """ Configures the type of player with a string. """
+        player_type = 0
+        if string == "HumanPlayer":
+            player_type = HumanPlayer()
+        if string == "RandomPlayer":
+            player_type = RandomPlayer()
+        if string == "MonteCarloTreeSearchPlayer":
+            player_type = MonteCarloTreeSearchPlayer()
+        if string == "MinMaxPlayer":
+            player_type = MinMaxPlayer()
+        if number_of_player == 1:
+            self.player1 = player_type
+        if number_of_player == 2:
+            self.player2 = player_type
