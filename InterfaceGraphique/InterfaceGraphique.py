@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import time
-import ConfigurationDialog as cd
+import ConfigurationDialog
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
@@ -21,7 +20,7 @@ class InterfaceGraphique():
         self.player1 = 0
         self.player2 = 0
         self.plateau = 0
-        self.configure_dialog = cd.ConfigureDialog()
+        self.configure_dialog = ConfigurationDialog.ConfigureDialog()
         self.widget.show()
 
     def realTypeOfPlayer(self, string, number_of_player):
