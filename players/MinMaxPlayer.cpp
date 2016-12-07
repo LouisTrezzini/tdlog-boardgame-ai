@@ -1,24 +1,9 @@
 #include "MinMaxPlayer.h"
 #include "../game/Game.h"
 
-MinMaxOutput::MinMaxOutput(Move move, float value) {
-    MinMaxOutput::move = move;
-    MinMaxOutput::value = value;
-}
+const float INF = 1 / 0.f;
+const int profondeur = 7;
 
-void MinMaxOutput::max(const MinMaxOutput &other) {
-    if (value < other.value) {
-        value = other.value;
-        move = other.move;
-    }
-}
-
-void MinMaxOutput::min(const MinMaxOutput &other) {
-    if (value > other.value) {
-        value = other.value;
-        move = other.move;
-    }
-}
 
 MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {

@@ -4,7 +4,7 @@
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
-#include "MinMaxPlayer.h"
+#include "../utils/MinMaxOutput.h"
 
 
 /*

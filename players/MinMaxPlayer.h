@@ -4,20 +4,7 @@
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
-
-const float INF = 1 / 0.f;
-const int profondeur = 1;
-
-// Structure for outputing the right thing
-struct MinMaxOutput {
-    Move move;
-    float value;
-
-    MinMaxOutput(Move move, float value);
-    void max(const MinMaxOutput &other);
-    void min(const MinMaxOutput &other);
-};
-
+#include "../utils/MinMaxOutput.h"
 
 /*
  * This IA will follow the minmax principle

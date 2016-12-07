@@ -1,6 +1,10 @@
 #include "../game/Game.h"
 #include "AlphaBetaPlayer.h"
 
+const float INF = 1 / 0.f;
+const int profondeur = 7;
+
+
 MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         // Fonction d'évaluation trèèèèès mauvaise
