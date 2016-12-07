@@ -6,7 +6,7 @@
 #include "../game/GameState.h"
 
 const float INF = 1 / 0.f;
-const int profondeur = 7;
+const int profondeur = 1;
 
 // Structure for outputing the right thing
 struct MinMaxOutput {

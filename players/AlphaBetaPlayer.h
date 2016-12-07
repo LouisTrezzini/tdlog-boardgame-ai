@@ -1,12 +1,10 @@
-#ifndef TDLOG_BOARDGAME_AI_MINMAXPLAYER_H
-#define TDLOG_BOARDGAME_AI_MINMAXPLAYER_H
+#ifndef TDLOG_BOARDGAME_AI_ALPHABETAPLAYER_H
+#define TDLOG_BOARDGAME_AI_ALPHABETAPLAYER_H
 
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
-
-const float INF = 1 / 0.f;
-const int profondeur = 7;
+#include "MinMaxPlayer.h"
 
 
 /*
@@ -14,6 +12,7 @@ const int profondeur = 7;
  */
 class AlphaBetaPlayer : public IPlayer {
 public:
+    MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta) const;
 
     virtual Move getAction(const GameState& gameState) const;
 
@@ -21,4 +20,4 @@ public:
 };
 
 
-#endif //TDLOG_BOARDGAME_AI_MINMAXPLAYER_H
+#endif //TDLOG_BOARDGAME_AI_ALPHABETAPLAYER_H
