@@ -2,7 +2,7 @@
 from boardgame_ai_py import *
 
 
-player1 = RandomPlayer()
+player1 = AlphaBetaPlayer()
 player2 = HumanPlayer()
 game = Game(8, player1, player2)
 
