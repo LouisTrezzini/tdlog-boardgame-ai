@@ -42,7 +42,7 @@ class InterfaceGraphique():
     def play(self):
         """ Launchs the game """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
-        self.plateau = Plateau(self.player2, self.player1, self.tailleImage)
+        self.plateau = Plateau(self.player2, self.player1, self.tailleImage, self.widget)
         self.plateau.setParent(self.widget.boxGame)
         self.widget.boxGame.childAt(*(50,50))
         self.plateau.show()
@@ -54,8 +54,11 @@ class Plateau(QtGui.QWidget):
     # Constante de classe
     tailleImage = 80
 
-    def __init__(self, player1, player2, taille):
+    def __init__(self, player1, player2, taille, parentWidget):
         super(Plateau, self).__init__()
+
+        # Définition du widget parent
+        self.parentWidget = parentWidget
 
         # Création du layout
         self.grid = QtGui.QGridLayout()
@@ -74,6 +77,10 @@ class Plateau(QtGui.QWidget):
         self.taille = taille
         self.game = Game(taille, player1, player2)
         self.cases = [QtGui.QLabel() for i in range(taille ** 2)]
+
+        # Display Number of stones for both palyers:
+        self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
+        self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
 
         # Création des boutons
         for i in range(taille):
@@ -98,6 +105,7 @@ class Plateau(QtGui.QWidget):
     def update(self):
         """
         Fonction pour mettre à jour l'affichage du plateau
+        et le score des joueurs
         :return:
         """
         for i in range(self.taille):
@@ -108,6 +116,10 @@ class Plateau(QtGui.QWidget):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.blackPawnImage)
                 if (self.game.__getitem__(i, j) == Color.EMPTY):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.emptySquareImage)
+
+        self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
+        self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
+
 
     def playTurn(self):
         """

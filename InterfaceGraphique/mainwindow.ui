@@ -259,9 +259,9 @@ p, li { white-space: pre-wrap; }
      <widget class="QLabel" name="namePlayer2">
       <property name="geometry">
        <rect>
-        <x>640</x>
+        <x>630</x>
         <y>10</y>
-        <width>81</width>
+        <width>91</width>
         <height>41</height>
        </rect>
       </property>

@@ -49,6 +49,8 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<int>())
         .def("__str__", &Board::toString)
         .def("getColor", &Board::pieceAt)
+        .def_property_readonly("getBlackStones", &Board::getBlackStones)
+        .def_property_readonly("getWhiteStones", &Board::getWhiteStones)
     ;
 
     py::class_<GameState>(m, "GameState")
