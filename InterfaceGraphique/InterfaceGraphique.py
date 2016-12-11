@@ -16,7 +16,7 @@ class InterfaceGraphique():
         self.widget = widget
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.widget.configureBtn.clicked.connect(self.ConfigurationDialog)
-        self.widget.returnBtn.clicked.connect(lambda _ : self.Return())
+        self.widget.returnBtn.clicked.connect(lambda _ : self.ConfigurationWidget())
         self.player1 = 0
         self.player2 = 0
         self.tailleImage = tailleImage
@@ -24,7 +24,7 @@ class InterfaceGraphique():
         self.configure_dialog = ConfigurationDialog.ConfigureDialog()
         self.widget.show()
 
-    def Return(self):
+    def ConfigurationWidget(self):
         """ Configures the closing of the game when the player clicke
             on the return button """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
