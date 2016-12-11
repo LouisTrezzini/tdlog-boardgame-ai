@@ -16,13 +16,19 @@ class InterfaceGraphique():
         self.widget = widget
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.widget.configureBtn.clicked.connect(self.ConfigurationDialog)
-        self.widget.returnBtn.clicked.connect(lambda _ : self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration))
+        self.widget.returnBtn.clicked.connect(lambda _ : self.Return())
         self.player1 = 0
         self.player2 = 0
         self.tailleImage = tailleImage
         self.plateau = 0
         self.configure_dialog = ConfigurationDialog.ConfigureDialog()
         self.widget.show()
+
+    def Return(self):
+        """ Configures the closing of the game when the player clicke
+            on the return button """
+        self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
+        self.plateau.close()
 
     def ConfigurationDialog(self):
         """ Opens several Dialogs to input the information
@@ -36,7 +42,7 @@ class InterfaceGraphique():
     def play(self):
         """ Launchs the game """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
-        self.plateau = Plateau(self.player1, self.player2, self.tailleImage)
+        self.plateau = Plateau(self.player2, self.player1, self.tailleImage)
         self.plateau.setParent(self.widget.boxGame)
         self.widget.boxGame.childAt(*(50,50))
         self.plateau.show()

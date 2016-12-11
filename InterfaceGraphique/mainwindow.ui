@@ -206,9 +206,67 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>140</x>
         <y>80</y>
-        <width>671</width>
+        <width>640</width>
         <height>681</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1677215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="scorePlayer1">
+      <property name="geometry">
+       <rect>
+        <x>483</x>
+        <y>10</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="scorePlayer2">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>10</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="namePlayer1">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>10</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Balck Player</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="namePlayer2">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>10</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>White Player</string>
       </property>
      </widget>
     </widget>
