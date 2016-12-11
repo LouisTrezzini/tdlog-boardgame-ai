@@ -14,8 +14,8 @@ struct MinMaxOutput {
     float value;
 
     MinMaxOutput(Move move, float value);
-    void max(const MinMaxOutput &other);
-    void min(const MinMaxOutput &other);
+    virtual void max(const MinMaxOutput &other);
+    virtual void min(const MinMaxOutput &other);
 };
 
 
@@ -24,7 +24,7 @@ struct MinMaxOutput {
  */
 class MinMaxPlayer : public IPlayer {
 public:
-    MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn) const;
+    virtual MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn) const;
 
     virtual Move getAction(const GameState& gameState) const;
 
