@@ -3,6 +3,10 @@
 from PyQt4 import QtGui
 from boardgame_ai_py import *
 
+playerType = list(["HumanPlayer", "RandomPlayer",
+                   "MonteCarloTreeSearchPlayer", "MinMaxPlayer",
+                   "GeneticalPlayer" ])
+
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
 ###############################################################################
@@ -33,8 +37,7 @@ class ConfigureDialog(QtGui.QWidget):
     def setPlayer(self):
         """ Launchs a Dialog in which the user can enter the number of
             players wanted. """
-        players_list = list(["HumanPlayer", "RandomPlayer",
-                             "MonteCarloTreeSearchPlayer", "MinMaxPlayer" ])
+        players_list = playerType
         player, ok1 = QtGui.QInputDialog.getItem(self, 'Choice of the type of the Player',
                                               'Type of the player :',
                                               players_list, editable = False)
@@ -49,14 +52,16 @@ class ConfigureDialog(QtGui.QWidget):
     def realTypeOfPlayer(self, string, number_of_player):
         """ Configures the type of player with a string. """
         player_type = 0
-        if string == "HumanPlayer":
+        if string == playerType[0] :
             player_type = HumanPlayer()
-        if string == "RandomPlayer":
+        if string == playerType[1] :
             player_type = RandomPlayer()
-        if string == "MonteCarloTreeSearchPlayer":
+        if string == playerType[2] :
             player_type = MonteCarloTreeSearchPlayer()
-        if string == "MinMaxPlayer":
+        if string == playerType[3]:
             player_type = MinMaxPlayer()
+        if string == playerType[4]:
+            player_type = GeneticalPlayer()
         if number_of_player == 1:
             self.player1 = player_type
         if number_of_player == 2:

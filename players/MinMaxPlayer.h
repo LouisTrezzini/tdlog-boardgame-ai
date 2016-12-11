@@ -28,7 +28,7 @@ public:
 
     virtual Move getAction(const GameState& gameState) const;
 
-    virtual ~MinMaxPlayer();
+    ~MinMaxPlayer();
 };
 
 

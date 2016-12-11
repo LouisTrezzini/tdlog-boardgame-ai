@@ -9,14 +9,15 @@
 #include "../game/Game.h"
 #include "MinMaxPlayer.h"
 
-class GeneticalPlayer: public MinMaxPlayer {
+class GeneticalPlayer: public IPlayer {
+public:
 
     vector<double> mobility;
     vector<double> position;
     vector<double> numberOfStones;
     GeneticalEvaluationFunction eval;
 
-public:
+
 
     GeneticalPlayer(){
 
@@ -33,7 +34,20 @@ public:
         eval = GeneticalEvaluationFunction(mobility, position, numberOfStones);
     }
 
-    ~GeneticalPlayer(){}
+    ~GeneticalPlayer();
+
+    vector<double> getMobility() const {
+        return mobility;
+    }
+
+    vector<double> getPosition() const {
+        return position;
+    }
+
+    vector<double> getNumberOfStones() const {
+        return numberOfStones;
+    }
+
 
     GeneticalEvaluationFunction getEval () const {
         return eval;

@@ -3,6 +3,7 @@
 #include "players/HumanPlayer.h"
 #include "players/MinMaxPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
+#include "players/GeneticalPlayer.h"
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -24,7 +25,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def_property_readonly("x", &Move::getX)
         .def_property_readonly("y", &Move::getY)
     ;
-    
+
     py::class_<IPlayer>(m, "IPlayer")
         .def("isHuman", &IPlayer::isHuman)
     ;
@@ -43,6 +44,10 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
         .def(py::init<>())
+    ;
+
+    py::class_<GeneticalPlayer, IPlayer>(m, "GeneticalPlayer")
+         .def(py::init<>())
     ;
 
     py::class_<Board>(m, "Board")

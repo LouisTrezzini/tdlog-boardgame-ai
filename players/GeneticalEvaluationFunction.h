@@ -40,9 +40,13 @@ public:
 
     }
 
-    ~GeneticalEvaluationFunction(){}
+    ~GeneticalEvaluationFunction(){
+    }
 
-    double getEvaluationMove (GameState gameState, Move move) {
+    float getEvaluationMove (GameState gameState, Move move) {
+
+        cout << "okla" << endl;
+
         GameState nextGameState = gameState;
         Game::applyMove(nextGameState, move);
 
@@ -50,6 +54,8 @@ public:
                                  + nextGameState.getBoard().getWhiteStones()
                                  - 4;
         Color colorPlaying = nextGameState.getColorPlaying();
+
+
 
         if (colorPlaying == Color::BLACK){
             numberOfTurnsPlayed = numberOfTurnsPlayed/2;
@@ -64,7 +70,7 @@ public:
                        + position[numberOfTurnsPlayed] * valueOfCases[move.getX()][move.getY()]/100
                        + numberOfStones[numberOfTurnsPlayed] * nextGameState.getBoard().getStonesByColor(colorPlaying)/64;
 
-        return value;
+        return float(value);
     }
 
 };

@@ -1,6 +1,11 @@
 #include "GeneticalPlayer.h"
+#include <iostream>
+
+GeneticalPlayer::~GeneticalPlayer(){
+}
 
 MinMaxOutput GeneticalPlayer::minMax(GameState& gameState, Move move, int profondeur, bool isMyTurn) const {
+    cout << profondeur << endl;
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         return MinMaxOutput(Move::passing(), getEval().getEvaluationMove(gameState, move));
     }
