@@ -24,11 +24,18 @@ class InterfaceGraphique():
         self.heightWidget = max(750, tailleImage*nbRows + self.heightMarge)
         self.widget.setMinimumSize(self.widthWidget, self.heightWidget)
         self.widget.setMaximumSize(self.widthWidget, self.heightWidget)
+        self.widget.stackedWidget.resize(self.widthWidget,
+                                         self.heightWidget - int(self.heightMarge/2))
         self.widget.stackedWidget.setMaximumSize(self.widthWidget, self.heightWidget)
+        self.widget.rules.resize(self.widthWidget - self.widthMarge,
+                                         self.heightWidget - self.heightMarge)
         self.widget.rules.setMaximumSize(self.widthWidget - self.widthMarge,
                                          self.heightWidget - self.heightMarge)
         self.widget.rules.move(int(self.widthMarge/2), 50)
+        self.widget.Title.resize(self.widthWidget, 70)
         self.widget.Title.setMaximumWidth(self.widthWidget)
+        positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
+        self.widget.configureBtn.move(positionBtn, 600)
 
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
@@ -67,8 +74,9 @@ class InterfaceGraphique():
         self.plateau = Plateau(self.player2, self.player1,
                                self.tailleImage, self.nbRows, self.widget)
         self.plateau.setParent(self.widget.boxGame)
-        self.widget.boxGame.setMaximumSize(self.nbRows*self.tailleImage,
+        self.widget.boxGame.resize(self.nbRows*self.tailleImage,
                                            self.nbRows*self.tailleImage)
+
         position  = int((self.widthWidget - self.nbRows*self.tailleImage)/2)
         self.widget.boxGame.move(position, int(self.heightMarge/2))
         self.plateau.show()
@@ -188,5 +196,5 @@ class ThemePlateau():
 
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
-InterfaceGraphique(widget, 60, 8)
+InterfaceGraphique(widget, 80, 8)
 app.exec_()
