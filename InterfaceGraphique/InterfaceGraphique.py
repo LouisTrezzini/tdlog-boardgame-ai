@@ -8,7 +8,7 @@ from boardgame_ai_py import *
 class InterfaceGraphique():
     """ Defines the graphism for the Game. """
 
-    def __init__(self, wiget, tailleImage):
+    def __init__(self, widget, tailleImage):
         """ Initialises the graphism for the Game thank to a pre-design widget.
             The class is also composed of the various parameters to
             launch a Party. """
@@ -44,7 +44,9 @@ class InterfaceGraphique():
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
         self.plateau = Plateau(self.player2, self.player1, self.tailleImage, self.widget)
         self.plateau.setParent(self.widget.boxGame)
-        self.widget.boxGame.childAt(*(50,50))
+        #FIXME
+        #Trouver un moyen de centrer le plateau
+        self.plateau.move(0, 0)
         self.plateau.show()
         self.plateau.play()
 
@@ -52,7 +54,7 @@ class InterfaceGraphique():
 
 class Plateau(QtGui.QWidget):
     # Constante de classe
-    tailleImage = 80
+    tailleImage = 60
 
     def __init__(self, player1, player2, taille, parentWidget):
         super(Plateau, self).__init__()
@@ -88,7 +90,6 @@ class Plateau(QtGui.QWidget):
                 self.grid.addWidget(self.cases[i + j * taille], i, j)
                 self.cases[i + j * taille].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
         self.update()
-        self.show()
 
     def play (self):
         if not self.humanTurn():
