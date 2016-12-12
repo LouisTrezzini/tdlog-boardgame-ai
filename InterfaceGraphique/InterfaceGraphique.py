@@ -49,6 +49,8 @@ class InterfaceGraphique():
             on the return button """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.plateau.close()
+        self.plateau.deleteLater()
+        self.plateau = None
 
     def ConfigurationDialog(self):
         """ Opens several Dialogs to input the information
