@@ -141,9 +141,9 @@ class Plateau(QtGui.QWidget):
                 if (self.game.__getitem__(i, j) == Color.BLACK):
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.blackPawnImage)
                 if (self.game.__getitem__(i, j) == Color.EMPTY):
-                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.emptySquareImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.emptySquareImage)
                 if (Game.isValidMove(self.game.GameState, Move(i,j))):
-                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.possibleMoveImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.possibleMoveImage)
 
         self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
         self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
