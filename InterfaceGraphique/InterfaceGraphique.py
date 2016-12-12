@@ -72,7 +72,7 @@ class Plateau(QtGui.QWidget):
         self.player2 = player2
 
         # Création du thème du plateau
-        self.themePlateau = ThemePlateau("empty.png", "white.png", "black.png")
+        self.themePlateau = ThemePlateau("empty.png", "white.png", "black.png", "waiting.png")
         self.themePlateau.scale(self.tailleImage)
 
         # Création du jeu
@@ -117,6 +117,9 @@ class Plateau(QtGui.QWidget):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.blackPawnImage)
                 if (self.game.__getitem__(i, j) == Color.EMPTY):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.emptySquareImage)
+                if (Game.isValidMove(self.game.GameState, Move(i,j))):
+                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.possibleMoveImage)
+
 
         self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
         self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
@@ -147,14 +150,16 @@ class Plateau(QtGui.QWidget):
         return case1 or case2
 
 class ThemePlateau():
-    def __init__(self, emptySquareName, whitePawnImageName, blackPawnImageName):
+    def __init__(self, emptySquareName, whitePawnImageName, blackPawnImageName, possibleMoveImageName):
         self.emptySquareImage = QtGui.QPixmap(emptySquareName)
         self.whitePawnImage = QtGui.QPixmap(whitePawnImageName)
         self.blackPawnImage = QtGui.QPixmap(blackPawnImageName)
+        self.possibleMoveImage = QtGui.QPixmap(possibleMoveImageName)
     def scale(self, tailleImages):
         self.emptySquareImage = self.emptySquareImage.scaled(tailleImages, tailleImages)
         self.whitePawnImage = self.whitePawnImage.scaled(tailleImages, tailleImages)
         self.blackPawnImage = self.blackPawnImage.scaled(tailleImages, tailleImages)
+        self.possibleMoveImage = self.possibleMoveImage.scaled(tailleImages, tailleImages)
 
 
 app = QtGui.QApplication(sys.argv)
