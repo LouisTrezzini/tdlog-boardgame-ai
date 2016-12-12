@@ -7,20 +7,40 @@ from boardgame_ai_py import *
 
 class InterfaceGraphique():
     """ Defines the graphism for the Game. """
+    heightMarge = 190
+    widthMarge = 100
 
-    def __init__(self, widget, tailleImage):
+    def __init__(self, widget, tailleImage, nbRows):
         """ Initialises the graphism for the Game thank to a pre-design widget.
             The class is also composed of the various parameters to
             launch a Party. """
 
         self.widget = widget
+
+        # Dimensionnement de la fenetre du jeu en fonction des tailleImage
+        self.tailleImage = tailleImage
+        self.nbRows = nbRows
+        self.widthWidget = max(730, tailleImage*nbRows + self.widthMarge)
+        self.heightWidget = max(750, tailleImage*nbRows + self.heightMarge)
+        self.widget.setMinimumSize(self.widthWidget, self.heightWidget)
+        self.widget.setMaximumSize(self.widthWidget, self.heightWidget)
+        self.widget.stackedWidget.setMaximumSize(self.widthWidget, self.heightWidget)
+        self.widget.rules.setMaximumSize(self.widthWidget - self.widthMarge,
+                                         self.heightWidget - self.heightMarge)
+        self.widget.rules.move(int(self.widthMarge/2), 50)
+        self.widget.Title.setMaximumWidth(self.widthWidget)
+
+        #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.widget.configureBtn.clicked.connect(self.ConfigurationDialog)
         self.widget.returnBtn.clicked.connect(lambda _ : self.ConfigurationWidget())
+
+        #Sauvegarde des paramètres du jeu
         self.player1 = 0
         self.player2 = 0
-        self.tailleImage = tailleImage
         self.plateau = 0
+
+        #Ouverture de boite de dialogues pour la configuration du jeu
         self.configure_dialog = ConfigurationDialog.ConfigureDialog()
         self.widget.show()
 
@@ -42,21 +62,21 @@ class InterfaceGraphique():
     def play(self):
         """ Launchs the game """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
-        self.plateau = Plateau(self.player2, self.player1, self.tailleImage, self.widget)
+        self.plateau = Plateau(self.player2, self.player1,
+                               self.tailleImage, self.nbRows, self.widget)
         self.plateau.setParent(self.widget.boxGame)
-        #FIXME
-        #Trouver un moyen de centrer le plateau
-        self.plateau.move(0, 0)
+        self.widget.boxGame.setMaximumSize(self.nbRows*self.tailleImage,
+                                           self.nbRows*self.tailleImage)
+        position  = int((self.widthWidget - self.nbRows*self.tailleImage)/2)
+        self.widget.boxGame.move(position, int(self.heightMarge/2))
         self.plateau.show()
         self.plateau.play()
 
 
 
 class Plateau(QtGui.QWidget):
-    # Constante de classe
-    tailleImage = 60
 
-    def __init__(self, player1, player2, taille, parentWidget):
+    def __init__(self, player1, player2, tailleImage, nbRows, parentWidget):
         super(Plateau, self).__init__()
 
         # Définition du widget parent
@@ -71,24 +91,27 @@ class Plateau(QtGui.QWidget):
         self.player1 = player1
         self.player2 = player2
 
+        #Tailles des Images
+        self.tailleImage = tailleImage
+
         # Création du thème du plateau
         self.themePlateau = ThemePlateau("empty.png", "white.png", "black.png", "waiting.png")
         self.themePlateau.scale(self.tailleImage)
 
         # Création du jeu
-        self.taille = taille
-        self.game = Game(taille, player1, player2)
-        self.cases = [QtGui.QLabel() for i in range(taille ** 2)]
+        self.nbRows = nbRows
+        self.game = Game(nbRows, player1, player2)
+        self.cases = [QtGui.QLabel() for i in range(nbRows ** 2)]
 
         # Display Number of stones for both palyers:
         self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
         self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
 
         # Création des boutons
-        for i in range(taille):
-            for j in range(taille):
-                self.grid.addWidget(self.cases[i + j * taille], i, j)
-                self.cases[i + j * taille].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
+        for i in range(nbRows):
+            for j in range(nbRows):
+                self.grid.addWidget(self.cases[i + j * nbRows], i, j)
+                self.cases[i + j * nbRows].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
         self.update()
 
     def play (self):
@@ -109,17 +132,16 @@ class Plateau(QtGui.QWidget):
         et le score des joueurs
         :return:
         """
-        for i in range(self.taille):
-            for j in range(self.taille):
+        for i in range(self.nbRows):
+            for j in range(self.nbRows):
                 if (self.game.__getitem__(i, j) == Color.WHITE):
-                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.whitePawnImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.whitePawnImage)
                 if (self.game.__getitem__(i, j) == Color.BLACK):
-                    self.cases[i + j * self.taille].setPixmap(self.themePlateau.blackPawnImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.blackPawnImage)
                 if (self.game.__getitem__(i, j) == Color.EMPTY):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.emptySquareImage)
                 if (Game.isValidMove(self.game.GameState, Move(i,j))):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.possibleMoveImage)
-
 
         self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
         self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
@@ -164,5 +186,5 @@ class ThemePlateau():
 
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
-InterfaceGraphique(widget, 8)
+InterfaceGraphique(widget, 60, 8)
 app.exec_()
