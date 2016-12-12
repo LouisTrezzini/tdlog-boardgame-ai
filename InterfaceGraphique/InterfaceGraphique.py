@@ -72,7 +72,7 @@ class InterfaceGraphique():
         position  = int((self.widthWidget - self.nbRows*self.tailleImage)/2)
         self.widget.boxGame.move(position, int(self.heightMarge/2))
         self.plateau.show()
-        self.plateau.play()
+        QtCore.QTimer.singleShot(500, self.plateau.play)
 
 
 
@@ -125,7 +125,7 @@ class Plateau(QtGui.QWidget):
         if (Game.isValidMove(self.game.GameState, move)) and self.humanTurn():
             self.game.playMove(move)
             self.update()
-            QtCore.QTimer.singleShot(1000, self.playTurn)
+            QtCore.QTimer.singleShot(500, self.playTurn)
 
 
     def update(self):
@@ -162,7 +162,7 @@ class Plateau(QtGui.QWidget):
             self.game.playMove(pickedMove)
             self.update()
             if not self.humanTurn():
-                QtCore.QTimer.singleShot(1000, self.playTurn)
+                QtCore.QTimer.singleShot(500, self.playTurn)
 
     def humanTurn(self):
         """
