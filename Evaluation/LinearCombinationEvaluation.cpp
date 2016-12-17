@@ -12,7 +12,7 @@ double LinearCombinationEvaluation::operator()(const GameState& gameState, Color
     for (int i = 0; i < coefficients.size(); i ++) {
         result += (*fonctions[i])(gameState, color) * coefficients[i];
     }
-    return 1;
+    return result;
 }
 
 LinearCombinationEvaluation::~LinearCombinationEvaluation() {

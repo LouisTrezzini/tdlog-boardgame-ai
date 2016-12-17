@@ -6,7 +6,7 @@
 #include "EvaluationFunction.h"
 
 /*
- * Function that evaluates mobility
+ * Function that evaluates the number of pawns of a player
  */
 class PawnNumberEvaluation : public EvaluationFunction {
 

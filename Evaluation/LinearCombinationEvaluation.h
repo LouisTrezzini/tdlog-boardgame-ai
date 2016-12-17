@@ -7,7 +7,7 @@
 using namespace std;
 
 /*
- * Abstract for all evaluation function
+ * Combination of evaluation functions
  */
 class LinearCombinationEvaluation : public EvaluationFunction {
 private:
