@@ -29,6 +29,7 @@ class InterfaceGraphique():
         self.widget.stackedWidget.setMaximumSize(self.widthWidget, self.heightWidget)
         self.widget.rules.resize(self.widthWidget - self.widthMarge,
                                          self.heightWidget - self.heightMarge)
+        self.widget.rules.setReadOnly(True)
         self.widget.rules.setMaximumSize(self.widthWidget - self.widthMarge,
                                          self.heightWidget - self.heightMarge)
         self.widget.rules.move(int(self.widthMarge/2), 50)
