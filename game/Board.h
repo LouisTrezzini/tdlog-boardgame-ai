@@ -49,7 +49,7 @@ public:
         return whiteStones;
     }
 
-    int getStonesByColor(Color color) {
+    int getStonesByColor(Color color) const{
         if (color == Color::WHITE) {
             return whiteStones;
         }

@@ -20,10 +20,13 @@ void MinMaxOutput::min(const MinMaxOutput &other) {
     }
 }
 
-MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn) const {
+MinMaxPlayer::MinMaxPlayer(std::shared_ptr<EvaluationFunction> eval) {
+    evaluationFunction = eval;
+}
+
+MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
-        // Fonction d'évaluation trèèèèès mauvaise
-        return MinMaxOutput(Move::passing(), gameState.getBoard().getStonesByColor(getColor()));
+        return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying));
     }
     else {
         if (isMyTurn) {
@@ -32,7 +35,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, false);
+                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, false, colorPlaying);
                 moveResult.move = moves[i];
                 bestResult.max(moveResult);
             }
@@ -44,7 +47,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, true);
+                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, true, colorPlaying);
                 moveResult.move = moves[i];
                 bestResult.min(moveResult);
             }
@@ -55,7 +58,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
 
 Move MinMaxPlayer::getAction(const GameState& gameState) const {
     GameState nextGameState = gameState;
-    MinMaxOutput resultat = minMax(nextGameState, profondeur, true);
+    MinMaxOutput resultat = minMax(nextGameState, profondeur, true, gameState.getColorPlaying());
     return resultat.move;
 }
 

@@ -4,6 +4,7 @@
 #include "players/MinMaxPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "players/GeneticalPlayer.h"
+#include "Evaluation/PawnNumberEvaluation.h"
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -17,6 +18,13 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .value("BLACK", Color::BLACK)
         .value("EMPTY", Color::EMPTY)
         .export_values()
+    ;
+
+    py::class_<EvaluationFunction, std::shared_ptr<EvaluationFunction>>(m, "EvaluationFunction")
+    ;
+
+    py::class_<PawnNumberEvaluation, EvaluationFunction, std::shared_ptr<PawnNumberEvaluation>>(m, "PawnNumberEvaluation")
+        .def(py::init<>())
     ;
 
     py::class_<Move>(m, "Move")
@@ -39,7 +47,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
-         .def(py::init<>())
+         .def(py::init<std::shared_ptr<EvaluationFunction>>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")

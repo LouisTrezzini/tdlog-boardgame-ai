@@ -4,6 +4,8 @@
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
+#include "../Evaluation/EvaluationFunction.h"
+#include <memory>
 
 const float INF = 1 / 0.f;
 const int profondeur = 7;
@@ -23,8 +25,11 @@ struct MinMaxOutput {
  * This IA will follow the minmax principle
  */
 class MinMaxPlayer : public IPlayer {
+    std::shared_ptr<EvaluationFunction> evaluationFunction;
 public:
-    virtual MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn) const;
+    MinMaxPlayer(std::shared_ptr<EvaluationFunction> eval);
+
+    virtual MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn, Color color) const;
 
     virtual Move getAction(const GameState& gameState) const;
 

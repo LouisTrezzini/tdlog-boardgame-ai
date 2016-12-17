@@ -59,7 +59,8 @@ class ConfigureDialog(QtGui.QWidget):
         if string == playerType[2] :
             player_type = MonteCarloTreeSearchPlayer()
         if string == playerType[3]:
-            player_type = MinMaxPlayer()
+            eval = PawnNumberEvaluation()
+            player_type = MinMaxPlayer(eval)
         if string == playerType[4]:
             player_type = GeneticalPlayer()
         if number_of_player == 1:
