@@ -2,7 +2,6 @@
 #define TDLOG_BOARDGAME_GENETICALALGORITHM_H
 
 
-#include "GeneticalPlayer.h"
 #include "../Evaluation/LinearCombinationOverTimeEvaluation.h"
 #include "../Evaluation/EvaluationFunction.h"
 #include "../Evaluation/PawnNumberEvaluation.h"
