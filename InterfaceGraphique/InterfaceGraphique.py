@@ -40,7 +40,7 @@ class InterfaceGraphique:
 
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
-        self.widget.configureBtn.clicked.connect(self.ConfigurationDialog)
+        self.widget.configureBtn.clicked.connect(self.OpenConfigurationDialog)
         self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
 
         #Sauvegarde des paramètres du jeu
@@ -60,7 +60,7 @@ class InterfaceGraphique:
         self.plateau.deleteLater()
         self.plateau = None
 
-    def ConfigurationDialog(self):
+    def OpenConfigurationDialog(self):
         """ Opens several Dialogs to input the information
             for the type of the players. It mades thanks to the
             class ConfigurationDialog in the eponym module. """
