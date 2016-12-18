@@ -5,7 +5,7 @@ import ConfigurationDialog
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
-class InterfaceGraphique():
+class InterfaceGraphique:
     """ Defines the graphism for the Game. """
     heightMarge = 190
     widthMarge = 100
@@ -41,7 +41,7 @@ class InterfaceGraphique():
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.widget.configureBtn.clicked.connect(self.ConfigurationDialog)
-        self.widget.returnBtn.clicked.connect(lambda _ : self.ConfigurationWidget())
+        self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
 
         #Sauvegarde des paramètres du jeu
         self.player1 = 0
@@ -49,10 +49,10 @@ class InterfaceGraphique():
         self.plateau = 0
 
         #Ouverture de boite de dialogues pour la configuration du jeu
-        self.configure_dialog = ConfigurationDialog.ConfigureDialog()
+        self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
         self.widget.show()
 
-    def ConfigurationWidget(self):
+    def stopGameWidget(self):
         """ Configures the closing of the game when the player clicks
             on the return button """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
@@ -63,7 +63,7 @@ class InterfaceGraphique():
     def ConfigurationDialog(self):
         """ Opens several Dialogs to input the information
             for the type of the players. It mades thanks to the
-            class ConfigureDialog in the eponym module. """
+            class ConfigurationDialog in the eponym module. """
         self.configure_dialog.initUI()
         self.player1 = self.configure_dialog.player1
         self.player2 = self.configure_dialog.player2
@@ -132,7 +132,7 @@ class Plateau(QtGui.QWidget):
 
     def change(self, i, j):
         move = Move(i, j)
-        if (Game.isValidMove(self.game.GameState, move)) and self.humanTurn():
+        if Game.isValidMove(self.game.GameState, move) and self.humanTurn():
             self.game.playMove(move)
             self.update()
             QtCore.QTimer.singleShot(500, self.playTurn)
@@ -146,13 +146,13 @@ class Plateau(QtGui.QWidget):
         """
         for i in range(self.nbRows):
             for j in range(self.nbRows):
-                if (self.game.__getitem__(i, j) == Color.WHITE):
+                if self.game.__getitem__(i, j) == Color.WHITE:
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.whitePawnImage)
-                if (self.game.__getitem__(i, j) == Color.BLACK):
+                if self.game.__getitem__(i, j) == Color.BLACK:
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.blackPawnImage)
-                if (self.game.__getitem__(i, j) == Color.EMPTY):
+                if self.game.__getitem__(i, j) == Color.EMPTY:
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.emptySquareImage)
-                if (Game.isValidMove(self.game.GameState, Move(i,j))):
+                if Game.isValidMove(self.game.GameState, Move(i,j)):
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.possibleMoveImage)
 
         self.displayScoreWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
@@ -164,7 +164,7 @@ class Plateau(QtGui.QWidget):
         Fonction pour jouer un tour
         :return:
         """
-        if (Game.getWinner(self.game.GameState) != Color.EMPTY):
+        if Game.getWinner(self.game.GameState) != Color.EMPTY:
             return
 
         if not self.humanTurn():
