@@ -2,7 +2,8 @@
 
 //FIXME
 // Mettre des exceptions pour vois si les tailles sont égales
-LinearCombinationOverTimeEvaluation::LinearCombinationOverTimeEvaluation(vector<double> coefficients_, vector<EvaluationFunction*> fonctions_){
+LinearCombinationOverTimeEvaluation::LinearCombinationOverTimeEvaluation(const vector<double>& coefficients_,
+                                                                         const vector<EvaluationFunction*>& fonctions_){
     coefficients = coefficients_;
     fonctions = fonctions_;
 }

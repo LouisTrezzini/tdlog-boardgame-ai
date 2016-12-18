@@ -19,7 +19,7 @@ private:
     vector<EvaluationFunction*> fonctions;
 public:
 
-    LinearCombinationOverTimeEvaluation(vector<double> coefficients_, vector<EvaluationFunction*> fonctions_);
+    LinearCombinationOverTimeEvaluation(const vector<double>& coefficients_, const vector<EvaluationFunction*>& fonctions_);
 
     virtual double operator()(const GameState& gameState, Color color) const;
 
