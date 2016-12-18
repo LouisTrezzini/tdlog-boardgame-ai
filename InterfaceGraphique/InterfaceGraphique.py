@@ -79,8 +79,8 @@ class Plateau(QtGui.QWidget):
         self.cases = [QtGui.QLabel() for i in range(taille ** 2)]
 
         # Display Number of stones for both palyers:
-        self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
-        self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
+        self.parentWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
+        self.parentWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         # Création des boutons
         for i in range(taille):
@@ -96,7 +96,7 @@ class Plateau(QtGui.QWidget):
 
     def change(self, i, j):
         move = Move(i, j)
-        if (Game.isValidMove(self.game.GameState, move)) and self.humanTurn():
+        if (Game.isValidMove(self.game.gameState, move)) and self.humanTurn():
             self.game.playMove(move)
             self.update()
             QtCore.QTimer.singleShot(1000, self.playTurn)
@@ -117,8 +117,8 @@ class Plateau(QtGui.QWidget):
                 if (self.game.__getitem__(i, j) == Color.EMPTY):
                     self.cases[i + j * self.taille].setPixmap(self.themePlateau.emptySquareImage)
 
-        self.parentWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
-        self.parentWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
+        self.parentWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
+        self.parentWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
 
     def playTurn(self):
@@ -126,11 +126,11 @@ class Plateau(QtGui.QWidget):
         Fonction pour jouer un tour
         :return:
         """
-        if (Game.getWinner(self.game.GameState) != Color.EMPTY):
+        if (Game.getWinner(self.game.gameState) != Color.EMPTY):
             return
 
         if not self.humanTurn():
-            pickedMove = self.game.pickMove(self.game.GameState)
+            pickedMove = self.game.pickMove(self.game.gameState)
             self.game.playMove(pickedMove)
             self.update()
             if not self.humanTurn():
@@ -141,8 +141,8 @@ class Plateau(QtGui.QWidget):
         Fonction renvoyant true si c'est au tour d'un joueur humain de jouer et false sinon
         :return:
         """
-        case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
-        case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
+        case1 = self.player1.isHuman() and self.game.gameState.getColorPlaying() == Color.WHITE
+        case2 = self.player2.isHuman() and self.game.gameState.getColorPlaying() == Color.BLACK
         return case1 or case2
 
 class ThemePlateau():
