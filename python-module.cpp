@@ -27,6 +27,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
     
     py::class_<IPlayer>(m, "IPlayer")
+        .def("isHuman", &IPlayer::isHuman)
     ;
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
@@ -53,12 +54,15 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<int>())
         .def("__str__", &Board::toString)
         .def("getColor", &Board::pieceAt)
+        .def_property_readonly("getBlackStones", &Board::getBlackStones)
+        .def_property_readonly("getWhiteStones", &Board::getWhiteStones)
     ;
 
     py::class_<GameState>(m, "GameState")
         .def(py::init<const Board&, Color>())
         // FIXME
         // Ambiguïté car 2 fonctions getBoard
+        .def("getColorPlaying", &GameState::getColorPlaying)
         .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
     ;
 
@@ -71,6 +75,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
+        .def("isValidMove", &Game::isValidMove)
         .def_property_readonly("GameState", &Game::getGameState)
     ;
 

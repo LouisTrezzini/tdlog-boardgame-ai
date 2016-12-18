@@ -43,11 +43,11 @@ public:
 
     int getBlackStones() const {
         return blackStones;
-    };
+    }
 
     int getWhiteStones() const {
         return whiteStones;
-    };
+    }
 
     int getStonesByColor(Color color) {
         if (color == Color::WHITE) {
