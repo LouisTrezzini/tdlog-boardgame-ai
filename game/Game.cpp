@@ -33,6 +33,13 @@ void Game::playGame() {
     }
 }
 
+void Game::playGameWithoutDisplay() {
+    while (getWinner(gameState) == Color::EMPTY) {
+        Move pickedMove = pickMove(gameState);
+        applyMove(gameState, pickedMove);
+    }
+}
+
 Move Game::pickMove(const GameState& gameState) const {
     Color color = gameState.getColorPlaying();
 

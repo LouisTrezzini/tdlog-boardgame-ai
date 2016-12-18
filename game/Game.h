@@ -21,6 +21,8 @@ public:
 
     void playGame();
 
+    void playGameWithoutDisplay();
+
     Move pickMove(const GameState& gameState) const;
 
     void playMove(const Move& move);
