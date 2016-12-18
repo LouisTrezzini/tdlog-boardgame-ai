@@ -1,7 +1,7 @@
 #include "MinMaxPlayer.h"
 #include "../game/Game.h"
 
-MinMaxOutput::MinMaxOutput(Move move, float value) {
+MinMaxOutput::MinMaxOutput(Move move, double value) {
     MinMaxOutput::move = move;
     MinMaxOutput::value = value;
 }
@@ -20,7 +20,7 @@ void MinMaxOutput::min(const MinMaxOutput &other) {
     }
 }
 
-MinMaxPlayer::MinMaxPlayer(std::shared_ptr<EvaluationFunction> eval) {
+MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval) {
     evaluationFunction = eval;
 }
 

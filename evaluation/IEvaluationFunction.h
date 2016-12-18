@@ -3,19 +3,18 @@
 
 
 #include "../game/Game.h"
-#include <memory>
 
 /*
  * Abstract for all evaluation function
  */
-class EvaluationFunction {
+class IEvaluationFunction {
 public:
     virtual double operator()(const GameState& gameState, Color color) const = 0;
 
-    virtual ~EvaluationFunction() = 0;
+    virtual ~IEvaluationFunction() = 0;
 };
 
-inline EvaluationFunction::~EvaluationFunction() { };
+inline IEvaluationFunction::~IEvaluationFunction() {};
 
 
 #endif //TDLOG_BOARDGAME_AI_FONCTIONEVALUATION_H

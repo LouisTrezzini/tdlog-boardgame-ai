@@ -2,26 +2,26 @@
 #define TDLOG_BOARDGAME_AI_LINEARCOMBINATIONEVALUATION_H
 
 
-#include "EvaluationFunction.h"
+#include "IEvaluationFunction.h"
 #include <vector>
+
 using namespace std;
 
 /*
  * Combination of evaluation functions
  */
-class LinearCombinationEvaluation : public EvaluationFunction {
+class LinearCombinationEvaluation : public IEvaluationFunction {
 private:
     vector<double> coefficients;
-    vector<EvaluationFunction*> fonctions;
+    vector<IEvaluationFunction *> functions;
 public:
 
-    LinearCombinationEvaluation(vector<double> coefficients_, vector<EvaluationFunction*> fonctions_);
+    LinearCombinationEvaluation(vector<double> coefficients, vector<IEvaluationFunction *> functions);
 
     virtual double operator()(const GameState& gameState, Color color) const;
 
     virtual ~LinearCombinationEvaluation();
 };
-
 
 
 #endif //TDLOG_BOARDGAME_AI_LINEARCOMBINATIONEVALUATION_H

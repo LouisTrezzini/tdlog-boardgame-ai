@@ -3,8 +3,47 @@ cmake_minimum_required(VERSION 3.0)
 project(tdlog-boardgame-ai)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+set(EVALUATION_FILES
+        evaluation/IEvaluationFunction.h
+        evaluation/LinearCombinationEvaluation.cpp
+        evaluation/LinearCombinationEvaluation.h
+        evaluation/LinearCombinationOverTimeEvaluation.cpp
+        evaluation/LinearCombinationOverTimeEvaluation.h
+        evaluation/PawnNumberEvaluation.cpp
+        evaluation/PawnNumberEvaluation.h
+        evaluation/PositionEvaluation.cpp
+        evaluation/PositionEvaluation.h
+        evaluation/MobilityEvaluation.cpp
+        evaluation/MobilityEvaluation.h
+        )
+set(PLAYER_FILES
+        players/GeneticalAlgorithm.h
+        players/HumanPlayer.cpp
+        players/HumanPlayer.h
+        players/IPlayer.h
+        players/MinMaxPlayer.cpp
+        players/MinMaxPlayer.h
+        players/MonteCarloTreeSearchPlayer.cpp
+        players/MonteCarloTreeSearchPlayer.h
+        players/RandomPlayer.cpp
+        players/RandomPlayer.h
+        )
+set(GAME_FILES
+        game/Board.cpp
+        game/Board.h
+        game/Color.cpp
+        game/Color.h
+        game/Game.cpp
+        game/Game.h
+        game/GameState.h
+        game/Grid.h
+        game/Move.h
+        game/Node.cpp
+        game/Node.h
+        )
 
-set(SOURCE_FILES Evaluation/PositionEvaluation.cpp Evaluation/LinearCombinationOverTimeEvaluation.cpp Evaluation/LinearCombinationOverTimeEvaluation.h Evaluation/PositionEvaluation.h Evaluation/PawnNumberEvaluation.cpp Evaluation/PawnNumberEvaluation.h Evaluation/LinearCombinationEvaluation.cpp Evaluation/LinearCombinationEvaluation.h Evaluation/EvaluationFunction.h Evaluation/MobilityEvaluation.h Evaluation/MobilityEvaluation.cpp players/IPlayer.h players/RandomPlayer.cpp players/RandomPlayer.h game/Color.h game/Board.cpp game/Board.h game/Grid.h game/Game.cpp game/Game.h game/Move.h game/GameState.h game/Color.cpp players/MonteCarloTreeSearchPlayer.cpp players/MonteCarloTreeSearchPlayer.h game/Node.cpp game/Node.h players/HumanPlayer.cpp players/HumanPlayer.h players/MinMaxPlayer.cpp players/MinMaxPlayer.h players/GeneticalAlgorithm.h main.cpp)
+set(SOURCE_FILES ${EVALUATION_FILES} ${PLAYER_FILES} ${GAME_FILES})
+
 add_executable(tdlog-boardgame-ai main.cpp ${SOURCE_FILES})
 
 add_subdirectory(pybind11)

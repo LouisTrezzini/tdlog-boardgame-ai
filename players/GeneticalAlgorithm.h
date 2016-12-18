@@ -1,38 +1,41 @@
 #ifndef TDLOG_BOARDGAME_GENETICALALGORITHM_H
 #define TDLOG_BOARDGAME_GENETICALALGORITHM_H
 
-
-#include "../Evaluation/LinearCombinationOverTimeEvaluation.h"
-#include "../Evaluation/EvaluationFunction.h"
-#include "../Evaluation/PawnNumberEvaluation.h"
-#include "../Evaluation/PositionEvaluation.h"
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <cmath>
+
+#include "../evaluation/LinearCombinationOverTimeEvaluation.h"
+#include "../evaluation/IEvaluationFunction.h"
+#include "../evaluation/PawnNumberEvaluation.h"
+#include "../evaluation/PositionEvaluation.h"
+
 using namespace std;
 
 class Individu {
 private:
     vector<double> coefficients;
-    vector<EvaluationFunction*> fonctions;
+    vector<IEvaluationFunction *> functions;
     int score;
 
 public:
-    Individu(const vector<double>& coefficients_, const vector<EvaluationFunction*>& fonctions_) {
+    Individu(const vector<double>& coefficients, const vector<IEvaluationFunction *>& functions) {
         score = 0;
-        coefficients = coefficients_;
-        fonctions = fonctions_;
+        this->coefficients = coefficients;
+        this->functions = functions;
     }
 
     int getScore() const {
         return score;
     }
-    vector<double> getCoefficients() const{
+
+    vector<double> getCoefficients() const {
         return coefficients;
     }
 
-    vector<EvaluationFunction*> getEvaluationFunctions() const {
-        return fonctions;
+    vector<IEvaluationFunction *> getEvaluationFunctions() const {
+        return functions;
     }
 
     void incrementeScore() {
@@ -43,7 +46,7 @@ public:
         score = 0;
     }
 
-    bool operator<(Individu individu) const{
+    bool operator<(Individu individu) const {
         return (score < individu.score);
     }
 
@@ -52,11 +55,11 @@ public:
     }
 
     void mutate() {
-        for (int i = 0; i < coefficients.size(); i ++) {
+        for (int i = 0; i < coefficients.size(); i++) {
             //FIXME
             // Faire passer le 0.1 en variable, et retravailler l'étape de mutation
-            if (rand()/(double)RAND_MAX < 0.1) {
-                coefficients[i] = rand()/(double)RAND_MAX;
+            if (rand() / (double) RAND_MAX < 0.1) {
+                coefficients[i] = rand() / (double) RAND_MAX;
             }
         }
     }
@@ -65,53 +68,51 @@ public:
         // FIXME
         // Exception si les 2 individus ne sont pas de la même espèce
         vector<double> coefs;
-        for (int i = 0; i < indiv1.coefficients.size(); i ++) {
-            if (rand()%2) {
+        for (int i = 0; i < indiv1.coefficients.size(); i++) {
+            if (rand() % 2) {
                 coefs.push_back(indiv1[i]);
-            }
-            else {
+            } else {
                 coefs.push_back(indiv2[i]);
             }
         }
-        return Individu(coefs, indiv1.fonctions);
+        return Individu(coefs, indiv1.functions);
     }
 };
 
-void InitialisationPopulation(int N, vector<Individu>& population,
-                              vector<EvaluationFunction*> evaluationfunctions, int turns){
-    for(int i=0; i<N; i++){
+void InitialisationPopulation(int N, vector <Individu>& population,
+                              vector<IEvaluationFunction *> evaluationfunctions, int turns) {
+    for (int i = 0; i < N; i++) {
         vector<double> coefficients;
-        for (int j = 0; j < turns * evaluationfunctions.size(); j ++) {
-            coefficients.push_back(rand()/(double)RAND_MAX);
+        for (int j = 0; j < turns * evaluationfunctions.size(); j++) {
+            coefficients.push_back(rand() / (double) RAND_MAX);
         }
         population.push_back(Individu(coefficients, evaluationfunctions));
     }
 }
 
 
+bool winPlaying(const Individu& individu, int sizeGrid) {
 
-bool winPlaying(const Individu& individu, int sizeGrid){
-
-    shared_ptr<EvaluationFunction> evalForPlayer1(
+    shared_ptr <IEvaluationFunction> evalForPlayer1(
             new LinearCombinationOverTimeEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
-    IPlayer* player1 = new MinMaxPlayer(evalForPlayer1);
+    IPlayer *player1 = new MinMaxPlayer(evalForPlayer1);
 
     //FIXME
     // Contre qui faut-il entraîner notre algorithme ???
-    IPlayer* player2 = new RandomPlayer();
+    IPlayer *player2 = new RandomPlayer();
 
     Game game(sizeGrid, player1, player2);
     game.playGameWithoutDisplay();
 
-    if (game.getWinner(game.getGameState()) == Color::WHITE){
-       return true;
+    if (game.getWinner(game.getGameState()) == Color::WHITE) {
+        return true;
     }
 }
 
-void Competition(vector<Individu>& population, int sizeGrid, int gamesToPlay){
-    for(int i=0; i<population.size(); ++i){
-        for (int j = 0; j < gamesToPlay; j ++) {
-            if (winPlaying(population[i], sizeGrid)){
+void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay) {
+    for (int i = 0; i < population.size(); ++i) {
+        for (int j = 0; j < gamesToPlay; j++) {
+            if (winPlaying(population[i], sizeGrid)) {
                 population[i].incrementeScore();
             }
         }
@@ -119,53 +120,51 @@ void Competition(vector<Individu>& population, int sizeGrid, int gamesToPlay){
 }
 
 
-
-void Selection(vector<Individu>& population,
-                int numberToChange) {
+void Selection(vector <Individu>& population,
+               int numberToChange) {
 
     //FIXME
     // Exception si le nombre de sélectionné est trop grand ou trop petit
 
-    for (int i = 0; i < numberToChange; i ++) {
-        int k = rand()%(population.size() - numberToChange) + numberToChange;
-        int j = rand()%(population.size() - numberToChange) + numberToChange;
+    for (int i = 0; i < numberToChange; i++) {
+        int k = rand() % (population.size() - numberToChange) + numberToChange;
+        int j = rand() % (population.size() - numberToChange) + numberToChange;
         population[i] = Individu::makeChild(population[k], population[j]);
     }
 }
 
 
-void Mutation (vector<Individu>& population, double chancesToMute){
-    for (int i = 0; i < population.size(); i ++) {
-        if (rand()/(double)RAND_MAX < chancesToMute) {
+void Mutation(vector <Individu>& population, double chancesToMute) {
+    for (int i = 0; i < population.size(); i++) {
+        if (rand() / (double) RAND_MAX < chancesToMute) {
             population[i].mutate();
         }
     }
 }
 
 
-
-void GeneticalAlgorithm (int N, int nbiteration,
-                         int sizeGrid, int gamesToPlay){
+void GeneticalAlgorithm(int N, int nbiteration,
+                        int sizeGrid, int gamesToPlay) {
 
     // Initialisation de l'aléaoire
-    srand (time(NULL));
+    srand(time(NULL));
 
-    // Déinition des fonctions d'évaluation que nous allons utiliser
-    vector<EvaluationFunction*> evaluationfunctions;
+    // Déinition des functions d'évaluation que nous allons utiliser
+    vector < IEvaluationFunction * > evaluationfunctions;
     evaluationfunctions.push_back(new PawnNumberEvaluation());
     evaluationfunctions.push_back(new PositionEvaluation());
 
     // Définition de notre population
-    vector<Individu> population;
+    vector <Individu> population;
     InitialisationPopulation(N, population, evaluationfunctions, pow(sizeGrid, 2) - 4);
 
 
     // Boucle de vie de l'algorithme
     int iteration = 0;
-    while (iteration < nbiteration){
+    while (iteration < nbiteration) {
         Competition(population, sizeGrid, gamesToPlay);
         sort(population.begin(), population.end());
-        for (int i = 0; i < population.size(); i ++ ) {
+        for (int i = 0; i < population.size(); i++) {
             cerr << population[i].getScore() << " ";
         }
         cerr << endl;
@@ -175,14 +174,12 @@ void GeneticalAlgorithm (int N, int nbiteration,
         //Faire passer le nombre 0.01 en variable (c'est le purcentage de chance de muter)
         Selection(population, 5);
         Mutation(population, 0.01);
-        iteration ++;
-        for (int i = 0; i < population.size(); i ++ ) {
+        iteration++;
+        for (int i = 0; i < population.size(); i++) {
             population[i].setNullScore();
         }
     }
 }
-
-
 
 
 #endif //TDLOG_BOARDGAME_GENETICALALGORITHM_H

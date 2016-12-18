@@ -2,9 +2,8 @@
 #define TDLOG_BOARDGAME_AI_LINEARCOMBINATIONEVALUATIONOVERTIME_H
 
 
-#include "EvaluationFunction.h"
+#include "IEvaluationFunction.h"
 #include <vector>
-#include <math.h>
 
 using namespace std;
 
@@ -13,19 +12,19 @@ const int InitialStones = 4;
 /*
  * Combination of evaluation functions over time
  */
-class LinearCombinationOverTimeEvaluation : public EvaluationFunction {
+class LinearCombinationOverTimeEvaluation : public IEvaluationFunction {
 private:
     vector<double> coefficients;
-    vector<EvaluationFunction*> fonctions;
+    vector<IEvaluationFunction *> functions;
 public:
 
-    LinearCombinationOverTimeEvaluation(const vector<double>& coefficients_, const vector<EvaluationFunction*>& fonctions_);
+    LinearCombinationOverTimeEvaluation(const vector<double>& coefficients,
+                                        const vector<IEvaluationFunction *>& functions);
 
     virtual double operator()(const GameState& gameState, Color color) const;
 
     virtual ~LinearCombinationOverTimeEvaluation();
 };
-
 
 
 #endif //TDLOG_BOARDGAME_AI_LINEARCOMBINATIONEVALUATIONOVERTIME_H

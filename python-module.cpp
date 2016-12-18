@@ -3,8 +3,7 @@
 #include "players/HumanPlayer.h"
 #include "players/MinMaxPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
-#include "players/GeneticalPlayer.h"
-#include "Evaluation/PawnNumberEvaluation.h"
+#include "evaluation/PawnNumberEvaluation.h"
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -20,10 +19,10 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .export_values()
     ;
 
-    py::class_<EvaluationFunction, std::shared_ptr<EvaluationFunction>>(m, "EvaluationFunction")
+    py::class_<IEvaluationFunction, std::shared_ptr<IEvaluationFunction>>(m, "IEvaluationFunction")
     ;
 
-    py::class_<PawnNumberEvaluation, EvaluationFunction, std::shared_ptr<PawnNumberEvaluation>>(m, "PawnNumberEvaluation")
+    py::class_<PawnNumberEvaluation, IEvaluationFunction, std::shared_ptr<PawnNumberEvaluation>>(m, "PawnNumberEvaluation")
         .def(py::init<>())
     ;
 
@@ -47,31 +46,27 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
-         .def(py::init<std::shared_ptr<EvaluationFunction>>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
         .def(py::init<>())
     ;
 
-    py::class_<GeneticalPlayer, IPlayer>(m, "GeneticalPlayer")
-         .def(py::init<>())
-    ;
-
     py::class_<Board>(m, "Board")
         .def(py::init<int>())
         .def("__str__", &Board::toString)
         .def("getColor", &Board::pieceAt)
-        .def_property_readonly("getBlackStones", &Board::getBlackStones)
-        .def_property_readonly("getWhiteStones", &Board::getWhiteStones)
+        .def_property_readonly("blackStones", &Board::getBlackStones)
+        .def_property_readonly("whiteStones", &Board::getWhiteStones)
     ;
 
     py::class_<GameState>(m, "GameState")
         .def(py::init<const Board&, Color>())
         // FIXME
-        // Ambiguïté car 2 fonctions getBoard
+        // Ambiguïté car 2 functions getBoard
         .def("getColorPlaying", &GameState::getColorPlaying)
-        .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
+        .def_property_readonly("board", (Board& (GameState::*)()) &GameState::getBoard)
     ;
 
     py::class_<Game>(m, "Game")
@@ -84,7 +79,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
         .def("isValidMove", &Game::isValidMove)
-        .def_property_readonly("GameState", &Game::getGameState)
+        .def_property_readonly("gameState", &Game::getGameState)
     ;
 
     return m.ptr();
