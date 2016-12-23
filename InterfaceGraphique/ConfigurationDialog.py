@@ -32,7 +32,7 @@ class ConfigurationDialog(QtGui.QWidget):
         """ Launchs a Dialog in which the user can enter the number of
             players wanted. """
         player_types_list = list(["HumanPlayer", "RandomPlayer",
-                             "MonteCarloTreeSearchPlayer", "MinMaxPlayer" ])
+                             "MonteCarloTreeSearchPlayer", "MinMaxPlayer", "AlphaBetaPlayer" ])
         player_type, ok1 = QtGui.QInputDialog.getItem(self, 'Choice of the type of the Player',
                                               'Type of the player :',
                                               player_types_list, editable = False)
@@ -56,6 +56,10 @@ class ConfigurationDialog(QtGui.QWidget):
         if player_type == "MinMaxPlayer":
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 1)
+            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3)
+        if player_type == "AlphaBetaPlayer":
+            # FIXME
+            # Donner le choix à l'utilisateur
+            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7)
         return player_instance
 

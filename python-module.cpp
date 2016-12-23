@@ -51,7 +51,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")
-         .def(py::init<>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
