@@ -36,6 +36,7 @@ class InterfaceGraphique:
         self.widget.rules.move(int(self.widthMarge/2), 50)
         self.widget.Title.resize(self.widthWidget, 70)
         self.widget.Title.setMaximumWidth(self.widthWidget)
+        self.widget.Title.setReadOnly(True)
         positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
         self.widget.configureBtn.move(positionBtn, 600)
 
@@ -45,9 +46,9 @@ class InterfaceGraphique:
         self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
 
         #Sauvegarde des paramètres du jeu
-        self.player1 = 0
-        self.player2 = 0
-        self.plateau = 0
+        self.player1 = None
+        self.player2 = None
+        self.plateau = None
 
         #Ouverture de boite de dialogues pour la configuration du jeu
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
