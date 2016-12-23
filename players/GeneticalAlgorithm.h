@@ -95,7 +95,7 @@ bool winPlaying(const Individu& individu, int sizeGrid) {
 
     shared_ptr <IEvaluationFunction> evalForPlayer1(
             new LinearCombinationOverTimeEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
-    IPlayer *player1 = new MinMaxPlayer(evalForPlayer1);
+    IPlayer *player1 = new MinMaxPlayer(evalForPlayer1, 1);
 
     //FIXME
     // Contre qui faut-il entraîner notre algorithme ???
