@@ -27,6 +27,8 @@ set(PLAYER_FILES
         players/MonteCarloTreeSearchPlayer.h
         players/RandomPlayer.cpp
         players/RandomPlayer.h
+        players/AlphaBetaPlayer.cpp
+        players/AlphaBetaPlayer.h
         )
 set(GAME_FILES
         game/Board.cpp
@@ -41,10 +43,15 @@ set(GAME_FILES
         game/Node.cpp
         game/Node.h
         )
+set(UTILS_FILES
+        utils/MinMaxOutput.h
+        utils/MinMaxOutput.cpp
+        )
 
-set(SOURCE_FILES ${EVALUATION_FILES} ${PLAYER_FILES} ${GAME_FILES})
+set(SOURCE_FILES ${EVALUATION_FILES} ${PLAYER_FILES} ${GAME_FILES} ${UTILS_FILES})
 
 add_executable(tdlog-boardgame-ai main.cpp ${SOURCE_FILES})
+
 
 add_subdirectory(pybind11)
 pybind11_add_module(boardgame_ai_py python-module.cpp ${SOURCE_FILES})

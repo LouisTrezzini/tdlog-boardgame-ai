@@ -2,6 +2,7 @@
 #include "players/RandomPlayer.h"
 #include "players/HumanPlayer.h"
 #include "players/MinMaxPlayer.h"
+#include "players/AlphaBetaPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "evaluation/PawnNumberEvaluation.h"
 #include <pybind11/pybind11.h>
@@ -47,6 +48,10 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
          .def(py::init<std::shared_ptr<IEvaluationFunction>>())
+    ;
+
+    py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")
+         .def(py::init<>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")

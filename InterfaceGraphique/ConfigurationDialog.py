@@ -3,15 +3,11 @@
 from PyQt4 import QtGui
 from boardgame_ai_py import *
 
-playerType = list(["HumanPlayer", "RandomPlayer",
-                   "MonteCarloTreeSearchPlayer", "MinMaxPlayer",
-                   "GeneticalPlayer" ])
-
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
 ###############################################################################
 
-class ConfigureDialog(QtGui.QWidget):
+class ConfigurationDialog(QtGui.QWidget):
     """ This class launchs several Dialog in which the user can enter
         the information needed to launch the game.
         It reads the size of the Grid, the number of players,
@@ -21,27 +17,26 @@ class ConfigureDialog(QtGui.QWidget):
             It allows to stocks the value wanted by the player to launch
             a party. So, it is composed of the type of the two player """
         super().__init__()
-        self.player1 = 0
-        self.player2 = 0
+        self.player1 = None
+        self.player2 = None
         self.depth = 0
         self.setGeometry(300, 300, 500, 200)
 
     def initUI(self):
         """ Launchs several Dialogs in which the user can enter the value wanted
             for the Game. """
-        self.player1 = self.setPlayer()
-        self.player2 = self.setPlayer()
-        self.realTypeOfPlayer(str(self.player1), 1)
-        self.realTypeOfPlayer(str(self.player2), 2)
+        self.player1 = self.createPlayer(self.askPlayerType())
+        self.player2 = self.createPlayer(self.askPlayerType())
 
-    def setPlayer(self):
+    def askPlayerType(self):
         """ Launchs a Dialog in which the user can enter the number of
             players wanted. """
-        players_list = playerType
-        player, ok1 = QtGui.QInputDialog.getItem(self, 'Choice of the type of the Player',
+        player_types_list = list(["HumanPlayer", "RandomPlayer",
+                             "MonteCarloTreeSearchPlayer", "MinMaxPlayer" ])
+        player_type, ok1 = QtGui.QInputDialog.getItem(self, 'Choice of the type of the Player',
                                               'Type of the player :',
-                                              players_list, editable = False)
-        return player
+                                              player_types_list, editable = False)
+        return player_type
 
     def setDepth(self):
         """ Launchs a Dialog in which the user can enter the force of the AI. """
@@ -49,21 +44,16 @@ class ConfigureDialog(QtGui.QWidget):
                                   'Enter the force of the IA:', min = 1)
         self.depth = int(force)
 
-    def realTypeOfPlayer(self, string, number_of_player):
+    def createPlayer(self, player_type):
         """ Configures the type of player with a string. """
-        player_type = 0
-        if string == playerType[0] :
-            player_type = HumanPlayer()
-        if string == playerType[1] :
-            player_type = RandomPlayer()
-        if string == playerType[2] :
-            player_type = MonteCarloTreeSearchPlayer()
-        if string == playerType[3]:
-            eval = PawnNumberEvaluation()
-            player_type = MinMaxPlayer(eval)
-        if string == playerType[4]:
-            player_type = GeneticalPlayer()
-        if number_of_player == 1:
-            self.player1 = player_type
-        if number_of_player == 2:
-            self.player2 = player_type
+        player_instance = None
+        if player_type == "HumanPlayer":
+            player_instance = HumanPlayer()
+        if player_type == "RandomPlayer":
+            player_instance = RandomPlayer()
+        if player_type == "MonteCarloTreeSearchPlayer":
+            player_instance = MonteCarloTreeSearchPlayer()
+        if player_type == "MinMaxPlayer":
+            player_instance = MinMaxPlayer(PawnNumberEvaluation())
+        return player_instance
+

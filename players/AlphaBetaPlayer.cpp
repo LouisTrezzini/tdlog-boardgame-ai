@@ -1,17 +1,14 @@
-#include "MinMaxPlayer.h"
 #include "../game/Game.h"
+#include "AlphaBetaPlayer.h"
 
 const float INF = 1 / 0.f;
 const int profondeur = 7;
 
 
-MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval) {
-    evaluationFunction = eval;
-}
-
-MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
+MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
-        return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying));
+        // Fonction d'évaluation trèèèèès mauvaise
+        return MinMaxOutput(Move::passing(), gameState.getBoard().getStonesByColor(getColor()));
     }
     else {
         if (isMyTurn) {
@@ -20,9 +17,13 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, false, colorPlaying);
+                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, false, alpha, beta);
                 moveResult.move = moves[i];
                 bestResult.max(moveResult);
+                if (bestResult.value >= beta) {
+                    return bestResult;
+                }
+                alpha = std::max(alpha, bestResult.value);
             }
             return bestResult;
         }
@@ -32,25 +33,28 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, true, colorPlaying);
+                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, true, alpha, beta);
                 moveResult.move = moves[i];
                 bestResult.min(moveResult);
+                if (bestResult.value <= alpha) {
+                    return bestResult;
+                }
+                beta = std::min(beta, bestResult.value);
             }
             return bestResult;
         }
     }
 }
 
-Move MinMaxPlayer::getAction(const GameState& gameState) const {
+Move AlphaBetaPlayer::getAction(const GameState& gameState) const {
     GameState nextGameState = gameState;
-    MinMaxOutput resultat = minMax(nextGameState, profondeur, true, gameState.getColorPlaying());
+    MinMaxOutput resultat = alphaBeta(nextGameState, profondeur, true, - INF, INF);
     return resultat.move;
 }
 
-MinMaxPlayer::~MinMaxPlayer() {
-    evaluationFunction.reset();
-}
+AlphaBetaPlayer::~AlphaBetaPlayer() {
 
+}
 
 
 

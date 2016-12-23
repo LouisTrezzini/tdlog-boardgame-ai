@@ -1,10 +1,7 @@
-//
-// Created by till034 on 10/15/16.
-//
-
 #ifndef TDLOG_BOARDGAME_AI_MOVE_H
 #define TDLOG_BOARDGAME_AI_MOVE_H
 
+#include <string>
 
 class Move {
     int x;
