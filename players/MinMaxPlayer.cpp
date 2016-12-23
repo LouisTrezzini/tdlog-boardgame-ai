@@ -2,11 +2,11 @@
 #include "../game/Game.h"
 
 const float INF = 1 / 0.f;
-const int profondeur = 7;
 
 
-MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval) {
+MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_) {
     evaluationFunction = eval;
+    depth = depth_;
 }
 
 MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
@@ -43,7 +43,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
 
 Move MinMaxPlayer::getAction(const GameState& gameState) const {
     GameState nextGameState = gameState;
-    MinMaxOutput resultat = minMax(nextGameState, profondeur, true, gameState.getColorPlaying());
+    MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying());
     return resultat.move;
 }
 

@@ -13,8 +13,9 @@
  */
 class MinMaxPlayer : public IPlayer {
     std::shared_ptr<IEvaluationFunction> evaluationFunction;
+    int depth;
 public:
-    MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval);
+    MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_);
 
     virtual MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn, Color color) const;
 

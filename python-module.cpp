@@ -47,7 +47,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
-         .def(py::init<std::shared_ptr<IEvaluationFunction>>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int>())
     ;
 
     py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")

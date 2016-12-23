@@ -54,6 +54,8 @@ class ConfigurationDialog(QtGui.QWidget):
         if player_type == "MonteCarloTreeSearchPlayer":
             player_instance = MonteCarloTreeSearchPlayer()
         if player_type == "MinMaxPlayer":
-            player_instance = MinMaxPlayer(PawnNumberEvaluation())
+            # FIXME
+            # Donner le choix à l'utilisateur
+            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 1)
         return player_instance
 
