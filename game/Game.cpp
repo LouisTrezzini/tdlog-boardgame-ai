@@ -87,7 +87,7 @@ bool Game::hasLegalMoves(const GameState& gameState) {
 }
 
 // TODO passing is a legal move !
-std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
+std::vector<Move> Game::getLegalMovesForColor(const GameState& gameState, Color color) {
     std::vector<Move> moves;
 
     if (gameState.getBoard().isFull())
@@ -97,7 +97,7 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
         for (int j = 0; j < gameState.getBoard().getSize(); j++) {
             Move move(i, j);
 
-            if (isValidMove(gameState, move))
+            if (isValidMoveForColor(gameState, move, color))
                 moves.push_back(move);
         }
     }
@@ -109,7 +109,12 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
     return moves;
 }
 
-bool Game::isValidMove(const GameState& gameState, const Move& move) {
+std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
+    Color colorPlaying = gameState.getColorPlaying();
+    return getLegalMovesForColor(gameState, colorPlaying);
+}
+
+bool Game::isValidMoveForColor(const GameState& gameState, const Move& move, Color color) {
     int x = move.getX();
     int y = move.getY();
 
@@ -120,8 +125,6 @@ bool Game::isValidMove(const GameState& gameState, const Move& move) {
     if (piece != Color::EMPTY)
         return false;
 
-    Color colorPlaying = gameState.getColorPlaying();
-
     for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
             if (dx == 0 && dy == 0)
@@ -131,19 +134,24 @@ bool Game::isValidMove(const GameState& gameState, const Move& move) {
             int xp = x + distance * dx;
             int yp = y + distance * dy;
 
-            while (board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorOpponent(colorPlaying)) {
+            while (board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorOpponent(color)) {
                 distance++;
                 xp = x + distance * dx;
                 yp = y + distance * dy;
             };
 
-            if (distance > 1 && board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorPlaying) {
+            if (distance > 1 && board.inBounds(xp, yp) && board.pieceAt(xp, yp) == color) {
                 return true;
             }
         }
     }
 
     return false;
+}
+
+bool Game::isValidMove(const GameState& gameState, const Move& move) {
+    Color colorPlaying = gameState.getColorPlaying();
+    return isValidMoveForColor(gameState, move, colorPlaying);
 }
 
 // TODO

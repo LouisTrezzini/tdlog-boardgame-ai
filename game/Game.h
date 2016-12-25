@@ -37,7 +37,11 @@ public:
 
     static bool hasLegalMoves(const GameState& gameState);
 
+    static std::vector<Move> getLegalMovesForColor(const GameState& gameState, Color color);
+
     static std::vector<Move> getLegalMoves(const GameState& gameState);
+
+    static bool isValidMoveForColor(const GameState& gameState, const Move& move, Color color);
 
     static bool isValidMove(const GameState& gameState, const Move& move);
 
