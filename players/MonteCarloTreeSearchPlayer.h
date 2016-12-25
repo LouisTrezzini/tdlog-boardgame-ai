@@ -12,7 +12,8 @@
  * An Othello player thats plays with a Monte Carlo Tree Search
  */
 class MonteCarloTreeSearchPlayer : public IPlayer {
-
+	string type = "iaMonteCarlo";
+	string name = "MonteCarloTreeSearchPlayer";
     std::unique_ptr<Node> computeTree(const GameState& rootState) const;
 
 public:

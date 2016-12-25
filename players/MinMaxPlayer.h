@@ -10,6 +10,8 @@
  * This IA will follow the minmax principle
  */
 class MinMaxPlayer : public IPlayer {
+	string type = "iaMinMax";
+	string name ="MinMaxPlayer";
 public:
     MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn) const;
 

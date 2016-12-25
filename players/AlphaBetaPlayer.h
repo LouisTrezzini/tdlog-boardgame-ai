@@ -11,6 +11,8 @@
  * This IA will follow the alpha-beta principle
  */
 class AlphaBetaPlayer : public IPlayer {
+	string type = "iaAlphaBeta";
+	string name = "AlphaBetaPlayer";
 public:
     MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta) const;
 

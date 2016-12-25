@@ -2,6 +2,7 @@
 
 import sys
 import ConfigurationDialog
+import BDD
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
@@ -52,6 +53,8 @@ class InterfaceGraphique:
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
         self.widget.show()
 
+        self.widget.endBtn.clicked.connect(self.bdd())
+
     def stopGameWidget(self):
         """ Configures the closing of the game when the player clicks
             on the return button """
@@ -84,7 +87,14 @@ class InterfaceGraphique:
         self.plateau.show()
         QtCore.QTimer.singleShot(500, self.plateau.play)
 
-
+    def bdd(self):
+        """ actualise and display data. """
+        if (self.plateau.game.getWinner(self.plateau.game.GameState) != EMPTY):
+            if (self.plateau.game.getWinner(self.plateau.game.GameState) != BLACK):
+                data.actualise(self.player1.name,self.player1.type,self.plateau.game.GameState.Board.getBlackStones,self.player2.name,self.player2.type,self.plateau.game.GameState.Board.getWhiteStones)
+            else:
+                data.actualise(self.player2.name,self.player2.type,self.plateau.game.GameState.Board.getWhiteStones,self.player1.name,self.player1.type,self.plateau.game.GameState.Board.getBlackStones)
+            data.display();
 
 class Plateau(QtGui.QWidget):
 
@@ -183,6 +193,7 @@ class Plateau(QtGui.QWidget):
         case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
         return case1 or case2
 
+
 class ThemePlateau():
     def __init__(self, emptySquareName, whitePawnImageName, blackPawnImageName, possibleMoveImageName):
         self.emptySquareImage = QtGui.QPixmap(emptySquareName)
@@ -195,8 +206,10 @@ class ThemePlateau():
         self.blackPawnImage = self.blackPawnImage.scaled(tailleImages, tailleImages)
         self.possibleMoveImage = self.possibleMoveImage.scaled(tailleImages, tailleImages)
 
-
+data = BDD.dataBase()
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
 InterfaceGraphique(widget, 60, 8)
 app.exec_()
+data.close()
+

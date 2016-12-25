@@ -9,13 +9,10 @@
  * A random Othello player thats chooses random legal moves
  */
 class HumanPlayer : public IPlayer {
+	string type = "human";
 public:
+	string name = " ";
     virtual Move getAction(const GameState& gameState) const;
-
-    virtual bool isHuman() {
-        return true;
-    }
-
     virtual ~HumanPlayer();
 };
 

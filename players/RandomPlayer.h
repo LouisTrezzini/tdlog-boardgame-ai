@@ -9,6 +9,8 @@
  * A random Othello player thats chooses random legal moves
  */
 class RandomPlayer : public IPlayer {
+	string type = "iaRandom";
+	string name = "RandomPlayer";
 public:
     virtual Move getAction(const GameState& gameState) const;
 

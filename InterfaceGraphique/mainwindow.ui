@@ -155,6 +155,19 @@ p, li { white-space: pre-wrap; }
         <normaloff>ComeBack.bmp</normaloff>ComeBack.bmp</iconset>
       </property>
      </widget>
+     <widget class="QPushButton" name="endBtn">
+      <property name="geometry">
+       <rect>
+        <x>179</x>
+        <y>603</y>
+        <width>401</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Finish</string>
+      </property>
+     </widget>
      <widget class="QWidget" name="boxGame" native="true">
       <property name="geometry">
        <rect>
