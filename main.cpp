@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+
 #include "players/RandomPlayer.h"
 #include "players/HumanPlayer.h"
 #include "players/MinMaxPlayer.h"

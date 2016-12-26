@@ -3,9 +3,6 @@ cmake_minimum_required(VERSION 3.0)
 project(tdlog-boardgame-ai)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(MAIN_FILE
-        main.cpp)
-
 set(EVALUATION_FILES
         evaluation/IEvaluationFunction.h
         evaluation/LinearCombinationEvaluation.cpp
@@ -53,10 +50,12 @@ set(UTILS_FILES
         utils/MinMaxOutput.cpp
         )
 
-set(SOURCE_FILES ${EVALUATION_FILES} ${PLAYER_FILES} ${GAME_FILES} ${UTILS_FILES} ${MAIN_FILE})
+set(SOURCE_FILES ${EVALUATION_FILES} ${PLAYER_FILES} ${GAME_FILES} ${UTILS_FILES})
 
 add_executable(tdlog-boardgame-ai main.cpp ${SOURCE_FILES})
+target_link_libraries(tdlog-boardgame-ai pthread)
 
 
 add_subdirectory(pybind11)
 pybind11_add_module(boardgame_ai_py python-module.cpp ${SOURCE_FILES})
+target_link_libraries(boardgame_ai_py pthread)

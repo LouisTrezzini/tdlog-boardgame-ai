@@ -5,6 +5,8 @@
 #include <random>
 #include <algorithm>
 #include <cmath>
+#include <thread>
+#include <future>
 
 #include "../evaluation/LinearCombinationOverTimeEvaluation.h"
 #include "../evaluation/LinearCombinationEvaluation.h"
@@ -115,8 +117,18 @@ bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
 
 void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay, IPlayer *enemy) {
     for (int i = 0; i < population.size(); ++i) {
+        vector<future<bool>> resultsFuture;
+
         for (int j = 0; j < gamesToPlay; j++) {
-            if (winPlaying(population[i], sizeGrid, enemy)) {
+            Individu& individu = population[i];
+
+            resultsFuture.push_back(std::async(std::launch::async, [individu, sizeGrid, enemy]() -> bool {
+                return winPlaying(individu, sizeGrid, enemy);
+            }));
+        }
+
+        for (int j = 0; j < gamesToPlay; j++) {
+            if (resultsFuture[j].get()) {
                 population[i].incrementeScore();
             }
         }
