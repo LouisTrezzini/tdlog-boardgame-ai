@@ -9,10 +9,11 @@
 
 int main(int argc, char *argv[]) {
 
-    int whatToDo = 1;
+    int whatToDo = 0;
 
     if (whatToDo == 0) {
-        GeneticalAlgorithm (30, 500, 30);
+        IPlayer *enemy = new RandomPlayer();
+        GeneticalAlgorithm (30, 500, 30, enemy);
     }
 
     if (whatToDo == 1) {

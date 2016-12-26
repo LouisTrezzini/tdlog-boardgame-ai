@@ -92,15 +92,11 @@ void InitialisationPopulation(int N, vector <Individu>& population,
 }
 
 
-bool winPlaying(const Individu& individu, int sizeGrid) {
+bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
 
     shared_ptr <IEvaluationFunction> evalForPlayer1(
             new LinearCombinationOverTimeEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
-    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3);
-
-    //FIXME
-    // Contre qui faut-il entraîner notre algorithme ???
-    IPlayer *player2 = new RandomPlayer();
+    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
 
     Game game(sizeGrid, player1, player2);
     game.playGameWithoutDisplay();
@@ -110,10 +106,10 @@ bool winPlaying(const Individu& individu, int sizeGrid) {
     }
 }
 
-void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay) {
+void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay, IPlayer *enemy) {
     for (int i = 0; i < population.size(); ++i) {
         for (int j = 0; j < gamesToPlay; j++) {
-            if (winPlaying(population[i], sizeGrid)) {
+            if (winPlaying(population[i], sizeGrid, enemy)) {
                 population[i].incrementeScore();
             }
         }
@@ -145,7 +141,7 @@ void Mutation(vector <Individu>& population, double chancesToMute, double chance
 
 
 void GeneticalAlgorithm(int N, int nbiteration,
-                         int gamesToPlay, double chancesToMute = 0.01, double chancesToMuteForGene = 0.1,
+                         int gamesToPlay, IPlayer *enemy, double chancesToMute = 0.01, double chancesToMuteForGene = 0.1,
                         int nbDeath = 5, int sizeGrid = 8) {
 
     // Initialisation de l'aléaoire
@@ -164,7 +160,7 @@ void GeneticalAlgorithm(int N, int nbiteration,
     // Boucle de vie de l'algorithme
     int iteration = 0;
     while (iteration < nbiteration) {
-        Competition(population, sizeGrid, gamesToPlay);
+        Competition(population, sizeGrid, gamesToPlay, enemy);
         sort(population.begin(), population.end());
         for (int i = 0; i < population.size(); i++) {
             cerr << population[i].getScore() << " ";
