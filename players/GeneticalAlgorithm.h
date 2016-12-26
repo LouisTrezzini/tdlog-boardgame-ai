@@ -7,9 +7,11 @@
 #include <cmath>
 
 #include "../evaluation/LinearCombinationOverTimeEvaluation.h"
+#include "../evaluation/LinearCombinationEvaluation.h"
 #include "../evaluation/IEvaluationFunction.h"
 #include "../evaluation/PawnNumberEvaluation.h"
 #include "../evaluation/PositionEvaluation.h"
+#include "../evaluation/MobilityEvaluation.h"
 #include "AlphaBetaPlayer.h"
 
 using namespace std;
@@ -82,7 +84,8 @@ void InitialisationPopulation(int N, vector <Individu>& population,
                               vector<IEvaluationFunction *> evaluationFunctions, int turns) {
     for (int i = 0; i < N; i++) {
         vector<double> coefficients;
-        for (int j = 0; j < turns * evaluationFunctions.size(); j++) {
+        // FIXME Avec le temps, il faudra rajouter un *turns....
+        for (int j = 0; j < evaluationFunctions.size(); j++) {
             coefficients.push_back(rand() / (double) RAND_MAX);
         }
         population.push_back(Individu(coefficients, evaluationFunctions));
@@ -93,8 +96,9 @@ void InitialisationPopulation(int N, vector <Individu>& population,
 bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
 
     shared_ptr <IEvaluationFunction> evalForPlayer1(
-            new LinearCombinationOverTimeEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
-    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
+            new LinearCombinationEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
+    // FIXME Faire passer en paramètre ?
+    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3);
 
     Game game(sizeGrid, player1, player2);
     game.playGameWithoutDisplay();
@@ -154,6 +158,7 @@ void GeneticalAlgorithm(int N, int nbiteration,
     vector < IEvaluationFunction * > evaluationFunctions;
     evaluationFunctions.push_back(new PawnNumberEvaluation());
     evaluationFunctions.push_back(new PositionEvaluation());
+    evaluationFunctions.push_back(new MobilityEvaluation());
 
     // Définition de notre population
     vector <Individu> population;

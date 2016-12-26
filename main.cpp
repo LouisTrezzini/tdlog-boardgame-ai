@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
         // Algorithme génétique
         case 0: {
             IPlayer *enemy = new RandomPlayer();
-            GeneticalAlgorithm(30, 500, 100, enemy);
+            GeneticalAlgorithm(50, 500, 100, enemy);
             delete enemy;
         }
 
