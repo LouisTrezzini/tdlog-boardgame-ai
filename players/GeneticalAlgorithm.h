@@ -57,8 +57,6 @@ public:
 
     void mutate(double chancesToMuteForGene) {
         for (int i = 0; i < coefficients.size(); i++) {
-            //FIXME
-            // Faire passer le 0.1 en variable, et retravailler l'étape de mutation
             if (rand() / (double) RAND_MAX < chancesToMuteForGene) {
                 coefficients[i] = rand() / (double) RAND_MAX;
             }
@@ -81,13 +79,13 @@ public:
 };
 
 void InitialisationPopulation(int N, vector <Individu>& population,
-                              vector<IEvaluationFunction *> evaluationfunctions, int turns) {
+                              vector<IEvaluationFunction *> evaluationFunctions, int turns) {
     for (int i = 0; i < N; i++) {
         vector<double> coefficients;
-        for (int j = 0; j < turns * evaluationfunctions.size(); j++) {
+        for (int j = 0; j < turns * evaluationFunctions.size(); j++) {
             coefficients.push_back(rand() / (double) RAND_MAX);
         }
-        population.push_back(Individu(coefficients, evaluationfunctions));
+        population.push_back(Individu(coefficients, evaluationFunctions));
     }
 }
 
@@ -104,6 +102,8 @@ bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
     if (game.getWinner(game.getGameState()) == Color::WHITE) {
         return true;
     }
+
+    return false;
 }
 
 void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay, IPlayer *enemy) {
@@ -148,13 +148,13 @@ void GeneticalAlgorithm(int N, int nbiteration,
     srand(time(NULL));
 
     // Déinition des functions d'évaluation que nous allons utiliser
-    vector < IEvaluationFunction * > evaluationfunctions;
-    evaluationfunctions.push_back(new PawnNumberEvaluation());
-    evaluationfunctions.push_back(new PositionEvaluation());
+    vector < IEvaluationFunction * > evaluationFunctions;
+    evaluationFunctions.push_back(new PawnNumberEvaluation());
+    evaluationFunctions.push_back(new PositionEvaluation());
 
     // Définition de notre population
     vector <Individu> population;
-    InitialisationPopulation(N, population, evaluationfunctions, pow(sizeGrid, 2) - 4);
+    InitialisationPopulation(N, population, evaluationFunctions, pow(sizeGrid, 2) - 4);
 
 
     // Boucle de vie de l'algorithme
