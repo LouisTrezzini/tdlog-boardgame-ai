@@ -48,7 +48,7 @@ Move MinMaxPlayer::getAction(const GameState& gameState) const {
 }
 
 MinMaxPlayer::~MinMaxPlayer() {
-    evaluationFunction.reset();
+
 }
 
 

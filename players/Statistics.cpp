@@ -41,6 +41,8 @@ void LoiDesGainsSurXParties(int nbGame, IPlayer *player1, int sizeGrid) {
     }
     std::cout << mean(gamesWon) << std::endl;
     std::cout << standardDeviation(gamesWon);
+
+    delete player2;
 }
 
 

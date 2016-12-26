@@ -99,6 +99,9 @@ bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
     Game game(sizeGrid, player1, player2);
     game.playGameWithoutDisplay();
 
+    evalForPlayer1.reset();
+    delete player1;
+
     if (game.getWinner(game.getGameState()) == Color::WHITE) {
         return true;
     }
@@ -173,6 +176,9 @@ void GeneticalAlgorithm(int N, int nbiteration,
         for (int i = 0; i < population.size(); i++) {
             population[i].setNullScore();
         }
+    }
+    for (int i = evaluationFunctions.size() - 1; i >= 0; i --) {
+        delete evaluationFunctions[i];
     }
 }
 

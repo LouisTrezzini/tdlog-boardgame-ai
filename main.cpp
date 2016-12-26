@@ -5,7 +5,9 @@
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "players/GeneticalAlgorithm.h"
 #include "game/Game.h"
+#include "evaluation/MobilityEvaluation.h"
 #include "players/Statistics.h"
+#include "evaluation/LinearCombinationEvaluation.h"
 
 int main(int argc, char *argv[]) {
 
@@ -13,7 +15,8 @@ int main(int argc, char *argv[]) {
 
     if (whatToDo == 0) {
         IPlayer *enemy = new RandomPlayer();
-        GeneticalAlgorithm (30, 500, 30, enemy);
+        GeneticalAlgorithm (30, 500, 100, enemy);
+        delete enemy;
     }
 
     if (whatToDo == 1) {
@@ -23,6 +26,7 @@ int main(int argc, char *argv[]) {
         vector < IEvaluationFunction * > evaluationFunctions;
         evaluationFunctions.push_back(new PawnNumberEvaluation());
         evaluationFunctions.push_back(new PositionEvaluation());
+        evaluationFunctions.push_back(new MobilityEvaluation());
 
         vector<double> coefficients;
         for (int j = 0; j < 60 * evaluationFunctions.size(); j++) {
@@ -34,8 +38,15 @@ int main(int argc, char *argv[]) {
 
         IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
 
-        LoiDesGainsSurXParties(30, player1);
+        LoiDesGainsSurXParties(100, player1);
+
+        delete player1;
+        evalForPlayer1.reset();
+        delete evaluationFunctions[0];
+        delete evaluationFunctions[1];
+        delete evaluationFunctions[2];
     }
+
 
     return 0;
 }
