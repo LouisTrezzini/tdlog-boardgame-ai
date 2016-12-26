@@ -32,6 +32,8 @@ set(PLAYER_FILES
         players/RandomPlayer.h
         players/AlphaBetaPlayer.cpp
         players/AlphaBetaPlayer.h
+        players/Statistics.cpp
+        players/Statistics.h
         )
 set(GAME_FILES
         game/Board.cpp
