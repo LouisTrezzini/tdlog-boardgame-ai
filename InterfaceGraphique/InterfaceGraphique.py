@@ -53,8 +53,6 @@ class InterfaceGraphique:
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
         self.widget.show()
 
-        self.widget.endBtn.clicked.connect(self.bdd())
-
     def stopGameWidget(self):
         """ Configures the closing of the game when the player clicks
             on the return button """
@@ -86,15 +84,6 @@ class InterfaceGraphique:
         self.widget.boxGame.move(position, int(self.heightMarge/2))
         self.plateau.show()
         QtCore.QTimer.singleShot(500, self.plateau.play)
-
-    def bdd(self):
-        """ actualise and display data. """
-        if (self.plateau.game.getWinner(self.plateau.game.GameState) != EMPTY):
-            if (self.plateau.game.getWinner(self.plateau.game.GameState) != BLACK):
-                data.actualise(self.player1.name,self.player1.type,self.plateau.game.GameState.Board.getBlackStones,self.player2.name,self.player2.type,self.plateau.game.GameState.Board.getWhiteStones)
-            else:
-                data.actualise(self.player2.name,self.player2.type,self.plateau.game.GameState.Board.getWhiteStones,self.player1.name,self.player1.type,self.plateau.game.GameState.Board.getBlackStones)
-            data.display();
 
 class Plateau(QtGui.QWidget):
 
@@ -135,6 +124,11 @@ class Plateau(QtGui.QWidget):
                 self.grid.addWidget(self.cases[i + j * nbRows], i, j)
                 self.cases[i + j * nbRows].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
         self.update()
+
+		#End button
+        endBtn = QtGui.QPushButton(text = "end")
+        endBtn.clicked.connect(self.bdd)
+        self.grid.addWidget(endBtn,nbRows,nbRows)
 
     def play (self):
         if not self.humanTurn():
@@ -192,6 +186,16 @@ class Plateau(QtGui.QWidget):
         case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
         case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
         return case1 or case2
+
+    def bdd(self):
+        """ actualise and display data. """
+        if (Game.getWinner(self.game.GameState) != Color.EMPTY):
+            if (Game.getWinner(self.game.GameState) != Color.BLACK):
+                data.actualise(self.player1.name,self.player1.type,self.game.GameState.Board.getBlackStones,self.player2.name,self.player2.type,self.game.GameState.Board.getWhiteStones)
+            else:
+                data.actualise(self.player2.name,self.player2.type,self.game.GameState.Board.getWhiteStones,self.player1.name,self.player1.type,self.game.GameState.Board.getBlackStones)
+            data.display();
+        return
 
 
 class ThemePlateau():
