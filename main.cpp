@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
             delete evaluationFunctions[1];
             delete evaluationFunctions[2];
         }
+            break;
 
         // Moyenne et écart type pour des combinaisons linéaires sans temps
         case 2: {
@@ -80,6 +81,7 @@ int main(int argc, char *argv[]) {
             delete evaluationFunctions[1];
             delete evaluationFunctions[2];
         }
+            break;
     }
 
     return 0;

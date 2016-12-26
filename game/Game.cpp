@@ -110,8 +110,7 @@ std::vector<Move> Game::getLegalMovesForColor(const GameState& gameState, Color 
 }
 
 std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
-    Color colorPlaying = gameState.getColorPlaying();
-    return getLegalMovesForColor(gameState, colorPlaying);
+    return getLegalMovesForColor(gameState, gameState.getColorPlaying());
 }
 
 bool Game::isValidMoveForColor(const GameState& gameState, const Move& move, Color color) {
@@ -120,7 +119,7 @@ bool Game::isValidMoveForColor(const GameState& gameState, const Move& move, Col
 
     const Board& board = gameState.getBoard();
 
-    Color piece = board.pieceAt(x, y);
+    const Color& piece = board.pieceAt(x, y);
 
     if (piece != Color::EMPTY)
         return false;
@@ -150,8 +149,7 @@ bool Game::isValidMoveForColor(const GameState& gameState, const Move& move, Col
 }
 
 bool Game::isValidMove(const GameState& gameState, const Move& move) {
-    Color colorPlaying = gameState.getColorPlaying();
-    return isValidMoveForColor(gameState, move, colorPlaying);
+    return isValidMoveForColor(gameState, move, gameState.getColorPlaying());
 }
 
 // TODO
@@ -205,13 +203,13 @@ void Game::applyMove(GameState& gameState, const Move& move) {
 
 void Game::playMove(const Move& move) {
     // On affiche y puis x pour correspondre à la notation tableau plus simple pour l'utilisateur
-    std::cout << gameState.getColorPlaying() << " plays at " << move.getY() << " " << move.getX() << std::endl;
+    std::cout << gameState.getColorPlaying() << " plays at " << move.toString() << std::endl;
 
     applyMove(gameState, move);
 }
 
 Color Game::getWinner(const GameState& gameState) {
-    Board board = gameState.getBoard();
+    const Board& board = gameState.getBoard();
 
     if (board.isFull()) {
         if (board.getBlackStones() > board.getWhiteStones()) {

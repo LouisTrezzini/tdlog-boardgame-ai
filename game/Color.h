@@ -13,7 +13,7 @@ enum class Color : int {
     BLACK
 };
 
-Color colorOpponent(Color color);
+Color colorOpponent(const Color& color);
 
 std::ostream& operator<<(std::ostream& stream, const Color& color);
 

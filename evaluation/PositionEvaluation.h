@@ -18,6 +18,7 @@ const int positionValues[8][8] = {{99, -8, 8, 6, 6, 8, -8, 99},
  * Function that evaluates the total value of the squares you own
  */
 class PositionEvaluation : public IEvaluationFunction {
+public:
     virtual double operator()(const GameState& gameState, Color color) const;
 
     virtual ~PositionEvaluation();
