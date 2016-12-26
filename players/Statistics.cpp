@@ -29,18 +29,18 @@ void LoiDesGainsSurXParties(int nbGame, IPlayer *player1, int sizeGrid) {
     int numberOfRounds = 100;
 
     std::vector<double> gamesWon(numberOfRounds, 0);
-    for (int round = 0; round <= numberOfRounds; round ++) {
+    for (int gameRound = 0; gameRound <= numberOfRounds; gameRound ++) {
         for (int i = 0; i < nbGame; i ++) {
             Game game(sizeGrid, player1, player2);
             game.playGameWithoutDisplay();
 
             if (game.getWinner(game.getGameState()) == Color::WHITE) {
-                gamesWon[round] += 1;
+                gamesWon[gameRound] += 1;
             }
         }
     }
     std::cout << mean(gamesWon) << std::endl;
-    std::cout << standardDeviation(gamesWon);
+    std::cout << standardDeviation(gamesWon) << std::endl;
 
     delete player2;
 }
