@@ -10,6 +10,7 @@
 #include "../evaluation/IEvaluationFunction.h"
 #include "../evaluation/PawnNumberEvaluation.h"
 #include "../evaluation/PositionEvaluation.h"
+#include "AlphaBetaPlayer.h"
 
 using namespace std;
 
@@ -54,11 +55,11 @@ public:
         return coefficients[i];
     }
 
-    void mutate() {
+    void mutate(double chancesToMuteForGene) {
         for (int i = 0; i < coefficients.size(); i++) {
             //FIXME
             // Faire passer le 0.1 en variable, et retravailler l'étape de mutation
-            if (rand() / (double) RAND_MAX < 0.1) {
+            if (rand() / (double) RAND_MAX < chancesToMuteForGene) {
                 coefficients[i] = rand() / (double) RAND_MAX;
             }
         }
@@ -95,7 +96,7 @@ bool winPlaying(const Individu& individu, int sizeGrid) {
 
     shared_ptr <IEvaluationFunction> evalForPlayer1(
             new LinearCombinationOverTimeEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
-    IPlayer *player1 = new MinMaxPlayer(evalForPlayer1, 1);
+    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3);
 
     //FIXME
     // Contre qui faut-il entraîner notre algorithme ???
@@ -134,17 +135,18 @@ void Selection(vector <Individu>& population,
 }
 
 
-void Mutation(vector <Individu>& population, double chancesToMute) {
+void Mutation(vector <Individu>& population, double chancesToMute, double chancesToMuteForGene) {
     for (int i = 0; i < population.size(); i++) {
         if (rand() / (double) RAND_MAX < chancesToMute) {
-            population[i].mutate();
+            population[i].mutate(chancesToMuteForGene);
         }
     }
 }
 
 
 void GeneticalAlgorithm(int N, int nbiteration,
-                        int sizeGrid, int gamesToPlay) {
+                         int gamesToPlay, double chancesToMute = 0.01, double chancesToMuteForGene = 0.1,
+                        int nbDeath = 5, int sizeGrid = 8) {
 
     // Initialisation de l'aléaoire
     srand(time(NULL));
@@ -169,11 +171,8 @@ void GeneticalAlgorithm(int N, int nbiteration,
         }
         cerr << endl;
 
-        //FIXME
-        //Faire passer le nombre 5 en variable (c'est le nombre d'individu à changer)
-        //Faire passer le nombre 0.01 en variable (c'est le purcentage de chance de muter)
-        Selection(population, 5);
-        Mutation(population, 0.01);
+        Selection(population, nbDeath);
+        Mutation(population, chancesToMute, chancesToMuteForGene);
         iteration++;
         for (int i = 0; i < population.size(); i++) {
             population[i].setNullScore();

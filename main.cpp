@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]) {
 
-    GeneticalAlgorithm (30, 500, 8, 30);
+    GeneticalAlgorithm (30, 500, 30);
 
     return 0;
 }
