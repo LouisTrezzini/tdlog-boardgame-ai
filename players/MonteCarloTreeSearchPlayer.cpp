@@ -14,6 +14,8 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     start = std::chrono::system_clock::now();
     end = start + std::chrono::seconds(3);
 
+    srand(time(NULL));
+
     while(std::chrono::system_clock::now() < end){
         auto node = root.get();
 
@@ -58,7 +60,9 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     std::cerr << "MonteCarlo played " << root.get()->getPlays() << " games in " << elapsedSeconds << "s" << std::endl;
 
     for (auto child: root.get()->getChildren()) {
-        std::cerr << child->getMove().toString() << ": (" << child->getWins() << "/" << child->getPlays() << ")" << std::endl;
+        std::cerr << child->getMove().toString() << ": (" << child->getWins() << "/" << child->getPlays() << ") "
+                  << double(child->getWins()) / child->getPlays()
+                  << std::endl;
     }
 
     return root;

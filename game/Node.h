@@ -91,10 +91,11 @@ public:
     }
 
     const Move& getUntriedMove() const {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<std::size_t> moves_distribution(0, moves.size() - 1);
-        return moves[moves_distribution(gen)];
+//        std::random_device rd;
+//        std::mt19937 gen(rd());
+//        std::uniform_int_distribution<std::size_t> moves_distribution(0, moves.size() - 1);
+//        return moves[moves_distribution(gen)];
+        return moves[rand() % moves.size()];
     }
 
     const Move& getMove() const {

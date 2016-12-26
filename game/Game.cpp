@@ -63,11 +63,12 @@ Move Game::getRandomMove(const GameState& gameState) {
         return Move::passing();
     }
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<std::size_t> distrib(0, legalMoves.size() - 1);
+//    std::random_device rd;
+//    std::mt19937 gen(rd());
+//    std::uniform_int_distribution<std::size_t> distrib(0, legalMoves.size() - 1);
+//    return legalMoves[distrib(gen)];
 
-    return legalMoves[distrib(gen)];
+    return legalMoves[rand() % legalMoves.size()];
 }
 
 bool Game::hasLegalMoves(const GameState& gameState) {
