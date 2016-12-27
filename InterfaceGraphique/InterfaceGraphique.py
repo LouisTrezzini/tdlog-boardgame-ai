@@ -6,25 +6,24 @@ import BDD
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
-#FIXME Choisir la casse
 
-class InterfaceGraphique:
+class GraphicInterface:
     """ Defines the graphism for the Game. """
     heightMarge = 190
     widthMarge = 100
 
-    def __init__(self, widget, tailleImage, nbRows):
+    def __init__(self, widget, sizeImage, nbRows):
         """ Initialises the graphism for the Game thank to a pre-design widget.
             The class is also composed of the various parameters to
             launch a Party. """
 
         self.widget = widget
 
-        # Dimensionnement de la fenetre du jeu en fonction des tailleImage
-        self.tailleImage = tailleImage
+        # Dimensionnement de la fenetre du jeu en fonction de sizeImage
+        self.sizeImage = sizeImage
         self.nbRows = nbRows
-        self.widthWidget = max(730, tailleImage*nbRows + self.widthMarge)
-        self.heightWidget = max(750, tailleImage*nbRows + self.heightMarge)
+        self.widthWidget = max(730, sizeImage*nbRows + self.widthMarge)
+        self.heightWidget = max(750, sizeImage*nbRows + self.heightMarge)
         self.widget.setMinimumSize(self.widthWidget, self.heightWidget)
         self.widget.setMaximumSize(self.widthWidget, self.heightWidget)
         self.widget.stackedWidget.resize(self.widthWidget,
@@ -39,20 +38,20 @@ class InterfaceGraphique:
         self.widget.Title.resize(self.widthWidget, 70)
         self.widget.Title.setMaximumWidth(self.widthWidget)
         positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
-        self.widget.configureBtn.move(positionBtn, 600)
+        self.widget.configureBtn.move(positionBtn, 580)
+        self.widget.statisticsBtn.move(positionBtn, 610)
 
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.widget.configureBtn.clicked.connect(self.OpenConfigurationDialog)
         self.widget.statisticsBtn.clicked.connect(self.DisplayStatistics)
-        self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
-        # FIXME Changer les noms (celui du dessus aussi)
-        self.widget.returnBtn_2.clicked.connect(self.GoBackToConfiguration)
+        self.widget.stopGameBtn.clicked.connect(lambda _ : self.stopGameWidget())
+        self.widget.goBackBtn.clicked.connect(self.GoBackToConfiguration)
 
         #Sauvegarde des paramètres du jeu
         self.player1 = 0
         self.player2 = 0
-        self.plateau = 0
+        self.gameBoard = 0
 
         #Ouverture de boite de dialogues pour la configuration du jeu
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
@@ -87,9 +86,9 @@ class InterfaceGraphique:
         :return:
         """
         self.GoBackToConfiguration()
-        self.plateau.close()
-        self.plateau.deleteLater()
-        self.plateau = None
+        self.gameBoard.close()
+        self.gameBoard.deleteLater()
+        self.gameBoard = None
 
     def OpenConfigurationDialog(self):
         """ Opens several Dialogs to input the information
@@ -106,17 +105,17 @@ class InterfaceGraphique:
         :return:
         """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
-        self.plateau = Plateau(self.player2, self.player1,
-                               self.tailleImage, self.nbRows, self.widget)
-        self.plateau.setParent(self.widget.boxGame)
+        self.gameBoard = GameBoard(self.player2, self.player1,
+                               self.sizeImage, self.nbRows, self.widget)
+        self.gameBoard.setParent(self.widget.boxGame)
         # Si on enlève le + 1, la taille est trop petite
-        self.widget.boxGame.resize((self.nbRows + 1)*self.tailleImage,
-                                   (self.nbRows + 1)*self.tailleImage)
+        self.widget.boxGame.resize((self.nbRows + 1)*self.sizeImage,
+                                   (self.nbRows + 1)*self.sizeImage)
 
-        position  = int((self.widthWidget - self.nbRows*self.tailleImage)/2)
+        position  = int((self.widthWidget - self.nbRows*self.sizeImage)/2)
         self.widget.boxGame.move(position, int(self.heightMarge/2))
-        self.plateau.show()
-        QtCore.QTimer.singleShot(500, self.plateau.play)
+        self.gameBoard.show()
+        QtCore.QTimer.singleShot(500, self.gameBoard.play)
 
     def DisplayStatistics(self):
         """
@@ -127,10 +126,10 @@ class InterfaceGraphique:
         self.FillStatisticsTable()
 
 
-class Plateau(QtGui.QWidget):
+class GameBoard(QtGui.QWidget):
 
-    def __init__(self, player1, player2, tailleImage, nbRows, displayScoreWidget):
-        super(Plateau, self).__init__()
+    def __init__(self, player1, player2, sizeImage, nbRows, displayScoreWidget):
+        super(GameBoard, self).__init__()
 
         # Définition du widget parent
         self.displayScoreWidget = displayScoreWidget
@@ -145,11 +144,11 @@ class Plateau(QtGui.QWidget):
         self.player2 = player2
 
         #Tailles des Images
-        self.tailleImage = tailleImage
+        self.sizeImage = sizeImage
 
         # Création du thème du plateau
-        self.themePlateau = ThemePlateau("empty.png", "white.png", "black.png", "waiting.png")
-        self.themePlateau.scale(self.tailleImage)
+        self.gameBoardTheme = gameBoardTheme("empty.png", "white.png", "black.png", "waiting.png")
+        self.gameBoardTheme.scale(self.sizeImage)
 
         # Création du jeu
         self.nbRows = nbRows
@@ -188,13 +187,13 @@ class Plateau(QtGui.QWidget):
         for i in range(self.nbRows):
             for j in range(self.nbRows):
                 if self.game.__getitem__(i, j) == Color.WHITE:
-                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.whitePawnImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.gameBoardTheme.whitePawnImage)
                 if self.game.__getitem__(i, j) == Color.BLACK:
-                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.blackPawnImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.gameBoardTheme.blackPawnImage)
                 if self.game.__getitem__(i, j) == Color.EMPTY:
-                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.emptySquareImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.gameBoardTheme.emptySquareImage)
                 if Game.isValidMove(self.game.GameState, Move(i,j)):
-                    self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.possibleMoveImage)
+                    self.cases[i + j * self.nbRows].setPixmap(self.gameBoardTheme.possibleMoveImage)
 
         self.displayScoreWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
         self.displayScoreWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
@@ -228,22 +227,22 @@ class Plateau(QtGui.QWidget):
         return case1 or case2
 
 
-class ThemePlateau():
+class GameBoardTheme():
     def __init__(self, emptySquareName, whitePawnImageName, blackPawnImageName, possibleMoveImageName):
         self.emptySquareImage = QtGui.QPixmap(emptySquareName)
         self.whitePawnImage = QtGui.QPixmap(whitePawnImageName)
         self.blackPawnImage = QtGui.QPixmap(blackPawnImageName)
         self.possibleMoveImage = QtGui.QPixmap(possibleMoveImageName)
-    def scale(self, tailleImages):
-        self.emptySquareImage = self.emptySquareImage.scaled(tailleImages, tailleImages)
-        self.whitePawnImage = self.whitePawnImage.scaled(tailleImages, tailleImages)
-        self.blackPawnImage = self.blackPawnImage.scaled(tailleImages, tailleImages)
-        self.possibleMoveImage = self.possibleMoveImage.scaled(tailleImages, tailleImages)
+    def scale(self, sizeImages):
+        self.emptySquareImage = self.emptySquareImage.scaled(sizeImages, sizeImages)
+        self.whitePawnImage = self.whitePawnImage.scaled(sizeImages, sizeImages)
+        self.blackPawnImage = self.blackPawnImage.scaled(sizeImages, sizeImages)
+        self.possibleMoveImage = self.possibleMoveImage.scaled(sizeImages, sizeImages)
 
-data = BDD.dataBase()
+data = BDD.DataBase()
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
-InterfaceGraphique(widget, 60, 8)
+GraphicInterface(widget, 60, 8)
 app.exec_()
 data.close()
 
