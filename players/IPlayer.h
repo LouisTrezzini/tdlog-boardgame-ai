@@ -25,6 +25,7 @@ public:
     virtual bool isHuman() {
         return false;
     }
+
     virtual Move getAction(const GameState& gameState) const = 0;
     virtual ~IPlayer() = 0;
 };

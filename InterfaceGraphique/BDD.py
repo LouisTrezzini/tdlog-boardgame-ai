@@ -1,4 +1,6 @@
 import sqlite3
+from boardgame_ai_py import *
+import types
 
 class dataBase:
 	""" Stores the best scores and calculates the statistics. """
@@ -7,35 +9,46 @@ class dataBase:
 		#create a data base
 		self.conn = sqlite3.connect(':memory:')
 		self.cur = self.conn.cursor()
-		self.cur.execute("CREATE TABLE IF NOT EXISTS scoreOthello (pseudo TEXT, typeAdversaire TEXT, meilleurScore INTEGER, nbPartiesJouees INTEGER, nbVictoire INTEGER)") 
+		self.cur.execute("""CREATE TABLE IF NOT EXISTS scoreOthello (algo1 TEXT, eval1 TEXT, algo2 TEXT,
+						eval2 TEXT, bestScore INTEGER, nbPartiesJouees INTEGER, nbVictoire INTEGER)""")
 		self.conn.commit()
 
-	def actualise(self,name1,type1,score1,name2,type2,score2):
+	def actualise(self, player1, player2, score):
 		#variables with "1" correspond to the winner
 		#add to the data base
-		if (name1,type2 not in "SELECT pseudo,typeAdversaire From scoreOthello"):
-			self.cur.execute("INSERT INTO scoreOthello VALUES (?,?,?,?,?)",(name1, type2, score1, 1, 1))
+
+		algo1 = str(type(player1))
+		algo2 = str(type(player2))
+		eval1 = 'None'
+		eval2 = 'None'
+		#TODO rajouter les conditions pour les fonctions d'évalutaion
+		if isinstance(player1, HumanPlayer):
+			eval1 = player1.name
+		if isinstance(player2, HumanPlayer):
+			eval2 = player2.name
+
+		self.cur.execute("SELECT algo1, eval1, algo2, eval2 From scoreOthello")
+		result = self.cur.fetchall()
+		if (algo1,eval1,algo2,eval2) not in result:
+			#FIXME Faire passer le 32 en variable
+			self.cur.execute("INSERT INTO scoreOthello VALUES (?,?,?,?,?,?,?)",
+							 (algo1, eval1, algo2, eval2, score, 1, int(score>32)))
 			self.conn.commit()
 		#OR actualise the data
-		else: 
-			self.cur.execute("SELECT meilleurScore FROM scoreOthello WHERE pseudo=?",name1)
-			score = max(cur.fetchone(),score1)
-			self.cur.execute("UPDATE scoreOthello SET meilleurScore=?, nbPartiesJouees=nbPartiesJouees+1,nbVictoire=nbVictoire+1 WHERE pseudo=?, typeAdversaire=?",(score,name1,type2))
-			self.conn.commit()
-		#Ditto for player2
-		if (name2,type1 not in "SELECT pseudo,typeAdversaire From scoreOthello"):
-			self.cur.execute("INSERT INTO scoreOthello VALUES (?,?,?,?,?)",(name2,type1,score2,1,0))
-			self.conn.commit()
 		else:
-			self.cur.execute("SELECT meilleurScore FROM scoreOthello WHERE pseudo=?",name2)
-			score = max(cur.fetchone(),score2)
-			self.cur.execute("UPDATE scoreOthello SET meilleurScore=?, nbPartiesJouees=nbPartiesJouees+1 WHERE pseudo=?, typeAdversaire=?",(score,name2,type1))
+			self.cur.execute("""SELECT bestScore FROM scoreOthello WHERE algo1="{}" AND eval1 = "{}"
+							AND algo2  = "{}" AND eval2 = "{}" """.format(algo1, eval1, algo2, eval2))
+			newScore = max(self.cur.fetchone()[0],score)
+			#FIXME Faire passer le 32 en variable
+			self.cur.execute("""UPDATE scoreOthello SET bestScore = {}, nbPartiesJouees = nbPartiesJouees + 1,
+							nbVictoire = nbVictoire + {} WHERE algo1="{}" AND eval1 = "{}" AND algo2  = "{}"
+							AND eval2 = "{}" """.format(newScore, int(score>32), algo1, eval1, algo2, eval2))
 			self.conn.commit()
 
 	def display(self):
 		#Affichage
 		self.cur.execute("SELECT * FROM scoreOthello")
-		self.cur.fetchall()
+		return self.cur.fetchall()
 
 	def close(self):
 		self.cur.close()

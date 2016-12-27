@@ -53,8 +53,7 @@ class ConfigurationDialog(QtGui.QWidget):
         """ Configures the type of player with a string. """
         player_instance = None
         if player_type == "HumanPlayer":
-            player_instance = HumanPlayer()
-            player_instance.setName(self.askPlayerName())
+            player_instance = HumanPlayer(self.askPlayerName())
         elif player_type == "RandomPlayer":
              player_instance = RandomPlayer()
         elif player_type == "MonteCarloTreeSearchPlayer":

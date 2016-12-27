@@ -11,15 +11,7 @@
  * This IA will follow the minmax principle
  */
 class MinMaxPlayer : public IPlayer {
-	std::string type = "iaMinMax";
-	std::string name ="MinMaxPlayer";
 public:
-    std::string getType(){
-        return MinMaxPlayer::type;
-    }
-    std::string getName(){
-        return MinMaxPlayer::name;
-    }
     MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn) const;
 
     virtual Move getAction(const GameState& gameState) const;
