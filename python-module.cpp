@@ -32,33 +32,23 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
         .def(py::init<>())
-        .def_property_readonly("type",&RandomPlayer::getType)
-        .def_property_readonly("name", &RandomPlayer::getName)
     ;
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
-         .def(py::init<>())
-         .def_property_readonly("type",&HumanPlayer::getType)
+         .def(py::init<std::string>())
          .def_property_readonly("name", &HumanPlayer::getName)
-         .def("setName", &HumanPlayer::setName)
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
          .def(py::init<>())
-         .def_property_readonly("type",&MinMaxPlayer::getType)
-         .def_property_readonly("name", &MinMaxPlayer::getName)
     ;
 
     py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")
          .def(py::init<>())
-         .def_property_readonly("type",&AlphaBetaPlayer::getType)
-         .def_property_readonly("name", &AlphaBetaPlayer::getName)
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
         .def(py::init<>())
-        .def_property_readonly("type",&MonteCarloTreeSearchPlayer::getType)
-        .def_property_readonly("name", &MonteCarloTreeSearchPlayer::getName)
     ;
 
     py::class_<Board>(m, "Board")

@@ -6,6 +6,8 @@ import BDD
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
+#FIXME Choisir la casse
+
 class InterfaceGraphique:
     """ Defines the graphism for the Game. """
     heightMarge = 190
@@ -42,7 +44,10 @@ class InterfaceGraphique:
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
         self.widget.configureBtn.clicked.connect(self.OpenConfigurationDialog)
+        self.widget.statisticsBtn.clicked.connect(self.DisplayStatistics)
         self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
+        # FIXME Changer les noms (celui du dessus aussi)
+        self.widget.returnBtn_2.clicked.connect(self.GoBackToConfiguration)
 
         #Sauvegarde des paramètres du jeu
         self.player1 = 0
@@ -53,12 +58,35 @@ class InterfaceGraphique:
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
         self.widget.show()
 
-        self.widget.endBtn.clicked.connect(self.bdd())
+    def FillStatisticsTable(self):
+
+        #TODO Afficher des titres de colonnes a la table
+        contentToDisplay = data.display()
+
+        self.widget.tableWidget.setRowCount(len(contentToDisplay))
+        #FIXME trouver un moyen de retrieve le 7 (après aussi)
+        self.widget.tableWidget.setColumnCount(7)
+
+        row = 0
+        for i in range(len(contentToDisplay)):
+            sqlRow = contentToDisplay[i]
+            for col in range(0, 7):
+                self.widget.tableWidget.setItem(row, col, QtGui.QTableWidgetItem(str(sqlRow[col])))
+            row += 1
+
+    def GoBackToConfiguration(self):
+        """
+        Goes back to the configuration widget
+        :return:
+        """
+        self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
 
     def stopGameWidget(self):
-        """ Configures the closing of the game when the player clicks
-            on the return button """
-        self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
+        """
+        Configures the closing of the game when the player clicks on the return button
+        :return:
+        """
+        self.GoBackToConfiguration()
         self.plateau.close()
         self.plateau.deleteLater()
         self.plateau = None
@@ -73,7 +101,10 @@ class InterfaceGraphique:
         self.play()
 
     def play(self):
-        """ Launchs the game """
+        """
+        Launchs the game
+        :return:
+        """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
         self.plateau = Plateau(self.player2, self.player1,
                                self.tailleImage, self.nbRows, self.widget)
@@ -87,14 +118,14 @@ class InterfaceGraphique:
         self.plateau.show()
         QtCore.QTimer.singleShot(500, self.plateau.play)
 
-    def bdd(self):
-        """ actualise and display data. """
-        if (self.plateau.game.getWinner(self.plateau.game.GameState) != EMPTY):
-            if (self.plateau.game.getWinner(self.plateau.game.GameState) != BLACK):
-                data.actualise(self.player1.name,self.player1.type,self.plateau.game.GameState.Board.getBlackStones,self.player2.name,self.player2.type,self.plateau.game.GameState.Board.getWhiteStones)
-            else:
-                data.actualise(self.player2.name,self.player2.type,self.plateau.game.GameState.Board.getWhiteStones,self.player1.name,self.player1.type,self.plateau.game.GameState.Board.getBlackStones)
-            data.display();
+    def DisplayStatistics(self):
+        """
+        Go to the Statistics widet and displays statistics
+        :return:
+        """
+        self.widget.stackedWidget.setCurrentWidget(self.widget.Statistics)
+        self.FillStatisticsTable()
+
 
 class Plateau(QtGui.QWidget):
 
@@ -145,7 +176,7 @@ class Plateau(QtGui.QWidget):
         if Game.isValidMove(self.game.GameState, move) and self.humanTurn():
             self.game.playMove(move)
             self.update()
-            QtCore.QTimer.singleShot(500, self.playTurn)
+            QtCore.QTimer.singleShot(100, self.playTurn)
 
 
     def update(self):
@@ -175,6 +206,9 @@ class Plateau(QtGui.QWidget):
         :return:
         """
         if Game.getWinner(self.game.GameState) != Color.EMPTY:
+            # FIXME A adapter après le merge avec la branche genetic (enlever majuscles, et le get)
+            data.actualise(self.player1, self.player2, self.game.GameState.Board.getWhiteStones)
+            data.actualise(self.player2, self.player1, self.game.GameState.Board.getBlackStones)
             return
 
         if not self.humanTurn():
@@ -182,7 +216,7 @@ class Plateau(QtGui.QWidget):
             self.game.playMove(pickedMove)
             self.update()
             if not self.humanTurn():
-                QtCore.QTimer.singleShot(500, self.playTurn)
+                QtCore.QTimer.singleShot(100, self.playTurn)
 
     def humanTurn(self):
         """
