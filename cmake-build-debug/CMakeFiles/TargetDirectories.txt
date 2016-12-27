@@ -1,0 +1,5 @@
+/home/juliette/Bureau/TdLog/tdlog-boardgame-ai/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/juliette/Bureau/TdLog/tdlog-boardgame-ai/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/juliette/Bureau/TdLog/tdlog-boardgame-ai/cmake-build-debug/CMakeFiles/boardgame_ai_py.dir
+/home/juliette/Bureau/TdLog/tdlog-boardgame-ai/cmake-build-debug/pybind11/CMakeFiles/edit_cache.dir
+/home/juliette/Bureau/TdLog/tdlog-boardgame-ai/cmake-build-debug/pybind11/CMakeFiles/rebuild_cache.dir

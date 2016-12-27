@@ -161,7 +161,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
      </widget>
-     <widget class="QCommandLinkButton" name="returnBtn_2">
+     <widget class="QCommandLinkButton" name="goBackBtn">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -180,7 +180,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
     <widget class="QWidget" name="Game">
-     <widget class="QCommandLinkButton" name="returnBtn">
+     <widget class="QCommandLinkButton" name="stopGameBtn">
       <property name="geometry">
        <rect>
         <x>20</x>
