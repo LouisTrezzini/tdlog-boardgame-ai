@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
             GeneticalAlgorithm(50, 500, 100, enemy);
             delete enemy;
         }
+            break;
 
         // Moyenne et écart type pour des combinaisons linéaires sur le temps
         case 1: {
@@ -80,6 +81,18 @@ int main(int argc, char *argv[]) {
             delete evaluationFunctions[0];
             delete evaluationFunctions[1];
             delete evaluationFunctions[2];
+        }
+            break;
+
+        case 3: {
+            IPlayer* player1 = new MonteCarloTreeSearchPlayer();
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5);
+
+            Game game(8, player1, player2);
+
+            game.playGame();
+
+            std::cout << game.getWinner(game.getGameState()) << std::endl;
         }
             break;
     }
