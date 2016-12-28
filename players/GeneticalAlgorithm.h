@@ -108,11 +108,7 @@ bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
     evalForPlayer1.reset();
     delete player1;
 
-    if (game.getWinner(game.getGameState()) == Color::WHITE) {
-        return true;
-    }
-
-    return false;
+    return game.getWinner(game.getGameState()) == Color::WHITE;
 }
 
 void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay, IPlayer *enemy) {

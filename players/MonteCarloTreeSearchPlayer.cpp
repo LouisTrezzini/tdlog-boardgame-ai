@@ -40,7 +40,7 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
         // We now play randomly until the game ends.
         GameState curState = node->getGameState();
 
-        while (Game::hasLegalMoves(curState)) {
+        while (Game::getWinner(curState) == Color::EMPTY) {
             Game::applyMove(curState, Game::getRandomMove(curState));
         }
 
