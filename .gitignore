@@ -31,3 +31,8 @@
 # Fichier Windows
 CMakeLists.txt.user
 
+Release/
+Debug/
+cmake-build-debug/
+.idea/
+__pycache__/
