@@ -56,6 +56,10 @@ public:
         return blackStones;
     };
 
+    int getTotalStones() const {
+        return whiteStones + blackStones;
+    }
+
     bool isFull() const {
         return blackStones + whiteStones == grid.size() * grid.size();
     };

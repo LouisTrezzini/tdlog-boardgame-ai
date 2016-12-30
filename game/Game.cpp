@@ -40,6 +40,13 @@ void Game::playGameWithoutDisplay() {
     }
 }
 
+void Game::playGameWithoutDisplayStoringTime(std::vector<double> &timeNeededToPlay) {
+    while (getWinner(gameState) == Color::EMPTY) {
+        Move pickedMove = pickMoveStoringTime (gameState, timeNeededToPlay);
+        applyMove(gameState, pickedMove);
+    }
+}
+
 Move Game::pickMove(const GameState& gameState) const {
     Color color = gameState.getColorPlaying();
 
@@ -50,6 +57,21 @@ Move Game::pickMove(const GameState& gameState) const {
         return blackPlayer->getAction(gameState);
     }
     // TODO
+    else {
+        throw std::exception();
+    }
+}
+
+Move Game::pickMoveStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
+    Color color = gameState.getColorPlaying();
+
+    if (color == Color::WHITE) {
+        return whitePlayer->getActionStoringTime(gameState, timeNeededToPlay);
+    }
+    else if (color == Color::BLACK) {
+        return blackPlayer->getActionStoringTime(gameState, timeNeededToPlay);
+    }
+        // TODO
     else {
         throw std::exception();
     }

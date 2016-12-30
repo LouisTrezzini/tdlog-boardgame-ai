@@ -23,7 +23,11 @@ public:
 
     void playGameWithoutDisplay();
 
+    void playGameWithoutDisplayStoringTime(std::vector<double> &timeNeededToPlay);
+
     Move pickMove(const GameState& gameState) const;
+
+    Move pickMoveStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const;
 
     void playMove(const Move& move);
 
