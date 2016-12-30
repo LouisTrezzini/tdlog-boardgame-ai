@@ -18,8 +18,9 @@ class DataBase:
         # player1 est le vainqueur de la partie
 
         # Ajouter ou actualiser la base de données
-        type1 = str(type(player1))
-        type2 = str(type(player2))
+        # On ne sélectionne qu'une partie de la chaîne de caractère pour se débarasser de ceux inutiles
+        type1 = str(type(player1))[24:-2]
+        type2 = str(type(player2))[24:-2]
         name1 = 'None'
         name2 = 'None'
         # TODO rajouter les conditions pour les fonctions d'évalutaion

@@ -128,6 +128,8 @@ class GraphicInterface:
         self.FillStatisticsTable()
 
 
+
+
 class GameBoard(QtGui.QWidget):
 
     def __init__(self, player1, player2, sizeImage, nbRows, displayScoreWidget):
@@ -149,7 +151,7 @@ class GameBoard(QtGui.QWidget):
         self.sizeImage = sizeImage
 
         # Création du thème du plateau
-        self.gameBoardTheme = gameBoardTheme("empty.png", "white.png", "black.png", "waiting.png")
+        self.gameBoardTheme = GameBoardTheme("empty.png", "white.png", "black.png", "waiting.png")
         self.gameBoardTheme.scale(self.sizeImage)
 
         # Création du jeu
