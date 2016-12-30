@@ -6,6 +6,7 @@
 #include "../game/Move.h"
 #include "../game/GameState.h"
 #include <chrono>
+#include "../evaluation/IEvaluationFunction.h"
 
 /**
  * Abstract class for all players
