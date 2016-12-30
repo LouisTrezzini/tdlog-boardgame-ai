@@ -21,7 +21,13 @@ public:
 
     void playGame();
 
+    void playGameWithoutDisplay();
+
+    void playGameWithoutDisplayStoringTime(std::vector<double> &timeNeededToPlay);
+
     Move pickMove(const GameState& gameState) const;
+
+    Move pickMoveStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const;
 
     void playMove(const Move& move);
 
@@ -35,7 +41,11 @@ public:
 
     static bool hasLegalMoves(const GameState& gameState);
 
+    static std::vector<Move> getLegalMovesForColor(const GameState& gameState, Color color);
+
     static std::vector<Move> getLegalMoves(const GameState& gameState);
+
+    static bool isValidMoveForColor(const GameState& gameState, const Move& move, Color color);
 
     static bool isValidMove(const GameState& gameState, const Move& move);
 

@@ -2,13 +2,15 @@
 #include "AlphaBetaPlayer.h"
 
 const float INF = 1 / 0.f;
-const int profondeur = 7;
 
+AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_) {
+    evaluationFunction = eval;
+    depth = depth_;
+}
 
-MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta) const {
+MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta, Color colorPlaying) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
-        // Fonction d'évaluation trèèèèès mauvaise
-        return MinMaxOutput(Move::passing(), gameState.getBoard().getStonesByColor(getColor()));
+        return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying));
     }
     else {
         if (isMyTurn) {
@@ -17,7 +19,7 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bo
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, false, alpha, beta);
+                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, false, alpha, beta, colorPlaying);
                 moveResult.move = moves[i];
                 bestResult.max(moveResult);
                 if (bestResult.value >= beta) {
@@ -33,7 +35,7 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bo
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, true, alpha, beta);
+                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, true, alpha, beta, colorPlaying);
                 moveResult.move = moves[i];
                 bestResult.min(moveResult);
                 if (bestResult.value <= alpha) {
@@ -48,7 +50,7 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bo
 
 Move AlphaBetaPlayer::getAction(const GameState& gameState) const {
     GameState nextGameState = gameState;
-    MinMaxOutput resultat = alphaBeta(nextGameState, profondeur, true, - INF, INF);
+    MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, - INF, INF, gameState.getColorPlaying());
     return resultat.move;
 }
 

@@ -5,6 +5,7 @@ import ConfigurationDialog
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
+
 class InterfaceGraphique:
     """ Defines the graphism for the Game. """
     heightMarge = 190
@@ -35,6 +36,7 @@ class InterfaceGraphique:
         self.widget.rules.move(int(self.widthMarge/2), 50)
         self.widget.Title.resize(self.widthWidget, 70)
         self.widget.Title.setMaximumWidth(self.widthWidget)
+        self.widget.Title.setReadOnly(True)
         positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
         self.widget.configureBtn.move(positionBtn, 600)
 
@@ -44,9 +46,9 @@ class InterfaceGraphique:
         self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
 
         #Sauvegarde des paramètres du jeu
-        self.player1 = 0
-        self.player2 = 0
-        self.plateau = 0
+        self.player1 = None
+        self.player2 = None
+        self.plateau = None
 
         #Ouverture de boite de dialogues pour la configuration du jeu
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
@@ -87,7 +89,6 @@ class InterfaceGraphique:
 
 
 class Plateau(QtGui.QWidget):
-
     def __init__(self, player1, player2, tailleImage, nbRows, displayScoreWidget):
         super(Plateau, self).__init__()
 
@@ -116,8 +117,8 @@ class Plateau(QtGui.QWidget):
         self.cases = [QtGui.QLabel() for i in range(nbRows ** 2)]
 
         # Display Number of stones for both palyers:
-        self.displayScoreWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
-        self.displayScoreWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
+        self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
+        self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         # Création des boutons
         for i in range(nbRows):
@@ -132,7 +133,7 @@ class Plateau(QtGui.QWidget):
 
     def change(self, i, j):
         move = Move(i, j)
-        if Game.isValidMove(self.game.GameState, move) and self.humanTurn():
+        if Game.isValidMove(self.game.gameState, move) and self.humanTurn():
             self.game.playMove(move)
             self.update()
             QtCore.QTimer.singleShot(500, self.playTurn)
@@ -152,11 +153,11 @@ class Plateau(QtGui.QWidget):
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.blackPawnImage)
                 if self.game.__getitem__(i, j) == Color.EMPTY:
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.emptySquareImage)
-                if Game.isValidMove(self.game.GameState, Move(i,j)):
+                if Game.isValidMove(self.game.gameState, Move(i,j)):
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.possibleMoveImage)
 
-        self.displayScoreWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
-        self.displayScoreWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
+        self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
+        self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
 
     def playTurn(self):
@@ -164,11 +165,11 @@ class Plateau(QtGui.QWidget):
         Fonction pour jouer un tour
         :return:
         """
-        if Game.getWinner(self.game.GameState) != Color.EMPTY:
+        if Game.getWinner(self.game.gameState) != Color.EMPTY:
             return
 
         if not self.humanTurn():
-            pickedMove = self.game.pickMove(self.game.GameState)
+            pickedMove = self.game.pickMove(self.game.gameState)
             self.game.playMove(pickedMove)
             self.update()
             if not self.humanTurn():
@@ -179,8 +180,8 @@ class Plateau(QtGui.QWidget):
         Fonction renvoyant true si c'est au tour d'un joueur humain de jouer et false sinon
         :return:
         """
-        case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
-        case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
+        case1 = self.player1.isHuman() and self.game.gameState.getColorPlaying() == Color.WHITE
+        case2 = self.player2.isHuman() and self.game.gameState.getColorPlaying() == Color.BLACK
         return case1 or case2
 
 class ThemePlateau():

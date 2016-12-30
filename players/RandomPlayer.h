@@ -1,6 +1,8 @@
 #ifndef TDLOG_BOARDGAME_AI_RANDOMPLAYER_H
 #define TDLOG_BOARDGAME_AI_RANDOMPLAYER_H
 
+#include <cstdlib>
+
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
@@ -10,6 +12,10 @@
  */
 class RandomPlayer : public IPlayer {
 public:
+    RandomPlayer() {
+        srand(time(NULL));
+    }
+
     virtual Move getAction(const GameState& gameState) const;
 
     virtual ~RandomPlayer();

@@ -49,11 +49,11 @@ public:
         delete[] tab;
     }
 
-    int size() const {
+    inline int size() const {
         return _size;
     }
 
-    Color operator()(int i, int j) const {
+    const Color& operator()(int i, int j) const {
         return tab[i * _size + j];
     }
 

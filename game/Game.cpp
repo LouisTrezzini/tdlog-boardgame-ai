@@ -33,6 +33,20 @@ void Game::playGame() {
     }
 }
 
+void Game::playGameWithoutDisplay() {
+    while (getWinner(gameState) == Color::EMPTY) {
+        Move pickedMove = pickMove(gameState);
+        applyMove(gameState, pickedMove);
+    }
+}
+
+void Game::playGameWithoutDisplayStoringTime(std::vector<double> &timeNeededToPlay) {
+    while (getWinner(gameState) == Color::EMPTY) {
+        Move pickedMove = pickMoveStoringTime (gameState, timeNeededToPlay);
+        applyMove(gameState, pickedMove);
+    }
+}
+
 Move Game::pickMove(const GameState& gameState) const {
     Color color = gameState.getColorPlaying();
 
@@ -48,19 +62,31 @@ Move Game::pickMove(const GameState& gameState) const {
     }
 }
 
+Move Game::pickMoveStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
+    Color color = gameState.getColorPlaying();
+
+    if (color == Color::WHITE) {
+        return whitePlayer->getActionStoringTime(gameState, timeNeededToPlay);
+    }
+    else if (color == Color::BLACK) {
+        return blackPlayer->getActionStoringTime(gameState, timeNeededToPlay);
+    }
+        // TODO
+    else {
+        throw std::exception();
+    }
+}
+
 
 Move Game::getRandomMove(const GameState& gameState) {
     std::vector<Move> legalMoves = getLegalMoves(gameState);
 
-    if (legalMoves.empty()){
-        return Move::passing();
-    }
+//    std::random_device rd;
+//    std::mt19937 gen(rd());
+//    std::uniform_int_distribution<std::size_t> distrib(0, legalMoves.size() - 1);
+//    return legalMoves[distrib(gen)];
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<std::size_t> distrib(0, legalMoves.size() - 1);
-
-    return legalMoves[distrib(gen)];
+    return legalMoves[rand() % legalMoves.size()];
 }
 
 bool Game::hasLegalMoves(const GameState& gameState) {
@@ -79,8 +105,7 @@ bool Game::hasLegalMoves(const GameState& gameState) {
     return false;
 }
 
-// TODO passing is a legal move !
-std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
+std::vector<Move> Game::getLegalMovesForColor(const GameState& gameState, Color color) {
     std::vector<Move> moves;
 
     if (gameState.getBoard().isFull())
@@ -90,7 +115,7 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
         for (int j = 0; j < gameState.getBoard().getSize(); j++) {
             Move move(i, j);
 
-            if (isValidMove(gameState, move))
+            if (isValidMoveForColor(gameState, move, color))
                 moves.push_back(move);
         }
     }
@@ -102,18 +127,20 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
     return moves;
 }
 
-bool Game::isValidMove(const GameState& gameState, const Move& move) {
+std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
+    return getLegalMovesForColor(gameState, gameState.getColorPlaying());
+}
+
+bool Game::isValidMoveForColor(const GameState& gameState, const Move& move, Color color) {
     int x = move.getX();
     int y = move.getY();
 
     const Board& board = gameState.getBoard();
 
-    Color piece = board.pieceAt(x, y);
+    const Color& piece = board.pieceAt(x, y);
 
     if (piece != Color::EMPTY)
         return false;
-
-    Color colorPlaying = gameState.getColorPlaying();
 
     for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
@@ -124,19 +151,23 @@ bool Game::isValidMove(const GameState& gameState, const Move& move) {
             int xp = x + distance * dx;
             int yp = y + distance * dy;
 
-            while (board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorOpponent(colorPlaying)) {
+            while (board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorOpponent(color)) {
                 distance++;
                 xp = x + distance * dx;
                 yp = y + distance * dy;
             };
 
-            if (distance > 1 && board.inBounds(xp, yp) && board.pieceAt(xp, yp) == colorPlaying) {
+            if (distance > 1 && board.inBounds(xp, yp) && board.pieceAt(xp, yp) == color) {
                 return true;
             }
         }
     }
 
     return false;
+}
+
+bool Game::isValidMove(const GameState& gameState, const Move& move) {
+    return isValidMoveForColor(gameState, move, gameState.getColorPlaying());
 }
 
 // TODO
@@ -189,16 +220,18 @@ void Game::applyMove(GameState& gameState, const Move& move) {
 }
 
 void Game::playMove(const Move& move) {
-    // On affiche y puis x pour correspondre à la notation tableau plus simple pour l'utilisateur
-    std::cout << gameState.getColorPlaying() << " plays at " << move.getY() << " " << move.getX() << std::endl;
+    std::cout << gameState.getColorPlaying() << " plays at " << move.toString() << std::endl;
 
     applyMove(gameState, move);
 }
 
 Color Game::getWinner(const GameState& gameState) {
-    Board board = gameState.getBoard();
+    const Board& board = gameState.getBoard();
 
-    if (board.isFull()) {
+    if (board.isFull() ||
+            !hasLegalMoves(GameState(board, Color::WHITE)) && !hasLegalMoves(GameState(board, Color::BLACK))
+        )
+    {
         if (board.getBlackStones() > board.getWhiteStones()) {
             return Color::BLACK;
         }
@@ -208,22 +241,8 @@ Color Game::getWinner(const GameState& gameState) {
             return Color::WHITE;
         }
     }
-
-    if(hasLegalMoves(GameState(board, Color::BLACK))) {
-        return Color::EMPTY;
-    }
-
-    if(hasLegalMoves(GameState(board, Color::WHITE))) {
-        return Color::EMPTY;
-    }
-
-    if (board.getBlackStones() > board.getWhiteStones()) {
-        return Color::BLACK;
-    }
-
-    // ties go to white
     else {
-        return Color::WHITE;
+        return Color::EMPTY;
     }
 }
 

@@ -37,7 +37,7 @@ public:
 
     void flipStoneAt(int i, int j);
 
-    Color pieceAt(int i, int j) const {
+    const Color& pieceAt(int i, int j) const {
         return grid(i, j);
     }
 
@@ -49,12 +49,16 @@ public:
         return whiteStones;
     }
 
-    int getStonesByColor(Color color) {
+    int getStonesByColor(Color color) const{
         if (color == Color::WHITE) {
             return whiteStones;
         }
         return blackStones;
     };
+
+    int getTotalStones() const {
+        return whiteStones + blackStones;
+    }
 
     bool isFull() const {
         return blackStones + whiteStones == grid.size() * grid.size();
@@ -66,7 +70,7 @@ public:
 
     std::string toString() const;
 
-    bool inBounds(int i, int j) const {
+    inline bool inBounds(int i, int j) const {
         return 0 <= i &&  i < grid.size() && 0 <= j && j < grid.size();
     }
 };

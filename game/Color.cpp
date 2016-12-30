@@ -1,6 +1,6 @@
 #include "Color.h"
 
-Color colorOpponent(Color color) {
+Color colorOpponent(const Color& color) {
     switch(color) {
         case Color::BLACK:
             return Color::WHITE;
