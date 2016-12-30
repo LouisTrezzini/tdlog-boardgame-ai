@@ -5,7 +5,7 @@
 #include "../game/Color.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
-#include <time.h>
+#include <chrono>
 
 /**
  * Abstract class for all players
@@ -26,12 +26,15 @@ public:
         return false;
     }
     virtual Move getAction(const GameState& gameState) const = 0;
+    
     virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
-        double startTime = clock();
+        start = std::chrono::system_clock::now();
         Move moveToPlay = getAction(gameState);
         // TODO Exception si timeNeededToPlay n'est pas initialisé correctement
         // TODO Le -4 est moche
-        timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += (-startTime + clock())/(double)CLOCKS_PER_SEC;
+        timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::system_clock::now() - start
+        ).count();
         return moveToPlay;
     }
     virtual ~IPlayer() = 0;
