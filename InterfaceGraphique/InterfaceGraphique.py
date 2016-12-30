@@ -31,7 +31,6 @@ class GraphicInterface:
         self.widget.stackedWidget.setMaximumSize(self.widthWidget, self.heightWidget)
         self.widget.rules.resize(self.widthWidget - self.widthMarge,
                                          self.heightWidget - self.heightMarge)
-        self.widget.rules.setReadOnly(True)
         self.widget.rules.setMaximumSize(self.widthWidget - self.widthMarge,
                                          self.heightWidget - self.heightMarge)
         self.widget.rules.move(int(self.widthMarge/2), 50)
@@ -40,6 +39,11 @@ class GraphicInterface:
         positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
         self.widget.configureBtn.move(positionBtn, 580)
         self.widget.statisticsBtn.move(positionBtn, 610)
+        
+        # Dimensionnement de la table des statistiques
+        self.widget.tableWidget.setMaximumSize(self.widthWidget - self.widthMarge,
+                                         self.heightWidget - self.heightMarge)
+        self.widget.tableWidget.move(int(self.widthMarge/2), 50)
 
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
@@ -58,8 +62,6 @@ class GraphicInterface:
         self.widget.show()
 
     def FillStatisticsTable(self):
-
-        #TODO Afficher des titres de colonnes a la table
         contentToDisplay = data.display()
 
         self.widget.tableWidget.setRowCount(len(contentToDisplay))
@@ -245,4 +247,3 @@ widget = uic.loadUi("mainwindow.ui")
 GraphicInterface(widget, 60, 8)
 app.exec_()
 data.close()
-
