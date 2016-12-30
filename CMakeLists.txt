@@ -5,6 +5,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(EVALUATION_FILES
         evaluation/IEvaluationFunction.h
+        evaluation/EndGameEvaluation.cpp
+        evaluation/EndGameEvaluation.h
         evaluation/LinearCombinationEvaluation.cpp
         evaluation/LinearCombinationEvaluation.h
         evaluation/LinearCombinationOverTimeEvaluation.cpp
