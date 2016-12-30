@@ -1,8 +1,9 @@
 #ifndef TDLOG_BOARDGAME_AI_FONCTIONEVALUATION_H
 #define TDLOG_BOARDGAME_AI_FONCTIONEVALUATION_H
 
+#include "../game/GameState.h"
+#include "../game/Color.h"
 
-#include "../game/Game.h"
 
 /*
  * Abstract for all evaluation function
