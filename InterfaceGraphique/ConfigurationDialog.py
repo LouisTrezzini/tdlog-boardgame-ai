@@ -50,16 +50,16 @@ class ConfigurationDialog(QtGui.QWidget):
         if player_type == "HumanPlayer":
             player_instance = HumanPlayer()
         if player_type == "RandomPlayer":
-            player_instance = RandomPlayer()
+            player_instance = RandomPlayer(True)
         if player_type == "MonteCarloTreeSearchPlayer":
-            player_instance = MonteCarloTreeSearchPlayer()
+            player_instance = MonteCarloTreeSearchPlayer(True)
         if player_type == "MinMaxPlayer":
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3)
+            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3, True)
         if player_type == "AlphaBetaPlayer":
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7)
+            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7, True)
         return player_instance
 

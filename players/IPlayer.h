@@ -5,15 +5,19 @@
 #include "../game/Color.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
+#include "../evaluation/EndGameEvaluation.h"
 #include <chrono>
-#include "../evaluation/IEvaluationFunction.h"
+#include <memory>
+#include <math.h>
+
 
 /**
  * Abstract class for all players
  */
 class IPlayer {
     Color color;
-
+protected:
+    bool bestFinish;
 public:
     Color getColor() const {
         return color;
@@ -26,7 +30,7 @@ public:
     virtual bool isHuman() {
         return false;
     }
-    virtual Move getAction(const GameState& gameState) const = 0;
+    virtual Move getBasicAction(const GameState& gameState) const = 0;
     
     virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
         auto start = std::chrono::system_clock::now();
@@ -37,6 +41,9 @@ public:
         timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += timePassed.count();
         return moveToPlay;
     }
+
+    virtual Move getAction(const GameState& gameState) const;
+
     virtual ~IPlayer() = 0;
 };
 

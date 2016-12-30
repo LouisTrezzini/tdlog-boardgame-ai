@@ -16,7 +16,11 @@ class MonteCarloTreeSearchPlayer : public IPlayer {
     std::unique_ptr<Node> computeTree(const GameState& rootState) const;
 
 public:
-    virtual Move getAction(const GameState& gameState) const;
+    MonteCarloTreeSearchPlayer(bool bestFinish_) {
+        bestFinish = bestFinish_;
+    }
+
+    virtual Move getBasicAction(const GameState& gameState) const;
 
     virtual ~MonteCarloTreeSearchPlayer();
 };
