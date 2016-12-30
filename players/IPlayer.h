@@ -28,13 +28,12 @@ public:
     virtual Move getAction(const GameState& gameState) const = 0;
     
     virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
-        start = std::chrono::system_clock::now();
+        auto start = std::chrono::system_clock::now();
         Move moveToPlay = getAction(gameState);
         // TODO Exception si timeNeededToPlay n'est pas initialisé correctement
         // TODO Le -4 est moche
-        timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += std::chrono::duration_cast<std::chrono::seconds>(
-            std::chrono::system_clock::now() - start
-        ).count();
+        std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
+        timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += timePassed.count();
         return moveToPlay;
     }
     virtual ~IPlayer() = 0;
