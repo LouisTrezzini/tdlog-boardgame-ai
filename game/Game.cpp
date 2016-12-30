@@ -103,6 +103,11 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
 }
 
 bool Game::isValidMove(const GameState& gameState, const Move& move) {
+    // Cas où le mouvement est de passer
+    if (move == Move::passing()) {
+        return (getLegalMoves(gameState)[0] == move);
+    }
+
     int x = move.getX();
     int y = move.getY();
 

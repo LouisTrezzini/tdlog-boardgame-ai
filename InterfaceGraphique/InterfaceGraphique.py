@@ -228,6 +228,15 @@ class GameBoard(QtGui.QWidget):
         """
         case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
         case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
+
+        # Fait passer le joueur humain automatiquement s'il n'a aucun coup
+        cannotPlay = Move.passing()
+        if (case1 or case2) and Game.isValidMove(self.game.GameState, cannotPlay):
+            self.game.playMove(cannotPlay)
+            self.update()
+            case1 = self.player1.isHuman() and self.game.GameState.getColorPlaying() == Color.WHITE
+            case2 = self.player2.isHuman() and self.game.GameState.getColorPlaying() == Color.BLACK
+            return case1 or case2
         return case1 or case2
 
 
