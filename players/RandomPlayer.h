@@ -12,11 +12,12 @@
  */
 class RandomPlayer : public IPlayer {
 public:
-    RandomPlayer() {
+    RandomPlayer(float timeRemainingToPlay_ = 0) {
         srand(time(NULL));
+        setTimeRemainingToPlay( timeRemainingToPlay_);
     }
 
-    virtual Move getAction(const GameState& gameState) const;
+    virtual Move getAction(const GameState& gameState);
 
     virtual ~RandomPlayer();
 };

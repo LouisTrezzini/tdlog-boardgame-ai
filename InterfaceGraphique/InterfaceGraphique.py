@@ -46,6 +46,7 @@ class InterfaceGraphique:
         self.widget.returnBtn.clicked.connect(lambda _ : self.stopGameWidget())
 
         #Sauvegarde des paramètres du jeu
+        self.timeLimit = None
         self.player1 = None
         self.player2 = None
         self.plateau = None
@@ -69,12 +70,13 @@ class InterfaceGraphique:
         self.configure_dialog.initUI()
         self.player1 = self.configure_dialog.player1
         self.player2 = self.configure_dialog.player2
+        self.timeLimit = self.configure_dialog.timeLimit
         self.play()
 
     def play(self):
         """ Launchs the game """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Game)
-        self.plateau = Plateau(self.player2, self.player1,
+        self.plateau = Plateau(self.player2, self.player1, self.timeLimit,
                                self.tailleImage, self.nbRows, self.widget)
         self.plateau.setParent(self.widget.boxGame)
         # Si on enlève le + 1, la taille est trop petite
@@ -87,13 +89,12 @@ class InterfaceGraphique:
         QtCore.QTimer.singleShot(500, self.plateau.play)
 
 
-
 class Plateau(QtGui.QWidget):
-    def __init__(self, player1, player2, tailleImage, nbRows, displayScoreWidget):
+    def __init__(self, player1, player2, timeLimit, tailleImage, nbRows, Widget):
         super(Plateau, self).__init__()
 
         # Définition du widget parent
-        self.displayScoreWidget = displayScoreWidget
+        self.widget = Widget
 
         # Création du layout
         self.grid = QtGui.QGridLayout()
@@ -117,8 +118,9 @@ class Plateau(QtGui.QWidget):
         self.cases = [QtGui.QLabel() for i in range(nbRows ** 2)]
 
         # Display Number of stones for both palyers:
-        self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
-        self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
+        self.widget.scorePlayer1.display(self.game.gameState.board.blackStones)
+        self.widget.scorePlayer2.display(self.game.gameState.board.whiteStones)
+        self.widget.timer.display(self.player1.timeRemainingToPlay/60)
 
         # Création des boutons
         for i in range(nbRows):
@@ -156,9 +158,13 @@ class Plateau(QtGui.QWidget):
                 if Game.isValidMove(self.game.gameState, Move(i,j)):
                     self.cases[i + j * self.nbRows].setPixmap(self.themePlateau.possibleMoveImage)
 
-        self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
-        self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
+        self.widget.scorePlayer1.display(self.game.gameState.board.blackStones)
+        self.widget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
+        if self.game.gameState.getColorPlaying() == Color.BLACK :
+            self.widget.timer.display(self.player1.timeRemainingToPlay/60)
+        else :
+            self.widget.timer.display(self.player2.timeRemainingToPlay/60)
 
     def playTurn(self):
         """

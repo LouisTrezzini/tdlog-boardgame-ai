@@ -1,10 +1,12 @@
 #include "HumanPlayer.h"
 #include "../game/Game.h"
 #include <stdexcept>
+#include <chrono>
+#include <iostream>
 
-
-Move HumanPlayer::getAction(const GameState& gameState) const {
+Move HumanPlayer::getAction(const GameState& gameState) {
     auto moves = Game::getLegalMoves(gameState);
+    auto startTime = std::chrono::system_clock::now();
 
     bool moveUnavailable = true;
     Move askedMove = Move::passing();
@@ -32,6 +34,9 @@ Move HumanPlayer::getAction(const GameState& gameState) const {
             }
         }
     }
+    double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
+    setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed);
+    std::cout << getTimeRemainingToPlay() << std::endl;
     return askedMove;
 }
 

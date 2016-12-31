@@ -94,7 +94,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="Configuration">
      <widget class="QTextEdit" name="rules">
@@ -221,6 +221,16 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="text">
        <string>White Player</string>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="timer">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>10</y>
+        <width>64</width>
+        <height>41</height>
+       </rect>
       </property>
      </widget>
     </widget>

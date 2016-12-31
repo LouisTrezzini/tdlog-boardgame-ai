@@ -13,8 +13,9 @@
  */
 class IPlayer {
     Color color;
+    float timeRemainingToPlay;
+public:    
 
-public:
     Color getColor() const {
         return color;
     }
@@ -23,12 +24,20 @@ public:
         IPlayer::color = color;
     }
 
+    float getTimeRemainingToPlay() const {
+        return timeRemainingToPlay;
+    }
+
+    void setTimeRemainingToPlay (float time) {
+        timeRemainingToPlay = time;
+    }
+
     virtual bool isHuman() {
         return false;
     }
-    virtual Move getAction(const GameState& gameState) const = 0;
+    virtual Move getAction(const GameState& gameState) = 0;
     
-    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
+    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) {
         auto start = std::chrono::system_clock::now();
         Move moveToPlay = getAction(gameState);
         // TODO Exception si timeNeededToPlay n'est pas initialisé correctement
@@ -40,7 +49,7 @@ public:
     virtual ~IPlayer() = 0;
 };
 
-inline IPlayer::~IPlayer() { };
+inline IPlayer::~IPlayer() { }
 
 
 #endif //TDLOG_BOARDGAME_AI_IPLAYER_H

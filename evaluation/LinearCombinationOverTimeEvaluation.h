@@ -7,7 +7,6 @@
 
 using namespace std;
 
-const int InitialStones = 4;
 
 /*
  * Combination of evaluation functions over time

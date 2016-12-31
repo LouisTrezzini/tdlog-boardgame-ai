@@ -3,9 +3,10 @@
 
 const float INF = 1 / 0.f;
 
-AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_) {
+AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, float timeRemainingToPlay_) {
     evaluationFunction = eval;
     depth = depth_;
+    setTimeRemainingToPlay(timeRemainingToPlay_);
 }
 
 MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta, Color colorPlaying,
@@ -50,7 +51,7 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bo
     }
 }
 
-Move AlphaBetaPlayer::getAction(const GameState& gameState) const {
+Move AlphaBetaPlayer::getAction(const GameState& gameState) {
     auto start = std::chrono::system_clock::now();
     GameState nextGameState = gameState;
     MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, - INF, INF, gameState.getColorPlaying(), start);

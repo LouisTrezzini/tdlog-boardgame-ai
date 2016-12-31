@@ -20,11 +20,13 @@ class ConfigurationDialog(QtGui.QWidget):
         self.player1 = None
         self.player2 = None
         self.depth = 0
+        self.timeLimit = 0
         self.setGeometry(300, 300, 500, 200)
 
     def initUI(self):
         """ Launchs several Dialogs in which the user can enter the value wanted
             for the Game. """
+        self.setTimeLimit();
         self.player1 = self.createPlayer(self.askPlayerType())
         self.player2 = self.createPlayer(self.askPlayerType())
 
@@ -44,22 +46,31 @@ class ConfigurationDialog(QtGui.QWidget):
                                   'Enter the force of the IA:', min = 1)
         self.depth = int(force)
 
+    def setTimeLimit(self):
+        """ Launchs a Dialog in which the user can decide to limit
+            the time to play. """
+        timesList = list([str(i) for i in range (5, 120, 5)])
+        timesList.append("No limit of time")
+        time, ok = QtGui.QInputDialog.getItem(self, 'Choice of a the limite of time to play',
+                                              'Limit of time to play', timesList, editable = False)
+        if time != 'No limit of time':
+            time = float(time) * 60
+            self.timeLimit = time
+
     def createPlayer(self, player_type):
         """ Configures the type of player with a string. """
         player_instance = None
         if player_type == "HumanPlayer":
-            player_instance = HumanPlayer()
-        if player_type == "RandomPlayer":
-            player_instance = RandomPlayer()
-        if player_type == "MonteCarloTreeSearchPlayer":
-            player_instance = MonteCarloTreeSearchPlayer()
-        if player_type == "MinMaxPlayer":
-            # FIXME
-            # Donner le choix à l'utilisateur
-            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3)
-        if player_type == "AlphaBetaPlayer":
-            # FIXME
-            # Donner le choix à l'utilisateur
-            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7)
-        return player_instance
+            player_instance = HumanPlayer(self.timeLimit)
+        elif player_type == "RandomPlayer":
+            player_instance = RandomPlayer(self.timeLimit)
 
+        else :
+            self.setDepth()
+            if player_type == "MonteCarloTreeSearchPlayer":
+                player_instance = MonteCarloTreeSearchPlayer(self.timeLimit)
+            if player_type == "MinMaxPlayer":
+                player_instance = MinMaxPlayer(PawnNumberEvaluation(), self.depth, self.timeLimit)
+            if player_type == "AlphaBetaPlayer":
+                player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), self.depth, self.timeLimit)
+        return player_instance

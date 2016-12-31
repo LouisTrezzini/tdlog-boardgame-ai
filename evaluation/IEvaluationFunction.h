@@ -4,6 +4,8 @@
 #include "../game/GameState.h"
 #include "../game/Color.h"
 
+const int InitialStones = 4;
+
 /*
  * Abstract for all evaluation function
  */

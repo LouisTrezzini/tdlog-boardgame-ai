@@ -16,7 +16,12 @@ class MonteCarloTreeSearchPlayer : public IPlayer {
     std::unique_ptr<Node> computeTree(const GameState& rootState) const;
 
 public:
-    virtual Move getAction(const GameState& gameState) const;
+
+    MonteCarloTreeSearchPlayer (float timeRemainingToPlay_ = 0){
+        setTimeRemainingToPlay(timeRemainingToPlay_);
+    }
+
+    virtual Move getAction(const GameState& gameState);
 
     virtual ~MonteCarloTreeSearchPlayer();
 };

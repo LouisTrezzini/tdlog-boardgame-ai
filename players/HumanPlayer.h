@@ -10,7 +10,11 @@
  */
 class HumanPlayer : public IPlayer {
 public:
-    virtual Move getAction(const GameState& gameState) const;
+    HumanPlayer(float timeRemainingToPlay_= 0){
+        setTimeRemainingToPlay(timeRemainingToPlay_);
+    }
+
+    virtual Move getAction(const GameState& gameState);
 
     virtual bool isHuman() {
         return true;

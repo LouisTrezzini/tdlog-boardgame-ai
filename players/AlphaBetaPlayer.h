@@ -16,12 +16,12 @@ class AlphaBetaPlayer : public IPlayer {
     std::shared_ptr<IEvaluationFunction> evaluationFunction;
     int depth;
 public:
-    AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_);
+    AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, float timeRemainingToPlay_ = 0);
 
     MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying,
                            std::chrono::time_point<std::chrono::system_clock> start) const;
 
-    virtual Move getAction(const GameState& gameState) const;
+    virtual Move getAction(const GameState& gameState);
 
     virtual ~AlphaBetaPlayer();
 };

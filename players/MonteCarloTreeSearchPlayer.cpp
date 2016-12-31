@@ -68,8 +68,9 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     return root;
 }
 
-Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) const {
+Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) {
     auto moves = Game::getLegalMoves(gameState);
+    auto startTime = std::chrono::system_clock::now();
 
     if(moves.empty())
         return Move::passing();
@@ -103,6 +104,8 @@ Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) const {
             bestScore = expected_success_rate;
         }
     }
+    double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
+    setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed);
 
     return bestMove;
 }
