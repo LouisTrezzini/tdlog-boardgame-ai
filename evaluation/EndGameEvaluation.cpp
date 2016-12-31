@@ -1,7 +1,7 @@
 #include "EndGameEvaluation.h"
 #include "../game/Game.h"
 
-double EndGameEvaluation::operator()(const GameState& gameState, Color color) const {
+double EndGameEvaluation::operator()(const GameState& gameState, Color color, double timePassed) const {
     if (Game::getWinner(gameState) == color) {
         return 1;
     }

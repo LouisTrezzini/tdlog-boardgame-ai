@@ -21,7 +21,7 @@ public:
     LinearCombinationOverTimeEvaluation(const vector<double>& coefficients,
                                         const vector<IEvaluationFunction *>& functions);
 
-    virtual double operator()(const GameState& gameState, Color color) const;
+    virtual double operator()(const GameState& gameState, Color color, double timePassed) const;
 
     virtual ~LinearCombinationOverTimeEvaluation();
 };

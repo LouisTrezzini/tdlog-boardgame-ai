@@ -18,7 +18,7 @@ public:
 
     LinearCombinationEvaluation(vector<double> coefficients, vector<IEvaluationFunction *> functions);
 
-    virtual double operator()(const GameState& gameState, Color color) const;
+    virtual double operator()(const GameState& gameState, Color color, double timePassed) const;
 
     virtual ~LinearCombinationEvaluation();
 };

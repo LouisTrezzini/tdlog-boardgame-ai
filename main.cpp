@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
 
         // Algorithme génétique
         case 0: {
+
             IPlayer *enemy = new RandomPlayer();
             GeneticalAlgorithm(50, 500, 100, enemy);
             delete enemy;
@@ -34,6 +35,7 @@ int main(int argc, char *argv[]) {
             evaluationFunctions.push_back(new PawnNumberEvaluation());
             evaluationFunctions.push_back(new PositionEvaluation());
             evaluationFunctions.push_back(new MobilityEvaluation());
+            evaluationFunctions.push_back(new TimeEvaluation());
 
             vector<double> coefficients;
             for (int j = 0; j < 60 * evaluationFunctions.size(); j++) {
@@ -52,6 +54,7 @@ int main(int argc, char *argv[]) {
             delete evaluationFunctions[0];
             delete evaluationFunctions[1];
             delete evaluationFunctions[2];
+            delete evaluationFunctions[3];
         }
             break;
 
@@ -63,6 +66,7 @@ int main(int argc, char *argv[]) {
             evaluationFunctions.push_back(new PawnNumberEvaluation());
             evaluationFunctions.push_back(new PositionEvaluation());
             evaluationFunctions.push_back(new MobilityEvaluation());
+            evaluationFunctions.push_back(new TimeEvaluation());
 
             vector<double> coefficients;
             for (int j = 0; j < evaluationFunctions.size(); j++) {
@@ -81,6 +85,7 @@ int main(int argc, char *argv[]) {
             delete evaluationFunctions[0];
             delete evaluationFunctions[1];
             delete evaluationFunctions[2];
+            delete evaluationFunctions[3];
         }
             break;
 

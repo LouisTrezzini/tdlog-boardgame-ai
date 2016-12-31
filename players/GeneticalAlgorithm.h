@@ -14,6 +14,7 @@
 #include "../evaluation/PawnNumberEvaluation.h"
 #include "../evaluation/PositionEvaluation.h"
 #include "../evaluation/MobilityEvaluation.h"
+#include "../evaluation/TimeEvaluation.h"
 #include "AlphaBetaPlayer.h"
 
 using namespace std;
@@ -161,6 +162,7 @@ void GeneticalAlgorithm(int N, int nbiteration,
     evaluationFunctions.push_back(new PawnNumberEvaluation());
     evaluationFunctions.push_back(new PositionEvaluation());
     evaluationFunctions.push_back(new MobilityEvaluation());
+    evaluationFunctions.push_back(new TimeEvaluation());
 
     // Définition de notre population
     vector <Individu> population;

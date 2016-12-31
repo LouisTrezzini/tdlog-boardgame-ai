@@ -7,11 +7,11 @@ LinearCombinationEvaluation::LinearCombinationEvaluation(vector<double> coeffici
         : coefficients(coefficients), functions(functions) {
 }
 
-double LinearCombinationEvaluation::operator()(const GameState& gameState, Color color) const {
+double LinearCombinationEvaluation::operator()(const GameState& gameState, Color color, double timePassed) const {
     double result = 0;
 
     for (int i = 0; i < coefficients.size(); i++) {
-        result += (*functions[i])(gameState, color) * coefficients[i];
+        result += (*functions[i])(gameState, color, timePassed) * coefficients[i];
     }
 
     return result;

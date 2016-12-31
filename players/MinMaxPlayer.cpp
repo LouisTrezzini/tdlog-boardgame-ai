@@ -9,9 +9,11 @@ MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_
     depth = depth_;
 }
 
-MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
+MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying,
+                                  std::chrono::time_point<std::chrono::system_clock>  start) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
-        return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying));
+        std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
+        return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying, timePassed.count()));
     }
     else {
         if (isMyTurn) {
@@ -20,7 +22,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, false, colorPlaying);
+                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, false, colorPlaying, start);
                 moveResult.move = moves[i];
                 bestResult.max(moveResult);
             }
@@ -32,7 +34,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, true, colorPlaying);
+                MinMaxOutput moveResult = minMax(nextGameState, profondeur - 1, true, colorPlaying, start);
                 moveResult.move = moves[i];
                 bestResult.min(moveResult);
             }
@@ -43,7 +45,8 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
 
 Move MinMaxPlayer::getAction(const GameState& gameState) const {
     GameState nextGameState = gameState;
-    MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying());
+    auto start = std::chrono::system_clock::now();
+    MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying(), start);
     return resultat.move;
 }
 
