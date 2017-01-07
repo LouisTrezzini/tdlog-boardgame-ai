@@ -62,6 +62,7 @@ class GraphicInterface:
         self.widget.show()
 
     def FillStatisticsTable(self):
+        data=BDD.DataBase()
         contentToDisplay = data.display()
 
         self.widget.tableWidget.setRowCount(len(contentToDisplay))
@@ -74,6 +75,7 @@ class GraphicInterface:
             for col in range(0, 7):
                 self.widget.tableWidget.setItem(row, col, QtGui.QTableWidgetItem(str(sqlRow[col])))
             row += 1
+        data.close()
 
     def GoBackToConfiguration(self):
         """
@@ -209,9 +211,11 @@ class GameBoard(QtGui.QWidget):
         :return:
         """
         if Game.getWinner(self.game.GameState) != Color.EMPTY:
+            data=BDD.DataBase()
             # FIXME A adapter après le merge avec la branche genetic (enlever majuscles, et le get)
             data.actualise(self.player1, self.player2, self.game.GameState.Board.getWhiteStones)
             data.actualise(self.player2, self.player1, self.game.GameState.Board.getBlackStones)
+            data.close()
             return
 
         if not self.humanTurn():
@@ -252,9 +256,9 @@ class GameBoardTheme():
         self.blackPawnImage = self.blackPawnImage.scaled(sizeImages, sizeImages)
         self.possibleMoveImage = self.possibleMoveImage.scaled(sizeImages, sizeImages)
 
-data = BDD.DataBase()
+#data = BDD.DataBase()
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
 GraphicInterface(widget, 60, 8)
 app.exec_()
-data.close()
+#data.close()
