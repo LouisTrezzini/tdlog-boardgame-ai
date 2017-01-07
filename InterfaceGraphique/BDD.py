@@ -8,7 +8,7 @@ class DataBase:
 
     def __init__(self):
         # créer la base de données
-        self.conn = sqlite3.connect(':memory:')
+        self.conn = sqlite3.connect('BDD.db')
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS scoreOthello (type1 TEXT, name1 TEXT, type2 TEXT,
 						name2 TEXT, bestScore INTEGER, numberOfPlayedGame INTEGER, numberOfVictory INTEGER)""")
