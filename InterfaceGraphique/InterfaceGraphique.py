@@ -66,13 +66,12 @@ class GraphicInterface:
         contentToDisplay = data.display()
 
         self.widget.tableWidget.setRowCount(len(contentToDisplay))
-        #FIXME trouver un moyen de retrieve le 7 (après aussi)
-        self.widget.tableWidget.setColumnCount(7)
+        self.widget.tableWidget.setColumnCount(data.nbAttribute)
 
         row = 0
         for i in range(len(contentToDisplay)):
             sqlRow = contentToDisplay[i]
-            for col in range(0, 7):
+            for col in range(0, data.nbAttribute):
                 self.widget.tableWidget.setItem(row, col, QtGui.QTableWidgetItem(str(sqlRow[col])))
             row += 1
         data.close()
