@@ -212,8 +212,8 @@ class GameBoard(QtGui.QWidget):
         if Game.getWinner(self.game.GameState) != Color.EMPTY:
             data=BDD.DataBase()
             # FIXME A adapter après le merge avec la branche genetic (enlever majuscles, et le get)
-            data.actualise(self.player1, self.player2, self.game.GameState.Board.getWhiteStones)
-            data.actualise(self.player2, self.player1, self.game.GameState.Board.getBlackStones)
+            data.actualise(self.player1, self.player2, self.game.GameState.Board.getWhiteStones,self.nbRows)
+            data.actualise(self.player2, self.player1, self.game.GameState.Board.getBlackStones,self.nbRows)
             data.close()
             return
 
@@ -255,9 +255,7 @@ class GameBoardTheme():
         self.blackPawnImage = self.blackPawnImage.scaled(sizeImages, sizeImages)
         self.possibleMoveImage = self.possibleMoveImage.scaled(sizeImages, sizeImages)
 
-#data = BDD.DataBase()
 app = QtGui.QApplication(sys.argv)
 widget = uic.loadUi("mainwindow.ui")
 GraphicInterface(widget, 60, 8)
 app.exec_()
-#data.close()

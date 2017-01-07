@@ -15,7 +15,7 @@ class DataBase:
 						name2 TEXT, bestScore INTEGER, numberOfPlayedGame INTEGER, numberOfVictory INTEGER)""")
         self.conn.commit()
 
-    def actualise(self, player1, player2, score):
+    def actualise(self, player1, player2, score, nbRows):
         # player1 est le vainqueur de la partie
 
         # Ajouter ou actualiser la base de données
@@ -33,18 +33,16 @@ class DataBase:
         self.cur.execute("SELECT type1, name1, type2, name2 From scoreOthello")
         result = self.cur.fetchall()
         if (type1, name1, type2, name2) not in result:
-            # FIXME Faire passer le 32 en variable
             self.cur.execute("INSERT INTO scoreOthello VALUES (?,?,?,?,?,?,?)",
-                             (type1, name1, type2, name2, score, 1, int(score > 32)))
+                             (type1, name1, type2, name2, score, 1, int(score > nbRows**2/2)))
             self.conn.commit()
         else:
             self.cur.execute("""SELECT bestScore FROM scoreOthello WHERE type1="{}" AND name1 = "{}"
 							AND type2  = "{}" AND name2 = "{}" """.format(type1, name1, type2, name2))
             newScore = max(self.cur.fetchone()[0], score)
-            # FIXME Faire passer le 32 en variable
             self.cur.execute("""UPDATE scoreOthello SET bestScore = {}, numberOfPlayedGame = numberOfPlayedGame + 1,
 							numberOfVictory = numberOfVictory + {} WHERE type1="{}" AND name1 = "{}" AND type2  = "{}"
-							AND name2 = "{}" """.format(newScore, int(score > 32), type1, name1, type2, name2))
+							AND name2 = "{}" """.format(newScore, int(score > nbRows**2/2), type1, name1, type2, name2))
             self.conn.commit()
 
     def display(self):
