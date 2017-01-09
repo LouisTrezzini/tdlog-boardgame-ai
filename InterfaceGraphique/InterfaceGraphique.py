@@ -5,6 +5,7 @@ import ConfigurationDialog
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
+import time as Time
 
 class InterfaceGraphique:
     """ Defines the graphism for the Game. """
@@ -88,6 +89,25 @@ class InterfaceGraphique:
         self.plateau.show()
         QtCore.QTimer.singleShot(500, self.plateau.play)
 
+class Timer ():
+    """ Represents a Timer that indicates the times that remains
+        to play. """
+
+    def __init__(self, hours, minutes, seconds, widget):
+        # Initialize the timer
+        self.widget = widget
+        self.time = QtCore.QTime(hours, minutes, seconds)
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.decrease)
+
+    def decrease(self):
+        self.time.addSecs(-1)
+        strTime = "{}:{}:{}".format(self.time.hour,
+                                    self.time.minute,
+                                    self.time.seconde)
+        self.widget.timer.setText(strTime)
+
 
 class Plateau(QtGui.QWidget):
     def __init__(self, player1, player2, timeLimit, tailleImage, nbRows, Widget):
@@ -120,7 +140,15 @@ class Plateau(QtGui.QWidget):
         # Display Number of stones for both palyers:
         self.widget.scorePlayer1.display(self.game.gameState.board.blackStones)
         self.widget.scorePlayer2.display(self.game.gameState.board.whiteStones)
-        self.widget.timer.display(self.player1.timeRemainingToPlay/60)
+
+        #Display Timer:
+        self.timeRemainingCurrentPlayer = Time.gmtime(self.player1.timeRemainingToPlay)
+        self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer.tm_hour,
+                                        self.timeRemainingCurrentPlayer.tm_min,
+                                        self.timeRemainingCurrentPlayer.tm_sec,
+                                        self.widget)
+        strTime = "{}".format(self.timerCurrentPlayer.time.hour)
+        self.widget.timer.setText(strTime)
 
         # Création des boutons
         for i in range(nbRows):
@@ -162,9 +190,22 @@ class Plateau(QtGui.QWidget):
         self.widget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         if self.game.gameState.getColorPlaying() == Color.BLACK :
-            self.widget.timer.display(self.player1.timeRemainingToPlay/60)
+            self.timeRemainingCurrentPlayer = Time.gmtime(self.player1.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer.tm_hour,
+                                            self.timeRemainingCurrentPlayer.tm_min,
+                                            self.timeRemainingCurrentPlayer.tm_sec,
+                                            self.widget)
+            strTime = "{}".format(self.timerCurrentPlayer.time.hour)
+            self.widget.timer.setText(strTime)
         else :
-            self.widget.timer.display(self.player2.timeRemainingToPlay/60)
+            self.timeRemainingCurrentPlayer = Time.gmtime(self.player2.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer.tm_hour,
+                                            self.timeRemainingCurrentPlayer.tm_min,
+                                            self.timeRemainingCurrentPlayer.tm_sec,
+                                            self.widget)
+            strTime = str(self.timerCurrentPlayer.time.hour)+':'+str(self.timerCurrentPlayer.time.minute)
+            strTime = strTime + ':' + str(self.timerCurrentPlayer.time.second)
+            self.widget.timer.setText("ok")
 
     def playTurn(self):
         """

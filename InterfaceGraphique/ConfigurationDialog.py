@@ -2,6 +2,7 @@
 
 from PyQt4 import QtGui
 from boardgame_ai_py import *
+import time as Time
 
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
@@ -54,7 +55,7 @@ class ConfigurationDialog(QtGui.QWidget):
         time, ok = QtGui.QInputDialog.getItem(self, 'Choice of a the limite of time to play',
                                               'Limit of time to play', timesList, editable = False)
         if time != 'No limit of time':
-            time = float(time) * 60
+            time = int(float(time) * 60)  #Time in second
             self.timeLimit = time
 
     def createPlayer(self, player_type):
