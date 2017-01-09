@@ -2,6 +2,7 @@
 
 from PyQt4 import QtGui
 from boardgame_ai_py import *
+import BDD
 
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
@@ -43,6 +44,11 @@ class ConfigurationDialog(QtGui.QWidget):
         player_name, ok1 = QtGui.QInputDialog.getText(self,'Choice of the name of the Player','Enter your pseudo :',QtGui.QLineEdit.Normal)
         return player_name
 
+    def askPlayerPassword(self):
+        """ Launchs a Dialog in which the user can enter his password. """
+        player_password, ok1 = QtGui.QInputDialog.getText(self,'Welcome','Enter your password :',QtGui.QLineEdit.Normal)
+        return player_password
+
     def setDepth(self):
         """ Launchs a Dialog in which the user can enter the force of the AI. """
         force, ok1 = QtGui.QInputDialog.getInt(self, 'Parameters',
@@ -53,7 +59,16 @@ class ConfigurationDialog(QtGui.QWidget):
         """ Configures the type of player with a string. """
         player_instance = None
         if player_type == "HumanPlayer":
-            player_instance = HumanPlayer(self.askPlayerName())
+            data=BDD.DataBase()
+            access=BDD.accessControled()
+            name=self.askPlayerName()
+            password=self.askPlayerPassword()
+            while (access.checkAccess(name,password,data) == False):
+                print("wrong password")
+                password=self.askPlayerPassword()
+            player_instance = HumanPlayer(name)
+            data.close()
+            access.close()
         elif player_type == "RandomPlayer":
              player_instance = RandomPlayer()
         elif player_type == "MonteCarloTreeSearchPlayer":

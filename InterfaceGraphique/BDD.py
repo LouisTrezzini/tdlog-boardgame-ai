@@ -52,3 +52,42 @@ class DataBase:
     def close(self):
         self.cur.close()
         self.conn.close()
+
+class accessControled:
+    """ Stores the password linked to each registred user. """
+
+    def __init__(self):
+        # créer la base de données
+        self.conn = sqlite3.connect('Passwords.db')
+        self.cur = self.conn.cursor()
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS password (name TEXT, password TEXT)""")
+        self.conn.commit()
+
+    def isNewPlayer(self, pseudo, password, data):
+        # tester si le pseudo est entré pour la première fois
+        self.cur.execute("SELECT name From password")
+        result = self.cur.fetchall()
+        if ((pseudo,) not in result):
+            return True    
+        else:
+            return False
+
+    def checkAccess(self, pseudo, password,data):
+        #ajouter les nouveaux joueurs
+        if (self.isNewPlayer(pseudo,password,data)):
+            self.cur.execute("INSERT INTO password VALUES (?,?)",(pseudo,password))
+            self.conn.commit()
+        else:
+        # vérifier que le mot de passe et le pseudo correspondent
+            self.cur.execute("SELECT * FROM password")
+            result = self.cur.fetchall()
+            if ((pseudo, password) not in result):
+                return False
+        return True  
+
+    def close(self):
+        self.cur.close()
+        self.conn.close()
+
+        
+
