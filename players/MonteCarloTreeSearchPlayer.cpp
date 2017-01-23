@@ -12,7 +12,7 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
     start = std::chrono::system_clock::now();
-    end = start + std::chrono::seconds(3);
+    end = start + std::chrono::seconds(6);
 
     srand(time(NULL));
 
@@ -22,9 +22,7 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
         // 1. Selection
         // Select a path through the tree to a leaf node.
         while(!node->hasUntriedMoves() && node->hasChildren()){
-            node = node->selectChildUCT();
-
-            // Game::applyMove(curState, node->getMove());
+            node = node->selectChildUCT(getColor());
         }
 
         // 2. Expansion
@@ -39,6 +37,7 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
         // 3. Simulation
         // We now play randomly until the game ends.
         GameState curState = node->getGameState();
+        Color colorPlaying = curState.getColorPlaying();
 
         while (Game::getWinner(curState) == Color::EMPTY) {
             Game::applyMove(curState, Game::getRandomMove(curState));
@@ -73,6 +72,7 @@ Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) const {
 
     if(moves.empty())
         return Move::passing();
+
     if(moves.size() == 1)
         return moves[0];
 
@@ -80,31 +80,49 @@ Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) const {
 
     auto root = computeTree(gameState);
 
-    std::map<Move, int> plays;
-    std::map<Move, int> wins;
+//    // Find the node with the best score
+//    double bestScore = -1;
+//    Move bestMove = Move::passing();
+//    for(auto child: root->getChildren()){
+//        int w = child->getWins();
+//        int p = child->getPlays();
+//        // Expected success rate assuming a uniform prior (Beta(1, 1)).
+//        // https://en.wikipedia.org/wiki/Beta_distribution
+//        double expected_success_rate = (w + 1) / (p + 2);
+//        if (expected_success_rate > bestScore) {
+//            bestMove = child->getMove();
+//            bestScore = expected_success_rate;
+//        }
+//    }
 
-    for (auto child = root->getChildren().cbegin(); child != root->getChildren().cend(); ++child) {
-        plays[(*child)->getMove()] += (*child)->getPlays();
-        wins[(*child)->getMove()]   += (*child)->getWins();
-    }
+    // Find the node with the most plays
+    int mostPlays = -1;
+    int mostWins = -1;
+    std::vector<Move> bestMoves;
+    for(auto child: root->getChildren()){
+        int wins = child->getWins();
+        int plays = child->getPlays();
 
-    // Find the node with the highest score.
-    double bestScore = -1;
-    Move bestMove = Move::passing();
-    for (auto itr: plays) {
-        auto move = itr.first;
-        double p = itr.second;
-        double w = wins[move];
-        // Expected success rate assuming a uniform prior (Beta(1, 1)).
-        // https://en.wikipedia.org/wiki/Beta_distribution
-        double expected_success_rate = (w + 1) / (p + 2);
-        if (expected_success_rate > bestScore) {
-            bestMove = move;
-            bestScore = expected_success_rate;
+        if (plays > mostPlays){
+            mostPlays = plays;
+            mostWins = wins;
+            bestMoves.clear();
+            bestMoves.push_back(child->getMove());
+        }
+
+        else if (plays == mostPlays){
+            if (wins > mostWins) {
+                mostWins = wins;
+                bestMoves.clear();
+                bestMoves.push_back(child->getMove());
+            }
+            else if (wins == mostWins) {
+                bestMoves.push_back(child->getMove());
+            }
         }
     }
 
-    return bestMove;
+    return bestMoves[rand() % bestMoves.size()];
 }
 
 MonteCarloTreeSearchPlayer::~MonteCarloTreeSearchPlayer() {
