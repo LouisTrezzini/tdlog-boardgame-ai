@@ -116,6 +116,14 @@ int main(int argc, char *argv[]) {
             }
         }
             break;
+
+        case 5: {
+            IPlayer* player1 = new RandomPlayer();
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5);
+
+            Game game(8, player1, player2);
+            game.playGameWithoutDisplay();
+        }
     }
 
     return 0;

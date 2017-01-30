@@ -70,6 +70,8 @@ public:
 
     std::string toString() const;
 
+    bool operator==(const Board &board) const;
+
     inline bool inBounds(int i, int j) const {
         return 0 <= i &&  i < grid.size() && 0 <= j && j < grid.size();
     }

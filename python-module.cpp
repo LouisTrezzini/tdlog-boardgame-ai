@@ -6,6 +6,8 @@
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "evaluation/PawnNumberEvaluation.h"
 #include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
+
 
 namespace py = pybind11;
 
@@ -62,6 +64,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<int>())
         .def("__str__", &Board::toString)
         .def("getColor", &Board::pieceAt)
+        .def(py::self == py::self)
         .def_property_readonly("blackStones", &Board::getBlackStones)
         .def_property_readonly("whiteStones", &Board::getWhiteStones)
     ;
@@ -83,6 +86,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
+        .def("playGameWithoutDisplay", &Game::playGameWithoutDisplay)
         .def("isValidMove", &Game::isValidMove)
         .def_property_readonly("gameState", &Game::getGameState)
     ;
