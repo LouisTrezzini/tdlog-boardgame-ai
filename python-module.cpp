@@ -42,6 +42,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
         .def(py::init<>())
+        .def("seedGenerator", &RandomPlayer::seedGenerator)
     ;
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")

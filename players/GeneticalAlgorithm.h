@@ -153,7 +153,7 @@ void GeneticalAlgorithm(int N, int nbiteration,
                          int gamesToPlay, IPlayer *enemy, double chancesToMute = 0.01, double chancesToMuteForGene = 0.1,
                         int nbDeath = 5, int sizeGrid = 8) {
 
-    // Initialisation de l'aléaoire
+    // Initialisation de l'aléatoire
     srand(time(NULL));
 
     // Déinition des functions d'évaluation que nous allons utiliser

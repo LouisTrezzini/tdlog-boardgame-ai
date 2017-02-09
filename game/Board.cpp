@@ -61,7 +61,6 @@ std::string Board::toString() const {
 }
 
 bool Board::operator==(const Board &board) const {
-    return true;
     if (board.getSize() != getSize()) {
         return false;
     }
