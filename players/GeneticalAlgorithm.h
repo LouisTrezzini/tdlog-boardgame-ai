@@ -21,11 +21,11 @@ using namespace std;
 class Individu {
 private:
     vector<double> coefficients;
-    vector<IEvaluationFunction *> functions;
+    vector<std::shared_ptr<IEvaluationFunction>> functions;
     int score;
 
 public:
-    Individu(const vector<double>& coefficients, const vector<IEvaluationFunction *>& functions) {
+    Individu(const vector<double>& coefficients, const vector<std::shared_ptr<IEvaluationFunction>>& functions) {
         score = 0;
         this->coefficients = coefficients;
         this->functions = functions;
@@ -39,7 +39,7 @@ public:
         return coefficients;
     }
 
-    const vector<IEvaluationFunction *>& getEvaluationFunctions() const {
+    const vector<std::shared_ptr<IEvaluationFunction>>& getEvaluationFunctions() const {
         return functions;
     }
 
@@ -79,7 +79,7 @@ public:
 };
 
 void InitialisationPopulation(int N, vector <Individu>& population,
-                              vector<IEvaluationFunction *> evaluationFunctions, int turns) {
+                              vector<std::shared_ptr<IEvaluationFunction>> evaluationFunctions, int turns) {
     for (int i = 0; i < N; i++) {
         vector<double> coefficients;
         // FIXME Avec le temps, il faudra rajouter un *turns....
@@ -157,10 +157,11 @@ void GeneticalAlgorithm(int N, int nbiteration,
     srand(time(NULL));
 
     // Déinition des functions d'évaluation que nous allons utiliser
-    vector < IEvaluationFunction * > evaluationFunctions;
-    evaluationFunctions.push_back(new PawnNumberEvaluation());
-    evaluationFunctions.push_back(new PositionEvaluation());
-    evaluationFunctions.push_back(new MobilityEvaluation());
+    vector < std::shared_ptr<IEvaluationFunction> > evaluationFunctions;
+
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
 
     // Définition de notre population
     vector <Individu> population;
@@ -190,7 +191,7 @@ void GeneticalAlgorithm(int N, int nbiteration,
         }
     }
     for (int i = evaluationFunctions.size() - 1; i >= 0; i --) {
-        delete evaluationFunctions[i];
+        evaluationFunctions[i].reset();
     }
 }
 

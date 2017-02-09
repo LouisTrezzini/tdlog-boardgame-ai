@@ -30,10 +30,10 @@ int main(int argc, char *argv[]) {
 
             srand(time(NULL));
 
-            vector<IEvaluationFunction *> evaluationFunctions;
-            evaluationFunctions.push_back(new PawnNumberEvaluation());
-            evaluationFunctions.push_back(new PositionEvaluation());
-            evaluationFunctions.push_back(new MobilityEvaluation());
+            vector<std::shared_ptr<IEvaluationFunction>> evaluationFunctions;
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
 
             vector<double> coefficients;
             for (int j = 0; j < 60 * evaluationFunctions.size(); j++) {
@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
 
             delete player1;
             evalForPlayer1.reset();
-            delete evaluationFunctions[0];
-            delete evaluationFunctions[1];
-            delete evaluationFunctions[2];
+            evaluationFunctions[0].reset();
+            evaluationFunctions[1].reset();
+            evaluationFunctions[2].reset();
         }
             break;
 
@@ -59,10 +59,10 @@ int main(int argc, char *argv[]) {
         case 2: {
             srand(time(NULL));
 
-            vector<IEvaluationFunction *> evaluationFunctions;
-            evaluationFunctions.push_back(new PawnNumberEvaluation());
-            evaluationFunctions.push_back(new PositionEvaluation());
-            evaluationFunctions.push_back(new MobilityEvaluation());
+            vector<std::shared_ptr<IEvaluationFunction> > evaluationFunctions;
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
 
             vector<double> coefficients;
             for (int j = 0; j < evaluationFunctions.size(); j++) {
@@ -78,9 +78,9 @@ int main(int argc, char *argv[]) {
 
             delete player1;
             evalForPlayer1.reset();
-            delete evaluationFunctions[0];
-            delete evaluationFunctions[1];
-            delete evaluationFunctions[2];
+            evaluationFunctions[0].reset();
+            evaluationFunctions[1].reset();
+            evaluationFunctions[2].reset();
         }
             break;
 
