@@ -6,6 +6,7 @@
 #include "../game/Move.h"
 #include "../game/GameState.h"
 #include "../evaluation/EndGameEvaluation.h"
+#include "../evaluation/PawnNumberEvaluation.h"
 #include <chrono>
 #include <memory>
 #include <math.h>
