@@ -1,7 +1,6 @@
 #ifndef TDLOG_BOARDGAME_AI_MINMAXPLAYER_H
 #define TDLOG_BOARDGAME_AI_MINMAXPLAYER_H
 
-#include <string>
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"

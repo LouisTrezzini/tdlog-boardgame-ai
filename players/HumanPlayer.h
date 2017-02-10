@@ -13,11 +13,11 @@ class HumanPlayer : public IPlayer {
 	std::string name;
 
 public:
-    HumanPlayer(std::string name_) {
-        name = name_;
+    HumanPlayer(const std::string& name) {
+        this->name = name;
     }
 
-    std::string getName(){
+    std::string getName() const{
         return name;
     }
 

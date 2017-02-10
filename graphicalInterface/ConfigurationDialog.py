@@ -70,8 +70,7 @@ class ConfigurationDialog(QtGui.QWidget):
             data.close()
             access.close()
         elif player_type == "RandomPlayer":
-             player_instance = RandomPlayer()
-             player_instance = RandomPlayer()
+            player_instance = RandomPlayer()
         elif player_type == "MonteCarloTreeSearchPlayer":
             player_instance = MonteCarloTreeSearchPlayer()
         elif player_type == "MinMaxPlayer":

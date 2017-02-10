@@ -2,7 +2,6 @@
 #define TDLOG_BOARDGAME_AI_RANDOMPLAYER_H
 
 
-#include <string>
 #include <cstdlib>
 #include "IPlayer.h"
 #include "../game/Move.h"

@@ -5,7 +5,6 @@
 #include "../game/Color.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
-#include "../game/Board.h"
 #include <chrono>
 #include "../evaluation/IEvaluationFunction.h"
 

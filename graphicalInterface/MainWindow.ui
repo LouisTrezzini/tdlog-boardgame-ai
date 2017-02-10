@@ -201,7 +201,7 @@ p, li { white-space: pre-wrap; }
       <row/>
       <column>
        <property name="text">
-        <string>Type Player</string>
+        <string>Player Type</string>
        </property>
        <property name="textAlignment">
         <set>AlignCenter</set>
@@ -209,17 +209,17 @@ p, li { white-space: pre-wrap; }
       </column>
       <column>
        <property name="text">
-        <string>Name Player</string>
+        <string>Player Name</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Type Opponent</string>
+        <string>Opponent Type</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Name Opponent</string>
+        <string>Opponent Name</string>
        </property>
       </column>
       <column>
@@ -229,12 +229,12 @@ p, li { white-space: pre-wrap; }
       </column>
       <column>
        <property name="text">
-        <string>Nb Played Games</string>
+        <string>Played Games</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Nb Victories</string>
+        <string>Victories</string>
        </property>
       </column>
      </widget>
@@ -248,7 +248,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>Retour</string>
+       <string>Back</string>
       </property>
       <property name="icon">
        <iconset>

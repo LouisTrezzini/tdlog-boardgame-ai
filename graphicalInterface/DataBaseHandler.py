@@ -1,7 +1,6 @@
 # coding=utf-8
 import sqlite3
 from boardgame_ai_py import *
-import types
 
 
 class StatisticsDataBaseController:
