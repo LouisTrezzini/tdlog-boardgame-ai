@@ -121,7 +121,7 @@ class GraphicInterface:
         position  = int((self.widthWidget - self.nbRows*self.sizeImage)/2)
         self.widget.boxGame.move(position, int(self.heightMarge/2))
         self.gameBoard.show()
-        QtCore.QTimer.singleShot(500, self.gameBoard.play)
+        QtCore.QTimer.singleShot(500, self.gameBoard.playTurn)
 
     def displayStatistics(self):
         """
@@ -176,10 +176,6 @@ class GameBoard(QtGui.QWidget):
                 self.cases[i + j * nbRows].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
         self.update()
 
-    def play (self):
-        if not self.humanTurn():
-            self.playTurn()
-
     def change(self, i, j):
         """
         Applique le changement correspondant au pion en (i,j)
@@ -230,9 +226,9 @@ class GameBoard(QtGui.QWidget):
         if not self.humanTurn():
             pickedMove = self.game.pickMove(self.game.gameState)
             self.game.playMove(pickedMove)
-            self.update()
-            if not self.humanTurn():
-                QtCore.QTimer.singleShot(100, self.playTurn)
+            QtCore.QTimer.singleShot(200, self.playTurn)
+
+        self.update()
 
     def humanTurn(self):
         """
