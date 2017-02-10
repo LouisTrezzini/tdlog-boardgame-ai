@@ -6,14 +6,20 @@
 #include "../game/Move.h"
 #include "../game/GameState.h"
 #include "../utils/MinMaxOutput.h"
+#include "../evaluation/IEvaluationFunction.h"
+#include <memory>
 
 
 /*
  * This IA will follow the alpha-beta principle
  */
 class AlphaBetaPlayer : public IPlayer {
+    std::shared_ptr<IEvaluationFunction> evaluationFunction;
+    int depth;
 public:
-    MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta) const;
+    AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_);
+
+    MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying) const;
 
     virtual Move getAction(const GameState& gameState) const;
 

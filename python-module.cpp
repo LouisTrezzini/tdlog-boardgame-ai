@@ -4,6 +4,7 @@
 #include "players/MinMaxPlayer.h"
 #include "players/AlphaBetaPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
+#include "evaluation/PawnNumberEvaluation.h"
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -19,13 +20,20 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .export_values()
     ;
 
+    py::class_<IEvaluationFunction, std::shared_ptr<IEvaluationFunction>>(m, "IEvaluationFunction")
+    ;
+
+    py::class_<PawnNumberEvaluation, IEvaluationFunction, std::shared_ptr<PawnNumberEvaluation>>(m, "PawnNumberEvaluation")
+        .def(py::init<>())
+    ;
+
     py::class_<Move>(m, "Move")
         .def(py::init<int, int>())
         .def("passing", &Move::passing)
         .def_property_readonly("x", &Move::getX)
         .def_property_readonly("y", &Move::getY)
     ;
-    
+
     py::class_<IPlayer>(m, "IPlayer")
         .def("isHuman", &IPlayer::isHuman)
     ;
@@ -40,11 +48,11 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
-         .def(py::init<>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int>())
     ;
 
     py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")
-         .def(py::init<>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
@@ -55,16 +63,16 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<int>())
         .def("__str__", &Board::toString)
         .def("getColor", &Board::pieceAt)
-        .def_property_readonly("getBlackStones", &Board::getBlackStones)
-        .def_property_readonly("getWhiteStones", &Board::getWhiteStones)
+        .def_property_readonly("blackStones", &Board::getBlackStones)
+        .def_property_readonly("whiteStones", &Board::getWhiteStones)
     ;
 
     py::class_<GameState>(m, "GameState")
         .def(py::init<const Board&, Color>())
         // FIXME
-        // Ambiguïté car 2 fonctions getBoard
+        // Ambiguïté car 2 functions getBoard
         .def("getColorPlaying", &GameState::getColorPlaying)
-        .def_property_readonly("Board", (Board& (GameState::*)()) &GameState::getBoard)
+        .def_property_readonly("board", (Board& (GameState::*)()) &GameState::getBoard)
     ;
 
     py::class_<Game>(m, "Game")
@@ -77,7 +85,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
         .def("isValidMove", &Game::isValidMove)
-        .def_property_readonly("GameState", &Game::getGameState)
+        .def_property_readonly("gameState", &Game::getGameState)
     ;
 
     return m.ptr();

@@ -13,7 +13,13 @@ enum class Color : int {
     BLACK
 };
 
-Color colorOpponent(Color color);
+const Color ColorOpponent[] = {
+    Color::EMPTY,
+    Color::BLACK,
+    Color::WHITE,
+};
+
+Color colorOpponent(const Color& color);
 
 std::ostream& operator<<(std::ostream& stream, const Color& color);
 
