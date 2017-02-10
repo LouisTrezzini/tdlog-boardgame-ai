@@ -1,24 +1,24 @@
+# coding=utf-8
 import sqlite3
 from boardgame_ai_py import *
 import types
 
 
-class DataBase:
+class StatisticsDataBaseController:
     """ Stores the best scores and calculates the statistics. """
 
     def __init__(self):
-        # créer la base de données
-        self.nbAttribute=7
-        self.conn = sqlite3.connect('BDD.db')
+        # Créé la base de données
+        self.nbAttribute = 7
+        self.conn = sqlite3.connect('History.db')
+
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS scoreOthello (type1 TEXT, name1 TEXT, type2 TEXT,
 						name2 TEXT, bestScore INTEGER, numberOfPlayedGame INTEGER, numberOfVictory INTEGER)""")
         self.conn.commit()
 
     def actualise(self, player1, player2, score, nbRows):
-        # player1 est le vainqueur de la partie
-
-        # Ajouter ou actualiser la base de données
+        # Ajout ou actualisation de la base de données
         # On ne sélectionne qu'une partie de la chaîne de caractère pour se débarasser de ceux inutiles
         type1 = str(type(player1))[24:-2]
         type2 = str(type(player2))[24:-2]
@@ -30,6 +30,7 @@ class DataBase:
         if isinstance(player2, HumanPlayer):
             name2 = player2.name
 
+        # On sélectionne les différents matchs de notre base
         self.cur.execute("SELECT type1, name1, type2, name2 From scoreOthello")
         result = self.cur.fetchall()
         if (type1, name1, type2, name2) not in result:
@@ -53,18 +54,18 @@ class DataBase:
         self.cur.close()
         self.conn.close()
 
-class accessControled:
-    """ Stores the password linked to each registred user. """
+class PasswordsDataBaseController:
+    """ Stocke les mots de passes et vérifie les mots de passe lors de la connexion des joueurs """
 
     def __init__(self):
-        # créer la base de données
+        # Créé la base de données
         self.conn = sqlite3.connect('Passwords.db')
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS password (name TEXT, password TEXT)""")
         self.conn.commit()
 
-    def isNewPlayer(self, pseudo, password, data):
-        # tester si le pseudo est entré pour la première fois
+    def isNewPlayer(self, pseudo):
+        # Test si le pseudo est entré pour la première fois
         self.cur.execute("SELECT name From password")
         result = self.cur.fetchall()
         if ((pseudo,) not in result):
@@ -73,12 +74,12 @@ class accessControled:
             return False
 
     def checkAccess(self, pseudo, password,data):
-        #ajouter les nouveaux joueurs
-        if (self.isNewPlayer(pseudo,password,data)):
+        # Ajout des nouveaux joueurs
+        if (self.isNewPlayer(pseudo)):
             self.cur.execute("INSERT INTO password VALUES (?,?)",(pseudo,password))
             self.conn.commit()
         else:
-        # vérifier que le mot de passe et le pseudo correspondent
+        # Vérification que le mot de passe et le pseudo correspondent
             self.cur.execute("SELECT * FROM password")
             result = self.cur.fetchall()
             if ((pseudo, password) not in result):

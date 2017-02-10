@@ -2,7 +2,7 @@
 
 from PyQt4 import QtGui
 from boardgame_ai_py import *
-import BDD
+import DataBaseHandler
 
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
@@ -59,17 +59,18 @@ class ConfigurationDialog(QtGui.QWidget):
         """ Configures the type of player with a string. """
         player_instance = None
         if player_type == "HumanPlayer":
-            data=BDD.DataBase()
-            access=BDD.accessControled()
-            name=self.askPlayerName()
-            password=self.askPlayerPassword()
+            data = DataBaseHandler.StatisticsDataBaseController()
+            access = DataBaseHandler.PasswordsDataBaseController()
+            name = self.askPlayerName()
+            password = self.askPlayerPassword()
             while (access.checkAccess(name,password,data) == False):
                 print("wrong password")
-                password=self.askPlayerPassword()
+                password = self.askPlayerPassword()
             player_instance = HumanPlayer(name)
             data.close()
             access.close()
         elif player_type == "RandomPlayer":
+             player_instance = RandomPlayer()
              player_instance = RandomPlayer()
         elif player_type == "MonteCarloTreeSearchPlayer":
             player_instance = MonteCarloTreeSearchPlayer()

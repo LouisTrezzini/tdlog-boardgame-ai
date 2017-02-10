@@ -2,7 +2,7 @@
 
 import sys
 import ConfigurationDialog
-import BDD
+import DataBaseHandler
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
@@ -47,10 +47,10 @@ class GraphicInterface:
 
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
-        self.widget.configureBtn.clicked.connect(self.OpenConfigurationDialog)
-        self.widget.statisticsBtn.clicked.connect(self.DisplayStatistics)
+        self.widget.configureBtn.clicked.connect(self.openConfigurationDialog)
+        self.widget.statisticsBtn.clicked.connect(self.displayStatistics)
         self.widget.stopGameBtn.clicked.connect(lambda _ : self.stopGameWidget())
-        self.widget.goBackBtn.clicked.connect(self.GoBackToConfiguration)
+        self.widget.goBackBtn.clicked.connect(self.goBackToConfiguration)
 
         #Sauvegarde des paramètres du jeu
         self.player1 = 0
@@ -61,8 +61,8 @@ class GraphicInterface:
         self.configure_dialog = ConfigurationDialog.ConfigurationDialog()
         self.widget.show()
 
-    def FillStatisticsTable(self):
-        data=BDD.DataBase()
+    def fillStatisticsTable(self):
+        data=DataBaseHandler.StatisticsDataBaseController()
         contentToDisplay = data.display()
 
         self.widget.tableWidget.setRowCount(len(contentToDisplay))
@@ -76,7 +76,7 @@ class GraphicInterface:
             row += 1
         data.close()
 
-    def GoBackToConfiguration(self):
+    def goBackToConfiguration(self):
         """
         Goes back to the configuration widget
         :return:
@@ -88,12 +88,12 @@ class GraphicInterface:
         Configures the closing of the game when the player clicks on the return button
         :return:
         """
-        self.GoBackToConfiguration()
+        self.goBackToConfiguration()
         self.gameBoard.close()
         self.gameBoard.deleteLater()
         self.gameBoard = None
 
-    def OpenConfigurationDialog(self):
+    def openConfigurationDialog(self):
         """ Opens several Dialogs to input the information
             for the type of the players. It mades thanks to the
             class ConfigurationDialog in the eponym module. """
@@ -120,13 +120,13 @@ class GraphicInterface:
         self.gameBoard.show()
         QtCore.QTimer.singleShot(500, self.gameBoard.play)
 
-    def DisplayStatistics(self):
+    def displayStatistics(self):
         """
         Go to the Statistics widet and displays statistics
         :return:
         """
         self.widget.stackedWidget.setCurrentWidget(self.widget.Statistics)
-        self.FillStatisticsTable()
+        self.fillStatisticsTable()
 
 
 
@@ -144,11 +144,11 @@ class GameBoard(QtGui.QWidget):
         self.grid.setSpacing(0)
         self.setLayout(self.grid)
 
-        #players
+        # Joueurs
         self.player1 = player1
         self.player2 = player2
 
-        #Tailles des Images
+        # Tailles des Images
         self.sizeImage = sizeImage
 
         # Création du thème du plateau
@@ -160,7 +160,7 @@ class GameBoard(QtGui.QWidget):
         self.game = Game(nbRows, player1, player2)
         self.cases = [QtGui.QLabel() for i in range(nbRows ** 2)]
 
-        # Display Number of stones for both palyers:
+        # Affichage des nombres de pions pour chaque joueur
         self.displayScoreWidget.scorePlayer1.display(self.game.GameState.Board.getBlackStones)
         self.displayScoreWidget.scorePlayer2.display(self.game.GameState.Board.getWhiteStones)
 
@@ -176,6 +176,12 @@ class GameBoard(QtGui.QWidget):
             self.playTurn()
 
     def change(self, i, j):
+        """
+        Applique le changement correspondant au pion en (i,j)
+        :param i:
+        :param j:
+        :return:
+        """
         move = Move(i, j)
         if Game.isValidMove(self.game.GameState, move) and self.humanTurn():
             self.game.playMove(move)
@@ -210,7 +216,7 @@ class GameBoard(QtGui.QWidget):
         :return:
         """
         if Game.getWinner(self.game.GameState) != Color.EMPTY:
-            data=BDD.DataBase()
+            data = DataBaseHandler.StatisticsDataBaseController()
             # FIXME A adapter après le merge avec la branche genetic (enlever majuscles, et le get)
             data.actualise(self.player1, self.player2, self.game.GameState.Board.getWhiteStones,self.nbRows)
             data.actualise(self.player2, self.player1, self.game.GameState.Board.getBlackStones,self.nbRows)
@@ -244,6 +250,9 @@ class GameBoard(QtGui.QWidget):
 
 
 class GameBoardTheme():
+    """
+    Classe permettant de définir différents thèmes pour le jeu
+    """
     def __init__(self, emptySquareName, whitePawnImageName, blackPawnImageName, possibleMoveImageName):
         self.emptySquareImage = QtGui.QPixmap(emptySquareName)
         self.whitePawnImage = QtGui.QPixmap(whitePawnImageName)
