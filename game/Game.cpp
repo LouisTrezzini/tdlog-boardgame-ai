@@ -42,7 +42,7 @@ void Game::playGameWithoutDisplay() {
 
 void Game::playGameWithoutDisplayStoringTime(std::vector<double> &timeNeededToPlay) {
     while (getWinner(gameState) == Color::EMPTY) {
-        Move pickedMove = pickMoveStoringTime (gameState, timeNeededToPlay);
+        Move pickedMove = pickMoveStoringTime(gameState, timeNeededToPlay);
         applyMove(gameState, pickedMove);
     }
 }
@@ -256,5 +256,3 @@ Color Game::getWinner(const GameState& gameState) {
 std::string Game::toString() const {
     return gameState.getBoard().toString();
 }
-
-

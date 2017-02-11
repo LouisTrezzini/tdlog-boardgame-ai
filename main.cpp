@@ -98,21 +98,20 @@ int main(int argc, char *argv[]) {
 
         //Calcul du temps nécessaire en moyenne pour jouer pour un joueur donné (player2)
         case 4: {
-            IPlayer* player1 = new RandomPlayer();
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5);
+            IPlayer* player1 = new MinMaxPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 1);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 7);
 
             vector<double> timeNeededToPlay(60,0);
 
-            for (int i = 0; i < 1; i++) {
-                Game game(8, player1, player2);
-                game.playGameWithoutDisplayStoringTime(timeNeededToPlay);
+            Game game(8, player1, player2);
+            game.playGameWithoutDisplayStoringTime(timeNeededToPlay);
 
-                Game game2(8, player2, player1);
-                game2.playGameWithoutDisplayStoringTime(timeNeededToPlay);
+            for (int i = 0; i < timeNeededToPlay.size() / 2; i ++) {
+                cout << timeNeededToPlay[2 * i] << endl;
             }
-
-            for (int i = 0; i < timeNeededToPlay.size(); i ++) {
-                cout << timeNeededToPlay[i] / 2. << endl;
+            cout << "======" << endl;
+            for (int i = 0; i < timeNeededToPlay.size() / 2; i ++) {
+                cout << timeNeededToPlay[2 * i + 1] << endl;
             }
         }
             break;
