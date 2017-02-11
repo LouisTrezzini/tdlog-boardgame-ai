@@ -9,7 +9,7 @@ MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_
     depth = depth_;
 }
 
-MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
+MinMaxOutput MinMaxPlayer::minMax(const GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying));
     }
@@ -42,9 +42,37 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int profondeur, bool isM
 }
 
 Move MinMaxPlayer::getAction(const GameState& gameState) const {
-    GameState nextGameState = gameState;
-    MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying());
-    return resultat.move;
+    if (false) {
+        GameState nextGameState = gameState;
+        MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying());
+        return resultat.move;
+    }
+    else {
+        Color colorPlaying = gameState.getColorPlaying();
+        auto moves = Game::getLegalMoves(gameState);
+        std::vector<std::future<double>> branchResults;
+
+        for  (int i = 0; i < moves.size(); i ++) {
+            GameState nextGameState = gameState;
+            Game::applyMove(nextGameState, moves[i]);
+
+            branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
+                return minMax(nextGameState, depth - 1, false, colorPlaying).value;
+            }));
+        }
+
+        Move bestMove = Move::passing();
+        double bestScore = -INF;
+        for (int i = 0; i < moves.size(); i ++) {
+            double res = branchResults[i].get();
+            if (res > bestScore) {
+                bestScore = res;
+                bestMove = moves[i];
+            }
+        }
+
+        return bestMove;
+    }
 }
 
 MinMaxPlayer::~MinMaxPlayer() {
