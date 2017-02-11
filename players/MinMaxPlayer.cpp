@@ -42,7 +42,7 @@ MinMaxOutput MinMaxPlayer::minMax(const GameState& gameState, int profondeur, bo
 }
 
 Move MinMaxPlayer::getAction(const GameState& gameState) const {
-    if (false) {
+    if (false || depth == 1) {
         GameState nextGameState = gameState;
         MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying());
         return resultat.move;
@@ -78,7 +78,3 @@ Move MinMaxPlayer::getAction(const GameState& gameState) const {
 MinMaxPlayer::~MinMaxPlayer() {
 
 }
-
-
-
-

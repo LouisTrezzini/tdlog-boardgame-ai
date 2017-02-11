@@ -50,7 +50,7 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState, int profonde
 
 Move AlphaBetaPlayer::getAction(const GameState& gameState) const {
     // Sans parallélisation
-    if (false) {
+    if (true || depth == 1) {
         GameState nextGameState = gameState;
         MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, -INF, INF, gameState.getColorPlaying());
         return resultat.move;
