@@ -99,11 +99,11 @@ int main(int argc, char *argv[]) {
         //Calcul du temps nécessaire en moyenne pour jouer pour un joueur donné (player2)
         case 4: {
             IPlayer* player1 = new RandomPlayer();
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 9);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5);
 
             vector<double> timeNeededToPlay(60,0);
 
-            for (int i = 0; i < 1; i ++) {
+            for (int i = 0; i < 1; i++) {
                 Game game(8, player1, player2);
                 game.playGameWithoutDisplayStoringTime(timeNeededToPlay);
 

@@ -20,10 +20,7 @@ class AlphaBetaPlayer : public IPlayer {
 public:
     AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_);
 
-    MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying) const;
-
-    static double getBestValue(GameState gameState, int profondeur, bool turn, float alpha, float beta,
-                                Color colorPlaying, std::shared_ptr<IEvaluationFunction> evaluationFunction);
+    MinMaxOutput alphaBeta(const GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying) const;
 
     virtual Move getAction(const GameState& gameState) const;
 
