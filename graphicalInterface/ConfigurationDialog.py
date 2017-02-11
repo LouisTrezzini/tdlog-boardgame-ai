@@ -80,6 +80,6 @@ class ConfigurationDialog(QtGui.QWidget):
         elif player_type == "AlphaBetaPlayer":
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7)
+            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 11)
         return player_instance
 
