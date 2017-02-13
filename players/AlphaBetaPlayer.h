@@ -7,6 +7,8 @@
 #include "../utils/MinMaxOutput.h"
 #include "../evaluation/IEvaluationFunction.h"
 #include <memory>
+#include <thread>
+#include <future>
 
 
 /*
@@ -18,7 +20,7 @@ class AlphaBetaPlayer : public IPlayer {
 public:
     AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_);
 
-    MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying) const;
+    MinMaxOutput alphaBeta(const GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying) const;
 
     virtual Move getAction(const GameState& gameState) const;
 
