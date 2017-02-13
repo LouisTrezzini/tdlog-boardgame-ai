@@ -57,7 +57,7 @@ MinMaxOutput MinMaxPlayer::minMaxLength(const GameState& gameState, bool isMyTur
 
         turnDepth += 1;
         double timePassedForDepth = (std::chrono::system_clock::now() - startTimeDepth).count()/std::chrono::milliseconds::period::den;
-        setTimeRemainingToPlay (getTimeRemainingToPlay() - timePassedForDepth);
+        setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassedForDepth/1000000);
         timeRemainingPerTurn -= timePassedForDepth;
     }
 
@@ -107,17 +107,19 @@ Move MinMaxPlayer::getAction(const GameState& gameState) {
         GameState nextGameState = gameState;
         auto start = std::chrono::system_clock::now();
         MinMaxOutput resultat = minMax (nextGameState, depth, true, gameState.getColorPlaying(), start);
+        double timePassed = (std::chrono::system_clock::now() - start).count()/std::chrono::milliseconds::period::den;
+        setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
         return resultat.move;
     }
     else {
         Color colorPlaying = gameState.getColorPlaying();
         auto moves = Game::getLegalMoves(gameState);
         std::vector<std::future<double>> branchResults;
+        auto startTime = std::chrono::system_clock::now();
 
         for  (int i = 0; i < moves.size(); i ++) {
             GameState nextGameState = gameState;
             Game::applyMove(nextGameState, moves[i]);
-
             branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
                 auto start = std::chrono::system_clock::now();
                 return minMax(nextGameState, depth - 1, true, colorPlaying, start).value;
@@ -134,6 +136,8 @@ Move MinMaxPlayer::getAction(const GameState& gameState) {
             }
         }
 
+        double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
+        setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
         return bestMove;
     }
 }

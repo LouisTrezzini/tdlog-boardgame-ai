@@ -58,12 +58,15 @@ Move AlphaBetaPlayer::getAction(const GameState& gameState) {
         GameState nextGameState = gameState;
         auto start = std::chrono::system_clock::now();
         MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, -INF, INF, gameState.getColorPlaying(), start);
+        double timePassed = (std::chrono::system_clock::now() - start).count()/std::chrono::milliseconds::period::den;
+        setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
         return resultat.move;
     // Avec parallélisation
     } else {
         Color colorPlaying = gameState.getColorPlaying();
         auto moves = Game::getLegalMoves(gameState);
         std::vector<std::future<double>> branchResults;
+        auto startTime = std::chrono::system_clock::now();
 
         for  (int i = 0; i < moves.size(); i ++) {
             GameState nextGameState = gameState;
@@ -84,7 +87,8 @@ Move AlphaBetaPlayer::getAction(const GameState& gameState) {
                 bestMove = moves[i];
             }
         }
-
+        double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
+        setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
         return bestMove;
     }
 }

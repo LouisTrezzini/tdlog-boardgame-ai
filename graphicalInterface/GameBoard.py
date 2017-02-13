@@ -40,9 +40,13 @@ class GameBoard(QtGui.QWidget):
         self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         #Display Timer:
-        self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
-        self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
-        self.timerCurrentPlayer.startTimer(1000)
+        if self.player1.timeRemainingToPlay > 0:
+            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+            self.timerCurrentPlayer.startTimer(1000)
+        else :
+            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
 
         # Création des boutons
         for i in range(nbRows):
@@ -91,34 +95,43 @@ class GameBoard(QtGui.QWidget):
         et le temps restant aux joueurs
         :return:
         """
-        if self.game.gameState.getColorPlaying() == Color.BLACK :
-            self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
-            self.player2.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
-                                                               self.timerCurrentPlayer.time[1],
-                                                               self.timerCurrentPlayer.time[2]))
-            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
-            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
-            self.timerCurrentPlayer.startTimer(1000)
+        if self.player1.timeRemainingToPlay > 0:
+
+            if self.game.gameState.getColorPlaying() == Color.BLACK :
+                self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+                self.player2.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                                   self.timerCurrentPlayer.time[1],
+                                                                   self.timerCurrentPlayer.time[2]))
+                self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+                self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+                self.timerCurrentPlayer.startTimer(1000)
+
+            else :
+                self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+                self.player1.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                                   self.timerCurrentPlayer.time[1],
+                                                                   self.timerCurrentPlayer.time[2]))
+                self.timeRemainingCurrentPlayer = Timer.secTohms(self.player2.timeRemainingToPlay)
+                self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+                self.timerCurrentPlayer.startTimer(1000)
+
         else :
-            self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
-            self.player1.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
-                                                               self.timerCurrentPlayer.time[1],
-                                                               self.timerCurrentPlayer.time[2]))
-            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player2.timeRemainingToPlay)
+
             self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
-            self.timerCurrentPlayer.startTimer(1000)
 
     def playTurn(self):
         """
         Fonction pour jouer un tour
         :return:
         """
+
         if Game.getWinner(self.game.gameState) != Color.EMPTY:
             data = DataBaseHandler.StatisticsDataBaseController()
             data.actualise(self.player1, self.player2, self.game.gameState.board.whiteStones,self.nbRows)
             data.actualise(self.player2, self.player1, self.game.gameState.board.blackStones,self.nbRows)
             data.close()
             return
+
 
         if not self.humanTurn():
             pickedMove = self.game.pickMove(self.game.gameState)

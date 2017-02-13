@@ -127,7 +127,6 @@ Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) {
     }
     double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
     setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
-    float time = getTimeRemainingToPlay();
     return bestMoves[rand() % bestMoves.size()];
 }
 
