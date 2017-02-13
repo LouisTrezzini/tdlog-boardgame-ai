@@ -5,7 +5,18 @@ import ConfigurationDialog
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
-import time as Time
+def secTohms(nb_sec):
+     q,s=divmod(nb_sec,60)
+     h,m=divmod(q,60)
+     return (h,m,s)
+
+def hmsTosec(h,m,s):
+    nb_sec = h*3600 + m*60 + s -1
+    return nb_sec
+
+def decreaseSec(h,m,s):
+    nb_sec = h*3600 + m*60 + s -1
+    return secTohms(nb_sec)
 
 class InterfaceGraphique:
     """ Defines the graphism for the Game. """
@@ -40,6 +51,14 @@ class InterfaceGraphique:
         self.widget.Title.setReadOnly(True)
         positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
         self.widget.configureBtn.move(positionBtn, 600)
+
+        #Personnalisation timer:
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Foreground,QtCore.Qt.red)
+        self.widget.timer.setPalette(palette)
+        f = QtGui.QFont( "Helvetica", 15)
+        f.setBold(True)
+        self.widget.timer.setFont(f)
 
         #Affichage du bon stack
         self.widget.stackedWidget.setCurrentWidget(self.widget.Configuration)
@@ -89,23 +108,20 @@ class InterfaceGraphique:
         self.plateau.show()
         QtCore.QTimer.singleShot(500, self.plateau.play)
 
-class Timer ():
+class Timer (QtCore.QTimer):
     """ Represents a Timer that indicates the times that remains
         to play. """
 
-    def __init__(self, hours, minutes, seconds, widget):
+    def __init__(self, time, widget):
         # Initialize the timer
+        super().__init__()
         self.widget = widget
-        self.time = QtCore.QTime(hours, minutes, seconds)
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(1000)
-        self.timer.timeout.connect(self.decrease)
+        self.time = time
 
-    def decrease(self):
-        self.time.addSecs(-1)
-        strTime = "{}:{}:{}".format(self.time.hour,
-                                    self.time.minute,
-                                    self.time.seconde)
+    def timerEvent(self, event):
+        self.time = decreaseSec(self.time[0],self.time[1],self.time[2])
+        nb_sec = hmsTosec(self.time[0],self.time[1],self.time[2])
+        strTime = '{:2.0f}:{:2.0f}:{:2.0f}'.format(self.time[0],self.time[1], self.time[2])
         self.widget.timer.setText(strTime)
 
 
@@ -142,13 +158,10 @@ class Plateau(QtGui.QWidget):
         self.widget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         #Display Timer:
-        self.timeRemainingCurrentPlayer = Time.gmtime(self.player1.timeRemainingToPlay)
-        self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer.tm_hour,
-                                        self.timeRemainingCurrentPlayer.tm_min,
-                                        self.timeRemainingCurrentPlayer.tm_sec,
-                                        self.widget)
-        strTime = "{}".format(self.timerCurrentPlayer.time.hour)
-        self.widget.timer.setText(strTime)
+        self.timeRemainingCurrentPlayer = secTohms(self.player1.timeRemainingToPlay)
+        self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer, self.widget)
+        self.timerCurrentPlayer.startTimer(1000)
+
 
         # Création des boutons
         for i in range(nbRows):
@@ -190,22 +203,15 @@ class Plateau(QtGui.QWidget):
         self.widget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         if self.game.gameState.getColorPlaying() == Color.BLACK :
-            self.timeRemainingCurrentPlayer = Time.gmtime(self.player1.timeRemainingToPlay)
-            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer.tm_hour,
-                                            self.timeRemainingCurrentPlayer.tm_min,
-                                            self.timeRemainingCurrentPlayer.tm_sec,
-                                            self.widget)
-            strTime = "{}".format(self.timerCurrentPlayer.time.hour)
-            self.widget.timer.setText(strTime)
+            self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+            self.timeRemainingCurrentPlayer = secTohms(self.player1.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer, self.widget)
+            self.timerCurrentPlayer.startTimer(1000)
         else :
-            self.timeRemainingCurrentPlayer = Time.gmtime(self.player2.timeRemainingToPlay)
-            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer.tm_hour,
-                                            self.timeRemainingCurrentPlayer.tm_min,
-                                            self.timeRemainingCurrentPlayer.tm_sec,
-                                            self.widget)
-            strTime = str(self.timerCurrentPlayer.time.hour)+':'+str(self.timerCurrentPlayer.time.minute)
-            strTime = strTime + ':' + str(self.timerCurrentPlayer.time.second)
-            self.widget.timer.setText("ok")
+            self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+            self.timeRemainingCurrentPlayer = secTohms(self.player2.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer, self.widget)
+            self.timerCurrentPlayer.startTimer(1000)
 
     def playTurn(self):
         """

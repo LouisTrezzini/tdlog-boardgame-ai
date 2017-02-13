@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <chrono>
 #include <iostream>
+using namespace std;
 
 Move HumanPlayer::getAction(const GameState& gameState) {
     auto moves = Game::getLegalMoves(gameState);
@@ -35,8 +36,7 @@ Move HumanPlayer::getAction(const GameState& gameState) {
         }
     }
     double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
-    setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed);
-    std::cout << getTimeRemainingToPlay() << std::endl;
+    setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
     return askedMove;
 }
 

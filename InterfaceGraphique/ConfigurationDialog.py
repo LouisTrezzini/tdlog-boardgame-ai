@@ -53,10 +53,13 @@ class ConfigurationDialog(QtGui.QWidget):
         timesList = list([str(i) for i in range (5, 120, 5)])
         timesList.append("No limit of time")
         time, ok = QtGui.QInputDialog.getItem(self, 'Choice of a the limite of time to play',
-                                              'Limit of time to play', timesList, editable = False)
+                                              'Limit of time to play',
+                                              timesList, editable = False)
         if time != 'No limit of time':
             time = int(float(time) * 60)  #Time in second
             self.timeLimit = time
+        else :
+            self.timeLimit = 0
 
     def createPlayer(self, player_type):
         """ Configures the type of player with a string. """
