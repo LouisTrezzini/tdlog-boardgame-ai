@@ -37,6 +37,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<IPlayer>(m, "IPlayer")
         .def("isHuman", &IPlayer::isHuman)
+        .def("setTimeRemainingToPlay", &IPlayer::setTimeRemainingToPlay)
         .def_property_readonly("timeRemainingToPlay", &IPlayer::getTimeRemainingToPlay)
     ;
 

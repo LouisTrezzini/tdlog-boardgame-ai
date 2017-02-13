@@ -4,35 +4,7 @@ import sys
 import DataBaseHandler
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
-
-def secTohms(nb_sec):
-     q,s=divmod(nb_sec,60)
-     h,m=divmod(q,60)
-     return (h,m,s)
-
-def hmsTosec(h,m,s):
-    nb_sec = h*3600 + m*60 + s -1
-    return nb_sec
-
-def decreaseSec(h,m,s):
-    nb_sec = h*3600 + m*60 + s -1
-    return secTohms(nb_sec)
-
-class Timer (QtCore.QTimer):
-    """ Represents a Timer that indicates the times that remains
-        to play. """
-
-    def __init__(self, time, widget):
-        # Initialize the timer
-        super().__init__()
-        self.widget = widget
-        self.time = time
-
-    def timerEvent(self, event):
-        self.time = decreaseSec(self.time[0],self.time[1],self.time[2])
-        nb_sec = hmsTosec(self.time[0],self.time[1],self.time[2])
-        strTime = '{:2.0f}:{:2.0f}:{:2.0f}'.format(self.time[0],self.time[1], self.time[2])
-        self.widget.timer.setText(strTime)
+import Timer
 
 class GameBoard(QtGui.QWidget):
 
@@ -68,8 +40,8 @@ class GameBoard(QtGui.QWidget):
         self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
         #Display Timer:
-        self.timeRemainingCurrentPlayer = secTohms(self.player1.timeRemainingToPlay)
-        self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+        self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+        self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
         self.timerCurrentPlayer.startTimer(1000)
 
         # Création des boutons
@@ -77,7 +49,7 @@ class GameBoard(QtGui.QWidget):
             for j in range(nbRows):
                 self.grid.addWidget(self.cases[i + j * nbRows], i, j)
                 self.cases[i + j * nbRows].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
-        self.update()
+        self.updateCase()
 
     def change(self, i, j):
         """
@@ -89,11 +61,11 @@ class GameBoard(QtGui.QWidget):
         move = Move(i, j)
         if Game.isValidMove(self.game.gameState, move) and self.humanTurn():
             self.game.playMove(move)
-            self.update()
+            self.updateCase()
             QtCore.QTimer.singleShot(100, self.playTurn)
 
 
-    def update(self):
+    def updateCase(self):
         """
         Fonction pour mettre à jour l'affichage du plateau
         et le score des joueurs
@@ -113,15 +85,27 @@ class GameBoard(QtGui.QWidget):
         self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
         self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
+    def updateTime(self):
+        """
+        Fonction pour mettre à jour l'affichage du plateau
+        et le temps restant aux joueurs
+        :return:
+        """
         if self.game.gameState.getColorPlaying() == Color.BLACK :
             self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
-            self.timeRemainingCurrentPlayer = secTohms(self.player1.timeRemainingToPlay)
-            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+            self.player2.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                               self.timerCurrentPlayer.time[1],
+                                                               self.timerCurrentPlayer.time[2]))
+            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
             self.timerCurrentPlayer.startTimer(1000)
         else :
             self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
-            self.timeRemainingCurrentPlayer = secTohms(self.player2.timeRemainingToPlay)
-            self.timerCurrentPlayer = Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+            self.player1.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                               self.timerCurrentPlayer.time[1],
+                                                               self.timerCurrentPlayer.time[2]))
+            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player2.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
             self.timerCurrentPlayer.startTimer(1000)
 
     def playTurn(self):
@@ -141,7 +125,8 @@ class GameBoard(QtGui.QWidget):
             self.game.playMove(pickedMove)
             QtCore.QTimer.singleShot(200, self.playTurn)
 
-        self.update()
+        self.updateCase()
+        self.updateTime()
 
     def humanTurn(self):
         """
@@ -155,7 +140,7 @@ class GameBoard(QtGui.QWidget):
         cannotPlay = Move.passing()
         if (case1 or case2) and Game.isValidMove(self.game.gameState, cannotPlay):
             self.game.playMove(cannotPlay)
-            self.update()
+            self.updateCase()
             case1 = self.player1.isHuman() and self.game.gameState.getColorPlaying() == Color.WHITE
             case2 = self.player2.isHuman() and self.game.gameState.getColorPlaying() == Color.BLACK
             return case1 or case2

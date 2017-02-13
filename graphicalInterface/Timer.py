@@ -22,6 +22,8 @@ class Timer (QtCore.QTimer):
         super().__init__()
         self.widget = widget
         self.time = time
+        strTime = '{:2.0f}:{:2.0f}:{:2.0f}'.format(self.time[0],self.time[1], self.time[2])
+        self.widget.timer.setText(strTime)
 
     def timerEvent(self, event):
         self.time = decreaseSec(self.time[0],self.time[1],self.time[2])

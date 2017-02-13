@@ -90,7 +90,7 @@ class ConfigurationDialog(QtGui.QWidget):
             player_instance = RandomPlayer(self.timeLimit)
         elif player_type == "MonteCarloTreeSearchPlayer":
             self.setDepth()
-            player_instance = MonteCarloTreeSearchPlayer()
+            player_instance = MonteCarloTreeSearchPlayer(self.timeLimit)
         elif player_type == "MinMaxPlayer":
             self.setDepth()
             # FIXME
