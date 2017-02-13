@@ -8,7 +8,7 @@
 #include <memory>
 #include "../utils/MinMaxOutput.h"
 #include <chrono>
-
+#include <future>
 
 /*
  * This IA will follow the minmax principle
@@ -19,13 +19,13 @@ class MinMaxPlayer : public IPlayer {
 public:
     MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, float timeRemainingToPlay_ = 0);
 
-    MinMaxOutput minMax(GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
+    MinMaxOutput minMax(const GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
                         std::chrono::time_point<std::chrono::system_clock>  start);
 
-    MinMaxOutput minMaxLength(GameState& gameState, bool isMyTurn, Color colorPlaying,
+    MinMaxOutput minMaxLength(const GameState& gameState, bool isMyTurn, Color colorPlaying,
                               std::chrono::time_point<std::chrono::system_clock>  start);
 
-    virtual MinMaxOutput minMaxDepth(GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
+    virtual MinMaxOutput minMaxDepth(const GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
                                      std::chrono::time_point<std::chrono::system_clock>  start) const;
 
     virtual Move getAction(const GameState& gameState);

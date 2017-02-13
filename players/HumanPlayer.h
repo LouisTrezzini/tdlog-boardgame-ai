@@ -4,17 +4,32 @@
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
+#include <string>
 
 /*
  * A random Othello player thats chooses random legal moves
  */
 class HumanPlayer : public IPlayer {
+	std::string name;
+
 public:
+
     HumanPlayer(float timeRemainingToPlay_= 0){
         setTimeRemainingToPlay(timeRemainingToPlay_);
     }
 
+    HumanPlayer(const std::string& name, float timeRemainingToPlay_= 0) {
+        this->name = name;
+        setTimeRemainingToPlay(timeRemainingToPlay_);
+    }
+
+
     virtual Move getAction(const GameState& gameState);
+
+
+    std::string getName() const{
+        return name;
+    }
 
     virtual bool isHuman() {
         return true;

@@ -13,7 +13,7 @@ MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_
     setTimeRemainingToPlay (timeRemainingToPlay_);
 }
 
-MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
+MinMaxOutput MinMaxPlayer::minMax(const GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
                                   std::chrono::time_point<std::chrono::system_clock>  start) {
 
     if (getTimeRemainingToPlay() == 0){
@@ -25,7 +25,7 @@ MinMaxOutput MinMaxPlayer::minMax(GameState& gameState, int depth, bool isMyTurn
 
 }
 
-MinMaxOutput MinMaxPlayer::minMaxLength(GameState& gameState, bool isMyTurn, Color colorPlaying,
+MinMaxOutput MinMaxPlayer::minMaxLength(const GameState& gameState, bool isMyTurn, Color colorPlaying,
                                         std::chrono::time_point<std::chrono::system_clock>  start) {
 
     int turn = gameState.getBoard().getBlackStones() + gameState.getBoard().getWhiteStones() - InitialStones;
@@ -61,12 +61,10 @@ MinMaxOutput MinMaxPlayer::minMaxLength(GameState& gameState, bool isMyTurn, Col
         timeRemainingPerTurn -= timePassedForDepth;
     }
 
-    std::cout<< "TimeRemaining " << getTimeRemainingToPlay() << std::endl;
-
     return result;
 }
 
-MinMaxOutput MinMaxPlayer::minMaxDepth(GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
+MinMaxOutput MinMaxPlayer::minMaxDepth(const GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
                                        std::chrono::time_point<std::chrono::system_clock>  start) const {
     if (gameState.getBoard().isFull() || depth <= 0) {
         std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
@@ -103,17 +101,43 @@ MinMaxOutput MinMaxPlayer::minMaxDepth(GameState& gameState, int depth, bool isM
     }
 }
 
+
 Move MinMaxPlayer::getAction(const GameState& gameState) {
-    GameState nextGameState = gameState;
-    auto start = std::chrono::system_clock::now();
-    MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying(), start);
-    return resultat.move;
+    if (false || depth == 1) {
+        GameState nextGameState = gameState;
+        auto start = std::chrono::system_clock::now();
+        MinMaxOutput resultat = minMax (nextGameState, depth, true, gameState.getColorPlaying(), start);
+        return resultat.move;
+    }
+    else {
+        Color colorPlaying = gameState.getColorPlaying();
+        auto moves = Game::getLegalMoves(gameState);
+        std::vector<std::future<double>> branchResults;
+
+        for  (int i = 0; i < moves.size(); i ++) {
+            GameState nextGameState = gameState;
+            Game::applyMove(nextGameState, moves[i]);
+
+            branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
+                auto start = std::chrono::system_clock::now();
+                return minMax(nextGameState, depth - 1, true, colorPlaying, start).value;
+            }));
+        }
+
+        Move bestMove = Move::passing();
+        double bestScore = -INF;
+        for (int i = 0; i < moves.size(); i ++) {
+            double res = branchResults[i].get();
+            if (res > bestScore) {
+                bestScore = res;
+                bestMove = moves[i];
+            }
+        }
+
+        return bestMove;
+    }
 }
 
 MinMaxPlayer::~MinMaxPlayer() {
 
 }
-
-
-
-

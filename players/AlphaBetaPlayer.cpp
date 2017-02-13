@@ -4,12 +4,12 @@
 const float INF = 1 / 0.f;
 
 AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, float timeRemainingToPlay_) {
-    evaluationFunction = eval;
-    depth = depth_;
+    this->evaluationFunction = eval;
+    this->depth = depth_;
     setTimeRemainingToPlay(timeRemainingToPlay_);
 }
 
-MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta, Color colorPlaying,
+MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta, Color colorPlaying,
                                         std::chrono::time_point<std::chrono::system_clock>  start) const {
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
@@ -51,16 +51,44 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState, int profondeur, bo
     }
 }
 
+
 Move AlphaBetaPlayer::getAction(const GameState& gameState) {
-    auto start = std::chrono::system_clock::now();
-    GameState nextGameState = gameState;
-    MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, - INF, INF, gameState.getColorPlaying(), start);
-    return resultat.move;
+    // Sans parallélisation
+    if (true || depth == 1) {
+        GameState nextGameState = gameState;
+        auto start = std::chrono::system_clock::now();
+        MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, -INF, INF, gameState.getColorPlaying(), start);
+        return resultat.move;
+    // Avec parallélisation
+    } else {
+        Color colorPlaying = gameState.getColorPlaying();
+        auto moves = Game::getLegalMoves(gameState);
+        std::vector<std::future<double>> branchResults;
+
+        for  (int i = 0; i < moves.size(); i ++) {
+            GameState nextGameState = gameState;
+            Game::applyMove(nextGameState, moves[i]);
+
+            branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
+                auto start = std::chrono::system_clock::now();
+                return alphaBeta(nextGameState, depth - 1, false, -INF, INF, colorPlaying, start).value;
+            }));
+        }
+
+        Move bestMove = Move::passing();
+        double bestScore = -INF;
+        for (int i = 0; i < moves.size(); i ++) {
+            double res = branchResults[i].get();
+            if (res > bestScore) {
+                bestScore = res;
+                bestMove = moves[i];
+            }
+        }
+
+        return bestMove;
+    }
 }
 
 AlphaBetaPlayer::~AlphaBetaPlayer() {
 
 }
-
-
-

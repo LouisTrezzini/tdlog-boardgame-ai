@@ -46,6 +46,8 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
          .def(py::init<float>())
+         .def(py::init<std::string, float>())
+         .def_property_readonly("name", &HumanPlayer::getName)
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")

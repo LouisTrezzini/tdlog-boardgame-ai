@@ -49,9 +49,17 @@ public:
         return child;
     }
 
-    Node* selectChildUCT() const {
+    Node* selectChildUCT(const Color& agentColor) const {
+        bool opponentTurn = this->getGameState().getColorPlaying() == ColorOpponent[(int) agentColor];
+
         for (auto child: children) {
-            child->UCTScore = double(child->wins) / double(child->plays) + std::sqrt(2.0 * std::log(double(this->plays)) / child->plays);
+            // Select correctly for the opponent
+            int wins = child->wins;
+            if (opponentTurn){
+                wins = child->plays - child->wins;
+            }
+
+            child->UCTScore = double(wins) / double(child->plays) + std::sqrt(2.0 * std::log(double(this->plays)) / child->plays);
         }
 
         return *std::max_element(children.begin(), children.end(), [](Node* a, Node* b) {

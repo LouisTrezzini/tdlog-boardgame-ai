@@ -8,6 +8,10 @@
 #include "../evaluation/IEvaluationFunction.h"
 #include <memory>
 #include <chrono>
+#include <thread>
+#include <future>
+
+
 
 /*
  * This IA will follow the alpha-beta principle
@@ -18,12 +22,14 @@ class AlphaBetaPlayer : public IPlayer {
 public:
     AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, float timeRemainingToPlay_ = 0);
 
-    MinMaxOutput alphaBeta(GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying,
+
+    MinMaxOutput alphaBeta(const GameState& gameState, int profondeur, bool turn, float alpha, float beta, Color colorPlaying,
                            std::chrono::time_point<std::chrono::system_clock> start) const;
+
 
     virtual Move getAction(const GameState& gameState);
 
-    virtual ~AlphaBetaPlayer();
+    ~AlphaBetaPlayer();
 };
 
 

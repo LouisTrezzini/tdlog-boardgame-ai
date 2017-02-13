@@ -35,6 +35,7 @@ public:
     virtual bool isHuman() {
         return false;
     }
+
     virtual Move getAction(const GameState& gameState) = 0;
     
     virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) {
