@@ -1,5 +1,6 @@
 #include "IPlayer.h"
 #include "AlphaBetaPlayer.h"
+#include <chrono>
 
 // FIXME Faire quelquechose des constantes
 
@@ -35,4 +36,14 @@ Move IPlayer::getAction(const GameState& gameState) const {
         cout << "Si vous jouez optimalement, vous gagnez" << endl;
     }
     return getBasicAction(gameState);
+}
+
+Move IPlayer::getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
+    auto start = std::chrono::system_clock::now();
+    Move moveToPlay = getAction(gameState);
+    // TODO Exception si timeNeededToPlay n'est pas initialisé correctement
+    // TODO Le -4 est moche
+    std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
+    timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += timePassed.count();
+    return moveToPlay;
 }
