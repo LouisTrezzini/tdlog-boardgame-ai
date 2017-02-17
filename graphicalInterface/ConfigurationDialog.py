@@ -2,6 +2,7 @@
 
 from PyQt4 import QtGui
 from boardgame_ai_py import *
+import DataBaseHandler
 
 ###############################################################################
 ################ Part : ConfigureDialog #######################################
@@ -14,8 +15,8 @@ class ConfigurationDialog(QtGui.QWidget):
         the number of bots and names of players. """
     def __init__(self):
         """ Initializes a member of the class ConfigureDialog.
-            It allows to stocks the value wanted by the player to launch
-            a party. So, it is composed of the type of the two player """
+        	It allows to stocks the value wanted by the player to launch
+        	a party. So, it is composed of the type of the two player """
         super().__init__()
         self.player1 = None
         self.player2 = None
@@ -38,6 +39,17 @@ class ConfigurationDialog(QtGui.QWidget):
                                               player_types_list, editable = False)
         return player_type
 
+    def askPlayerName(self):
+        """ Launchs a Dialog in which the user can enter his pseudo. """
+        player_name, ok1 = QtGui.QInputDialog.getText(self,'Choice of the name of the Player','Enter your pseudo :',QtGui.QLineEdit.Normal)
+        return player_name
+
+    def askPlayerPassword(self):
+        """ Launchs a Dialog in which the user can enter his password. """
+        player_password, ok1 = QtGui.QInputDialog.getText(self,'Welcome','Enter your password :',QtGui.QLineEdit.Normal)
+        return player_password
+
+    # TODO fix it
     def setDepth(self):
         """ Launchs a Dialog in which the user can enter the force of the AI. """
         force, ok1 = QtGui.QInputDialog.getInt(self, 'Parameters',
@@ -48,16 +60,29 @@ class ConfigurationDialog(QtGui.QWidget):
         """ Configures the type of player with a string. """
         player_instance = None
         if player_type == "HumanPlayer":
-            player_instance = HumanPlayer()
-        if player_type == "RandomPlayer":
+            data = DataBaseHandler.StatisticsDataBaseController()
+            access = DataBaseHandler.PasswordsDataBaseController()
+            name = self.askPlayerName()
+            password = self.askPlayerPassword()
+            while (access.checkAccess(name,password,data) == False):
+                print("wrong password")
+                password = self.askPlayerPassword()
+            player_instance = HumanPlayer(name)
+            data.close()
+            access.close()
+        elif player_type == "RandomPlayer":
             player_instance = RandomPlayer(True)
-        if player_type == "MonteCarloTreeSearchPlayer":
+        elif player_type == "MonteCarloTreeSearchPlayer":
             player_instance = MonteCarloTreeSearchPlayer(True)
-        if player_type == "MinMaxPlayer":
+        elif player_type == "MinMaxPlayer":
             # FIXME
             # Donner le choix à l'utilisateur
             player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3, True)
-        if player_type == "AlphaBetaPlayer":
+        elif player_type == "MinMaxPlayer":
+            # FIXME
+            # Donner le choix à l'utilisateur
+            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3)
+        elif player_type == "AlphaBetaPlayer":
             # FIXME
             # Donner le choix à l'utilisateur
             player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7, True)

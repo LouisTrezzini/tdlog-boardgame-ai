@@ -6,7 +6,7 @@
 Move IPlayer::getAction(const GameState& gameState) const {
     if(bestFinish && pow(gameState.getBoard().getSize(), 2) - gameState.getBoard().getTotalStones() <= 19) {
         cout << "L'ordinateur regarde si il peut gagner à coup sûr" << endl;
-        if (pow(gameState.getBoard().getSize(), 2) - gameState.getBoard().getTotalStones() <= 12) {
+        if (pow(gameState.getBoard().getSize(), 2) - gameState.getBoard().getTotalStones() <= 10) {
             GameState nextGameState = gameState;
             std::shared_ptr<IEvaluationFunction> evalFunction(new PawnNumberEvaluation());
             // FIXME Il faut allouer un cetain temps à ce joueur, sinon il peut jouer trop longtemps

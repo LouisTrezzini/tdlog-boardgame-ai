@@ -10,7 +10,7 @@
 #include <chrono>
 #include <memory>
 #include <math.h>
-
+#include "../evaluation/IEvaluationFunction.h"
 
 /**
  * Abstract class for all players
@@ -31,6 +31,7 @@ public:
     virtual bool isHuman() {
         return false;
     }
+
     virtual Move getBasicAction(const GameState& gameState) const = 0;
     
     virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {

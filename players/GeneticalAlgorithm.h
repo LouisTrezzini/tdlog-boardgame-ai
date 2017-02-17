@@ -35,11 +35,11 @@ public:
         return score;
     }
 
-    vector<double> getCoefficients() const {
+    const vector<double>& getCoefficients() const {
         return coefficients;
     }
 
-    vector<IEvaluationFunction *> getEvaluationFunctions() const {
+    const vector<IEvaluationFunction *>& getEvaluationFunctions() const {
         return functions;
     }
 
@@ -51,12 +51,8 @@ public:
         score = 0;
     }
 
-    bool operator<(Individu individu) const {
-        return (score < individu.score);
-    }
-
-    double operator[](int i) {
-        return coefficients[i];
+    bool operator<(const Individu& individu) const {
+        return score < individu.score;
     }
 
     void mutate(double chancesToMuteForGene) {
@@ -67,15 +63,15 @@ public:
         }
     }
 
-    static Individu makeChild(Individu indiv1, Individu indiv2) {
+    static Individu makeChild(const Individu& indiv1, const Individu& indiv2) {
         // FIXME
         // Exception si les 2 individus ne sont pas de la même espèce
         vector<double> coefs;
         for (int i = 0; i < indiv1.coefficients.size(); i++) {
             if (rand() % 2) {
-                coefs.push_back(indiv1[i]);
+                coefs.push_back(indiv1.getCoefficients()[i]);
             } else {
-                coefs.push_back(indiv2[i]);
+                coefs.push_back(indiv2.getCoefficients()[i]);
             }
         }
         return Individu(coefs, indiv1.functions);
@@ -132,9 +128,7 @@ void Competition(vector <Individu>& population, int sizeGrid, int gamesToPlay, I
 }
 
 
-void Selection(vector <Individu>& population,
-               int numberToChange) {
-
+void Selection(vector <Individu>& population, int numberToChange) {
     //FIXME
     // Exception si le nombre de sélectionné est trop grand ou trop petit
 
@@ -180,6 +174,11 @@ void GeneticalAlgorithm(int N, int nbiteration,
         sort(population.begin(), population.end());
         for (int i = 0; i < population.size(); i++) {
             cerr << population[i].getScore() << " ";
+        }
+        cerr << endl;
+
+        for(auto coeff: population[0].getCoefficients()){
+            cerr << coeff << " ";
         }
         cerr << endl;
 
