@@ -7,6 +7,8 @@
 #include "../utils/MinMaxOutput.h"
 #include "../evaluation/IEvaluationFunction.h"
 #include <memory>
+#include <thread>
+#include <future>
 
 
 /*
@@ -19,7 +21,7 @@ public:
 
     AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_);
 
-    static MinMaxOutput alphaBeta(GameState& gameState,
+    static MinMaxOutput alphaBeta(const GameState& gameState,
                                   const std::shared_ptr<IEvaluationFunction> &evalFunction,
                                   int profondeur, bool turn, double alpha, double beta,
                                   const Color &colorPlaying);

@@ -87,4 +87,3 @@ class ConfigurationDialog(QtGui.QWidget):
             # Donner le choix à l'utilisateur
             player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7, True)
         return player_instance
-

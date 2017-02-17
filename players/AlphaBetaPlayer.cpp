@@ -9,10 +9,11 @@ AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int 
     bestFinish = bestFinish_;
 }
 
-MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState,
+MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState,
                                         const std::shared_ptr<IEvaluationFunction> &evalFunction,
                                         int profondeur, bool isMyTurn, double alpha, double beta,
                                         const Color &colorPlaying) {
+
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         return MinMaxOutput(Move::passing(), (*evalFunction)(gameState, colorPlaying));
     }
@@ -54,16 +55,42 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(GameState& gameState,
     }
 }
 
+
 Move AlphaBetaPlayer::getBasicAction(const GameState& gameState) const {
-    GameState nextGameState = gameState;
-    MinMaxOutput resultat = AlphaBetaPlayer::alphaBeta(nextGameState, evaluationFunction, depth,
-                                      true, - INF, INF, gameState.getColorPlaying());
-    return resultat.move;
+    // Sans parallélisation
+    if (false || depth == 1) {
+        GameState nextGameState = gameState;
+        MinMaxOutput resultat = alphaBeta(nextGameState, evaluationFunction, depth, true, -INF, INF, gameState.getColorPlaying());
+        return resultat.move;
+    // Avec parallélisation
+    } else {
+        Color colorPlaying = gameState.getColorPlaying();
+        auto moves = Game::getLegalMoves(gameState);
+        std::vector<std::future<double>> branchResults;
+
+        for  (int i = 0; i < moves.size(); i ++) {
+            GameState nextGameState = gameState;
+            Game::applyMove(nextGameState, moves[i]);
+
+            branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
+                return alphaBeta(nextGameState, evaluationFunction, depth - 1, false, -INF, INF, colorPlaying).value;
+            }));
+        }
+
+        Move bestMove = Move::passing();
+        double bestScore = -INF;
+        for (int i = 0; i < moves.size(); i ++) {
+            double res = branchResults[i].get();
+            if (res > bestScore) {
+                bestScore = res;
+                bestMove = moves[i];
+            }
+        }
+
+        return bestMove;
+    }
 }
 
 AlphaBetaPlayer::~AlphaBetaPlayer() {
 
 }
-
-
-
