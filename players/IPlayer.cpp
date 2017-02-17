@@ -1,6 +1,7 @@
 #include "IPlayer.h"
 #include "AlphaBetaPlayer.h"
 #include <chrono>
+#include <math.h>
 
 // FIXME Faire quelquechose des constantes
 

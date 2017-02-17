@@ -7,7 +7,6 @@
 #include "../game/GameState.h"
 #include "../evaluation/EndGameEvaluation.h"
 #include "../evaluation/PawnNumberEvaluation.h"
-#include <math.h>
 #include "../evaluation/IEvaluationFunction.h"
 
 /**
