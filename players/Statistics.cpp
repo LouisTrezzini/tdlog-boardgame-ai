@@ -23,7 +23,7 @@ double standardDeviation(std::vector<double> vec) {
 }
 
 void LoiDesGainsSurXParties(int nbGame, IPlayer *player1, int sizeGrid) {
-    IPlayer *player2 = new RandomPlayer();
+    IPlayer *player2 = new RandomPlayer(false);
 
     //FIXME Faire passer en variable globale
     int numberOfRounds = 100;

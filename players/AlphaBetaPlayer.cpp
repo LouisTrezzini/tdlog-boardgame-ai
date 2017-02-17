@@ -1,16 +1,21 @@
 #include "../game/Game.h"
 #include "AlphaBetaPlayer.h"
 
-const float INF = 1 / 0.f;
+const double INF = 1 / 0.f;
 
-AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth) {
-    this->evaluationFunction = eval;
-    this->depth = depth;
+AlphaBetaPlayer::AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_) {
+    evaluationFunction = eval;
+    depth = depth_;
+    bestFinish = bestFinish_;
 }
 
-MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState, int profondeur, bool isMyTurn, float alpha, float beta, Color colorPlaying) const {
+MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState,
+                                        const std::shared_ptr<IEvaluationFunction> &evalFunction,
+                                        int profondeur, bool isMyTurn, double alpha, double beta,
+                                        const Color &colorPlaying) {
+
     if (gameState.getBoard().isFull() || profondeur <= 0) {
-        return MinMaxOutput(Move::passing(), (*evaluationFunction)(gameState, colorPlaying));
+        return MinMaxOutput(Move::passing(), (*evalFunction)(gameState, colorPlaying));
     }
     else {
         if (isMyTurn) {
@@ -19,7 +24,8 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState, int profonde
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, false, alpha, beta, colorPlaying);
+                MinMaxOutput moveResult = alphaBeta(nextGameState, evalFunction, profondeur - 1,
+                                                    false, alpha, beta, colorPlaying);
                 moveResult.move = moves[i];
                 bestResult.max(moveResult);
                 if (bestResult.value >= beta) {
@@ -35,7 +41,8 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState, int profonde
             for  (int i = 0; i < moves.size(); i ++) {
                 GameState nextGameState = gameState;
                 Game::applyMove(nextGameState, moves[i]);
-                MinMaxOutput moveResult = alphaBeta(nextGameState, profondeur - 1, true, alpha, beta, colorPlaying);
+                MinMaxOutput moveResult = alphaBeta(nextGameState, evalFunction,
+                                                    profondeur - 1, true, alpha, beta, colorPlaying);
                 moveResult.move = moves[i];
                 bestResult.min(moveResult);
                 if (bestResult.value <= alpha) {
@@ -48,11 +55,12 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState, int profonde
     }
 }
 
-Move AlphaBetaPlayer::getAction(const GameState& gameState) const {
+
+Move AlphaBetaPlayer::getBasicAction(const GameState& gameState) const {
     // Sans parallélisation
-    if (true || depth == 1) {
+    if (false || depth == 1) {
         GameState nextGameState = gameState;
-        MinMaxOutput resultat = alphaBeta(nextGameState, depth, true, -INF, INF, gameState.getColorPlaying());
+        MinMaxOutput resultat = alphaBeta(nextGameState, evaluationFunction, depth, true, -INF, INF, gameState.getColorPlaying());
         return resultat.move;
     // Avec parallélisation
     } else {
@@ -65,7 +73,7 @@ Move AlphaBetaPlayer::getAction(const GameState& gameState) const {
             Game::applyMove(nextGameState, moves[i]);
 
             branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
-                return alphaBeta(nextGameState, depth - 1, false, -INF, INF, colorPlaying).value;
+                return alphaBeta(nextGameState, evaluationFunction, depth - 1, false, -INF, INF, colorPlaying).value;
             }));
         }
 

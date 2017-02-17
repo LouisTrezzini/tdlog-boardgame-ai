@@ -13,11 +13,12 @@
  */
 class RandomPlayer : public IPlayer {
 public:
-    RandomPlayer() {
+    RandomPlayer(bool bestFinish_) {
         srand(time(NULL));
+        bestFinish = bestFinish_;
     }
 
-    virtual Move getAction(const GameState& gameState) const;
+    virtual Move getBasicAction(const GameState& gameState) const;
 
     virtual ~RandomPlayer();
 };

@@ -2,7 +2,8 @@
 #include "../game/Game.h"
 #include <stdexcept>
 
-Move HumanPlayer::getAction(const GameState& gameState) const {
+
+Move HumanPlayer::getBasicAction(const GameState& gameState) const {
     auto moves = Game::getLegalMoves(gameState);
 
     bool moveUnavailable = true;

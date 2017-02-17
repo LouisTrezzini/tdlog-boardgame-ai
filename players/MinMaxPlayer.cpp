@@ -4,9 +4,10 @@
 const float INF = 1 / 0.f;
 
 
-MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_) {
+MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_) {
     evaluationFunction = eval;
     depth = depth_;
+    bestFinish = bestFinish_;
 }
 
 MinMaxOutput MinMaxPlayer::minMax(const GameState& gameState, int profondeur, bool isMyTurn, Color colorPlaying) const {
@@ -41,7 +42,7 @@ MinMaxOutput MinMaxPlayer::minMax(const GameState& gameState, int profondeur, bo
     }
 }
 
-Move MinMaxPlayer::getAction(const GameState& gameState) const {
+Move MinMaxPlayer::getBasicAction(const GameState& gameState) const {
     if (false || depth == 1) {
         GameState nextGameState = gameState;
         MinMaxOutput resultat = minMax(nextGameState, depth, true, gameState.getColorPlaying());

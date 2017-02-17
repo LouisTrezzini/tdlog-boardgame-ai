@@ -3,7 +3,7 @@
 #include "../game/Game.h"
 
 
-Move RandomPlayer::getAction(const GameState& gameState) const {
+Move RandomPlayer::getBasicAction(const GameState& gameState) const {
     return Game::getRandomMove(gameState);
 }
 

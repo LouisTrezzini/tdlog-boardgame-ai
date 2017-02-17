@@ -5,7 +5,8 @@
 #include "../game/Color.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
-#include <chrono>
+#include "../evaluation/EndGameEvaluation.h"
+#include "../evaluation/PawnNumberEvaluation.h"
 #include "../evaluation/IEvaluationFunction.h"
 
 /**
@@ -13,7 +14,8 @@
  */
 class IPlayer {
     Color color;
-
+protected:
+    bool bestFinish;
 public:
     Color getColor() const {
         return color;
@@ -27,17 +29,12 @@ public:
         return false;
     }
 
-    virtual Move getAction(const GameState& gameState) const = 0;
+    virtual Move getBasicAction(const GameState& gameState) const = 0;
     
-    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const {
-        auto start = std::chrono::system_clock::now();
-        Move moveToPlay = getAction(gameState);
-        // TODO Exception si timeNeededToPlay n'est pas initialisé correctement
-        // TODO Le -4 est moche
-        std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
-        timeNeededToPlay[gameState.getBoard().getTotalStones() - 4] += timePassed.count();
-        return moveToPlay;
-    }
+    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const;
+
+    virtual Move getAction(const GameState& gameState) const;
+
     virtual ~IPlayer() = 0;
 };
 

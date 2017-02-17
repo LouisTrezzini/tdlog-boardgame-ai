@@ -1,6 +1,6 @@
 #include "MinMaxOutput.h"
 
-MinMaxOutput::MinMaxOutput(Move move, float value) {
+MinMaxOutput::MinMaxOutput(Move move, double value) {
     MinMaxOutput::move = move;
     MinMaxOutput::value = value;
 }

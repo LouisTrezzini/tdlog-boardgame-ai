@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 
         // Algorithme génétique
         case 0: {
-            IPlayer *enemy = new RandomPlayer();
+            IPlayer *enemy = new RandomPlayer(false);
             GeneticalAlgorithm(50, 500, 100, enemy);
             delete enemy;
         }
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
             shared_ptr<IEvaluationFunction> evalForPlayer1(
                     new LinearCombinationOverTimeEvaluation(coefficients, evaluationFunctions));
 
-            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
+            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1, false);
 
             LoiDesGainsSurXParties(100, player1);
 
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
             shared_ptr<IEvaluationFunction> evalForPlayer1(
                     new LinearCombinationEvaluation(coefficients, evaluationFunctions));
 
-            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
+            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1, false);
 
             LoiDesGainsSurXParties(100, player1);
 
@@ -85,8 +85,8 @@ int main(int argc, char *argv[]) {
             break;
 
         case 3: {
-            IPlayer* player1 = new MonteCarloTreeSearchPlayer();
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5);
+            IPlayer* player1 = new MonteCarloTreeSearchPlayer(false);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5, false);
 
             Game game(8, player1, player2);
 
@@ -98,8 +98,9 @@ int main(int argc, char *argv[]) {
 
         //Calcul du temps nécessaire en moyenne pour jouer pour un joueur donné (player2)
         case 4: {
-            IPlayer* player1 = new MinMaxPlayer(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()), 1);
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()), 6);
+            IPlayer* player1 = new RandomPlayer(false);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 9, false);
+
 
             vector<double> timeNeededToPlay(60,0);
 

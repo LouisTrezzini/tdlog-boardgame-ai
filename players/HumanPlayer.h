@@ -13,8 +13,11 @@ class HumanPlayer : public IPlayer {
 	std::string name;
 
 public:
+    virtual Move getBasicAction(const GameState& gameState) const;
+
     HumanPlayer(const std::string& name) {
         this->name = name;
+        bestFinish = false;
     }
 
     std::string getName() const{
@@ -25,7 +28,6 @@ public:
         return true;
     }
 
-    virtual Move getAction(const GameState& gameState) const;
     virtual ~HumanPlayer();
 };
 

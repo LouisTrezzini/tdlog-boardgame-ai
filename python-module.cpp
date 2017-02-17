@@ -39,7 +39,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
-        .def(py::init<>())
+        .def(py::init<bool>())
     ;
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
@@ -48,15 +48,15 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
-         .def(py::init<std::shared_ptr<IEvaluationFunction>, int>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int, bool>())
     ;
 
     py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")
-         .def(py::init<std::shared_ptr<IEvaluationFunction>, int>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int, bool>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
-        .def(py::init<>())
+        .def(py::init<bool>())
     ;
 
     py::class_<Board>(m, "Board")
