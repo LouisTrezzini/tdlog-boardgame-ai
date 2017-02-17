@@ -98,13 +98,9 @@ int main(int argc, char *argv[]) {
 
         //Calcul du temps nécessaire en moyenne pour jouer pour un joueur donné (player2)
         case 4: {
-<<<<<<< HEAD
             IPlayer* player1 = new RandomPlayer(false);
             IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 9, false);
-=======
-            IPlayer* player1 = new MinMaxPlayer(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()), 1);
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()), 6);
->>>>>>> master
+
 
             vector<double> timeNeededToPlay(60,0);
 
