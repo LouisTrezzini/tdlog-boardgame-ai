@@ -65,8 +65,8 @@ bool Board::operator==(const Board &board) const {
         return false;
     }
 
-    for (int i = 0; i < this->getSize(); i ++) {
-        for (int j = 0; j < this->getSize(); j ++) {
+    for (int i = 0; i < getSize(); i ++) {
+        for (int j = 0; j < getSize(); j ++) {
             if (pieceAt(i,j) != board.pieceAt(i,j)) {
                 return false;
             }
