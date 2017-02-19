@@ -52,6 +52,7 @@ class GraphicalInterface:
         self.widget.statisticsBtn.clicked.connect(self.displayStatistics)
         self.widget.stopGameBtn.clicked.connect(lambda _ : self.stopGameWidget())
         self.widget.goBackBtn.clicked.connect(self.goBackToConfiguration)
+        self.widget.goBackBtn2.clicked.connect(lambda _ : self.stopGameWidget())
 
         #Personnalisation timer:
         palette = QtGui.QPalette()
@@ -60,6 +61,14 @@ class GraphicalInterface:
         f = QtGui.QFont( "Helvetica", 15)
         f.setBold(True)
         self.widget.timer.setFont(f)
+
+        #Personnalisation du endGame:
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Foreground,QtCore.Qt.red)
+        self.widget.timer.setPalette(palette)
+        f = QtGui.QFont( "Helvetica", 20)
+        f.setBold(True)
+        self.widget.winner.setFont(f)
 
         # Initialisation des joueurs
         self.timeLimit = None

@@ -70,7 +70,7 @@ class ConfigurationDialog(QtGui.QWidget):
             time = int(float(time) * 60)  #Time in second
             self.timeLimit = time
         else :
-            self.timeLimit = 0
+            self.timeLimit = -1
 
     def createPlayer(self, player_type):
         """ Configures the type of player with a string. """
