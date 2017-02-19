@@ -45,8 +45,7 @@ class GameBoard(QtGui.QWidget):
             self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
             self.timerCurrentPlayer.startTimer(1000)
         else :
-            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
-            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+            self.timerCurrentPlayer = Timer.Timer(0, self.displayScoreWidget)
 
         # Création des boutons
         for i in range(nbRows):
@@ -66,6 +65,7 @@ class GameBoard(QtGui.QWidget):
         if Game.isValidMove(self.game.gameState, move) and self.humanTurn():
             self.game.playMove(move)
             self.updateCase()
+            self.updateTime()
             QtCore.QTimer.singleShot(100, self.playTurn)
 
 
@@ -91,13 +91,12 @@ class GameBoard(QtGui.QWidget):
 
     def updateTime(self):
         """
-        Fonction pour mettre à jour l'affichage du plateau
-        et le temps restant aux joueurs
+        Fonction pour mettre à jour l'affichage du temps restant aux joueurs
         :return:
         """
-        if self.player1.timeRemainingToPlay > 0:
+        if self.player1.timeRemainingToPlay > 0 and self.player2.timeRemainingToPlay > 0:
 
-            if self.game.gameState.getColorPlaying() == Color.BLACK :
+            if self.game.gameState.getColorPlaying() == Color.WHITE :
                 self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
                 self.player2.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
                                                                    self.timerCurrentPlayer.time[1],
@@ -117,7 +116,7 @@ class GameBoard(QtGui.QWidget):
 
         else :
 
-            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+            self.timerCurrentPlayer = Timer.Timer(0, self.displayScoreWidget)
 
     def playTurn(self):
         """
@@ -132,14 +131,12 @@ class GameBoard(QtGui.QWidget):
             data.close()
             return
 
-
         if not self.humanTurn():
             pickedMove = self.game.pickMove(self.game.gameState)
             self.game.playMove(pickedMove)
+            self.updateCase()
+            self.updateTime()
             QtCore.QTimer.singleShot(200, self.playTurn)
-
-        self.updateCase()
-        self.updateTime()
 
     def humanTurn(self):
         """
@@ -153,11 +150,16 @@ class GameBoard(QtGui.QWidget):
         cannotPlay = Move.passing()
         if (case1 or case2) and Game.isValidMove(self.game.gameState, cannotPlay):
             self.game.playMove(cannotPlay)
-            self.updateCase()
             case1 = self.player1.isHuman() and self.game.gameState.getColorPlaying() == Color.WHITE
             case2 = self.player2.isHuman() and self.game.gameState.getColorPlaying() == Color.BLACK
             return case1 or case2
         return case1 or case2
+
+    def endGame(self):
+        """
+        Fonction permettant d'afficher la couleur du vainqueur
+        """
+
 
 
 class GameBoardTheme():
