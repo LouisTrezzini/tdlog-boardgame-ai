@@ -1,11 +1,10 @@
 #include "LinearCombinationOverTimeEvaluation.h"
-
 #include <cmath>
 
 //FIXME
 // Mettre des exceptions pour vois si les tailles sont égales
 LinearCombinationOverTimeEvaluation::LinearCombinationOverTimeEvaluation(const vector<double>& coefficients,
-                                                                         const vector<IEvaluationFunction *>& functions) {
+                                                                         const vector<std::shared_ptr<IEvaluationFunction>>& functions) {
     this->coefficients = coefficients;
     this->functions = functions;
 }

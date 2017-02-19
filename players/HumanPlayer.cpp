@@ -6,7 +6,7 @@
 using namespace std;
 
 
-Move HumanPlayer::getAction(const GameState& gameState) {
+Move HumanPlayer::getBasicAction(const GameState& gameState) {
 
     auto moves = Game::getLegalMoves(gameState);
     auto startTime = std::chrono::system_clock::now();

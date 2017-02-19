@@ -16,15 +16,16 @@ public:
 
     HumanPlayer(float timeRemainingToPlay_= 0){
         setTimeRemainingToPlay(timeRemainingToPlay_);
+        bestFinish = false;
     }
 
     HumanPlayer(const std::string& name, float timeRemainingToPlay_= 0) {
         this->name = name;
         setTimeRemainingToPlay(timeRemainingToPlay_);
+        bestFinish = false;
     }
 
-
-    virtual Move getAction(const GameState& gameState);
+    virtual Move getBasicAction(const GameState& gameState);
 
 
     std::string getName() const{

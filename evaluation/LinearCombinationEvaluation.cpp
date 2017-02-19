@@ -3,7 +3,7 @@
 //FIXME
 // Mettre des exceptions pour vois si les tailles sont égales
 LinearCombinationEvaluation::LinearCombinationEvaluation(vector<double> coefficients,
-                                                         vector<IEvaluationFunction *> functions)
+                                                         vector<std::shared_ptr<IEvaluationFunction>> functions)
         : coefficients(coefficients), functions(functions) {
 }
 

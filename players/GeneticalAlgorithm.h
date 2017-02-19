@@ -22,11 +22,11 @@ using namespace std;
 class Individu {
 private:
     vector<double> coefficients;
-    vector<IEvaluationFunction *> functions;
+    vector<std::shared_ptr<IEvaluationFunction>> functions;
     int score;
 
 public:
-    Individu(const vector<double>& coefficients, const vector<IEvaluationFunction *>& functions) {
+    Individu(const vector<double>& coefficients, const vector<std::shared_ptr<IEvaluationFunction>>& functions) {
         score = 0;
         this->coefficients = coefficients;
         this->functions = functions;
@@ -40,7 +40,7 @@ public:
         return coefficients;
     }
 
-    const vector<IEvaluationFunction *>& getEvaluationFunctions() const {
+    const vector<std::shared_ptr<IEvaluationFunction>>& getEvaluationFunctions() const {
         return functions;
     }
 
@@ -80,7 +80,7 @@ public:
 };
 
 void InitialisationPopulation(int N, vector <Individu>& population,
-                              vector<IEvaluationFunction *> evaluationFunctions, int turns) {
+                              vector<std::shared_ptr<IEvaluationFunction>> evaluationFunctions, int turns) {
     for (int i = 0; i < N; i++) {
         vector<double> coefficients;
         // FIXME Avec le temps, il faudra rajouter un *turns....
@@ -97,7 +97,7 @@ bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
     shared_ptr <IEvaluationFunction> evalForPlayer1(
             new LinearCombinationEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
     // FIXME Faire passer en paramètre ?
-    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3);
+    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3, false);
 
     Game game(sizeGrid, player1, player2);
     game.playGameWithoutDisplay();
@@ -154,15 +154,17 @@ void GeneticalAlgorithm(int N, int nbiteration,
                          int gamesToPlay, IPlayer *enemy, double chancesToMute = 0.01, double chancesToMuteForGene = 0.1,
                         int nbDeath = 5, int sizeGrid = 8) {
 
-    // Initialisation de l'aléaoire
+    // Initialisation de l'aléatoire
     srand(time(NULL));
 
     // Déinition des functions d'évaluation que nous allons utiliser
+
     vector < IEvaluationFunction * > evaluationFunctions;
     evaluationFunctions.push_back(new PawnNumberEvaluation());
     evaluationFunctions.push_back(new PositionEvaluation());
     evaluationFunctions.push_back(new MobilityEvaluation());
     evaluationFunctions.push_back(new TimeEvaluation());
+
 
     // Définition de notre population
     vector <Individu> population;
@@ -192,7 +194,7 @@ void GeneticalAlgorithm(int N, int nbiteration,
         }
     }
     for (int i = evaluationFunctions.size() - 1; i >= 0; i --) {
-        delete evaluationFunctions[i];
+        evaluationFunctions[i].reset();
     }
 }
 

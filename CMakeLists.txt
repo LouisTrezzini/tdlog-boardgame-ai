@@ -24,6 +24,7 @@ set(PLAYER_FILES
         players/GeneticalAlgorithm.h
         players/HumanPlayer.cpp
         players/HumanPlayer.h
+        players/IPlayer.cpp
         players/IPlayer.h
         players/MinMaxPlayer.cpp
         players/MinMaxPlayer.h

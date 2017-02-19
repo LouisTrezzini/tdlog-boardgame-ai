@@ -15,11 +15,12 @@ class MonteCarloTreeSearchPlayer : public IPlayer {
 
 public:
 
-    MonteCarloTreeSearchPlayer (float timeRemainingToPlay_ = 0){
+    MonteCarloTreeSearchPlayer (bool bestFinish_, float timeRemainingToPlay_ = 0){
         setTimeRemainingToPlay(timeRemainingToPlay_);
+        bestFinish = bestFinish_;
     }
 
-    virtual Move getAction(const GameState& gameState);
+    virtual Move getBasicAction(const GameState& gameState) const;
 
     virtual ~MonteCarloTreeSearchPlayer();
 };

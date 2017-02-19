@@ -7,9 +7,10 @@
 const float INF = 1 / 0.f;
 
 
-MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, float timeRemainingToPlay_) {
+MinMaxPlayer::MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_, float timeRemainingToPlay_) {
     evaluationFunction = eval;
     depth = depth_;
+    bestFinish = bestFinish_;
     setTimeRemainingToPlay (timeRemainingToPlay_);
 }
 
@@ -101,8 +102,8 @@ MinMaxOutput MinMaxPlayer::minMaxDepth(const GameState& gameState, int depth, bo
     }
 }
 
+Move MinMaxPlayer::getBasicAction(const GameState& gameState) {
 
-Move MinMaxPlayer::getAction(const GameState& gameState) {
     if (false || depth == 1) {
         GameState nextGameState = gameState;
         auto start = std::chrono::system_clock::now();

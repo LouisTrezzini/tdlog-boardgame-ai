@@ -70,7 +70,9 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     return root;
 }
 
-Move MonteCarloTreeSearchPlayer::getAction(const GameState& gameState) {
+
+Move MonteCarloTreeSearchPlayer::getBasicAction(const GameState& gameState) {
+
     auto moves = Game::getLegalMoves(gameState);
     auto startTime = std::chrono::system_clock::now();
 

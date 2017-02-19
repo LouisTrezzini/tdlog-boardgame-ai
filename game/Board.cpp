@@ -60,4 +60,17 @@ std::string Board::toString() const {
     return result;
 }
 
+bool Board::operator==(const Board &board) const {
+    if (board.getSize() != getSize()) {
+        return false;
+    }
 
+    for (int i = 0; i < getSize(); i ++) {
+        for (int j = 0; j < getSize(); j ++) {
+            if (pieceAt(i,j) != board.pieceAt(i,j)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

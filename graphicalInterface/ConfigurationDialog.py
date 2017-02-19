@@ -52,6 +52,7 @@ class ConfigurationDialog(QtGui.QWidget):
         player_password, ok1 = QtGui.QInputDialog.getText(self,'Welcome','Enter your password :',QtGui.QLineEdit.Normal)
         return player_password
 
+    # TODO fix it
     def setDepth(self):
         """ Launchs a Dialog in which the user can enter the force of the AI. """
         force, ok1 = QtGui.QInputDialog.getInt(self, 'Parameters',
@@ -87,18 +88,19 @@ class ConfigurationDialog(QtGui.QWidget):
             data.close()
             access.close()
         elif player_type == "RandomPlayer":
-            player_instance = RandomPlayer(self.timeLimit)
+            player_instance = RandomPlayer(True, self.timeLimit)
         elif player_type == "MonteCarloTreeSearchPlayer":
             self.setDepth()
-            player_instance = MonteCarloTreeSearchPlayer(self.timeLimit)
+            player_instance = MonteCarloTreeSearchPlayer(True, self.timeLimit)
         elif player_type == "MinMaxPlayer":
             self.setDepth()
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = MinMaxPlayer(PawnNumberEvaluation(), self.depth, self.timeLimit,)
+            player_instance = MinMaxPlayer(PawnNumberEvaluation(), self.depth, True, self.timeLimit)
         elif player_type == "AlphaBetaPlayer":
             self.setDepth()
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), self.depth, self.timeLimit)
+            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), self.depth, True, self.timeLimit)
+
         return player_instance

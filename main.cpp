@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
         // Algorithme génétique
         case 0: {
 
-            IPlayer *enemy = new RandomPlayer();
+            IPlayer *enemy = new RandomPlayer(false);
+
             GeneticalAlgorithm(50, 500, 100, enemy);
             delete enemy;
         }
@@ -31,11 +32,11 @@ int main(int argc, char *argv[]) {
 
             srand(time(NULL));
 
-            vector<IEvaluationFunction *> evaluationFunctions;
-            evaluationFunctions.push_back(new PawnNumberEvaluation());
-            evaluationFunctions.push_back(new PositionEvaluation());
-            evaluationFunctions.push_back(new MobilityEvaluation());
-            evaluationFunctions.push_back(new TimeEvaluation());
+            vector<std::shared_ptr<IEvaluationFunction>> evaluationFunctions;
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation());
 
             vector<double> coefficients;
             for (int j = 0; j < 60 * evaluationFunctions.size(); j++) {
@@ -45,16 +46,17 @@ int main(int argc, char *argv[]) {
             shared_ptr<IEvaluationFunction> evalForPlayer1(
                     new LinearCombinationOverTimeEvaluation(coefficients, evaluationFunctions));
 
-            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
+            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1, false);
 
             LoiDesGainsSurXParties(100, player1);
 
             delete player1;
             evalForPlayer1.reset();
-            delete evaluationFunctions[0];
-            delete evaluationFunctions[1];
-            delete evaluationFunctions[2];
-            delete evaluationFunctions[3];
+
+            evaluationFunctions[0].reset();
+            evaluationFunctions[1].reset();
+            evaluationFunctions[2].reset();
+            evaluationFunctions[3].reset();
         }
             break;
 
@@ -62,11 +64,12 @@ int main(int argc, char *argv[]) {
         case 2: {
             srand(time(NULL));
 
-            vector<IEvaluationFunction *> evaluationFunctions;
-            evaluationFunctions.push_back(new PawnNumberEvaluation());
-            evaluationFunctions.push_back(new PositionEvaluation());
-            evaluationFunctions.push_back(new MobilityEvaluation());
-            evaluationFunctions.push_back(new TimeEvaluation());
+            vector<std::shared_ptr<IEvaluationFunction> > evaluationFunctions;
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation());
+
 
             vector<double> coefficients;
             for (int j = 0; j < evaluationFunctions.size(); j++) {
@@ -76,22 +79,24 @@ int main(int argc, char *argv[]) {
             shared_ptr<IEvaluationFunction> evalForPlayer1(
                     new LinearCombinationEvaluation(coefficients, evaluationFunctions));
 
-            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1);
+            IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 1, false);
 
             LoiDesGainsSurXParties(100, player1);
 
             delete player1;
             evalForPlayer1.reset();
-            delete evaluationFunctions[0];
-            delete evaluationFunctions[1];
-            delete evaluationFunctions[2];
-            delete evaluationFunctions[3];
+
+            evaluationFunctions[0].reset();
+            evaluationFunctions[1].reset();
+            evaluationFunctions[2].reset();
+            evaluationFunctions[3].reset();
+
         }
             break;
 
         case 3: {
-            IPlayer* player1 = new MonteCarloTreeSearchPlayer();
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5);
+            IPlayer* player1 = new MonteCarloTreeSearchPlayer(false);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5, false);
 
             Game game(8, player1, player2);
 
@@ -103,8 +108,9 @@ int main(int argc, char *argv[]) {
 
         //Calcul du temps nécessaire en moyenne pour jouer pour un joueur donné (player2)
         case 4: {
-            IPlayer* player1 = new MinMaxPlayer(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()), 1);
-            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()), 6);
+            IPlayer* player1 = new RandomPlayer(false);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 9, false);
+
 
             vector<double> timeNeededToPlay(60,0);
 
@@ -120,6 +126,14 @@ int main(int argc, char *argv[]) {
             }
         }
             break;
+
+        case 5: {
+            IPlayer* player1 = new RandomPlayer(false);
+            IPlayer* player2 = new AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()), 5, false);
+
+            Game game(8, player1, player2);
+            game.playGameWithoutDisplay();
+        }
     }
 
     return 0;

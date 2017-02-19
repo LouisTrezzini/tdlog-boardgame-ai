@@ -4,6 +4,7 @@
 
 #include "IEvaluationFunction.h"
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -13,10 +14,10 @@ using namespace std;
 class LinearCombinationEvaluation : public IEvaluationFunction {
 private:
     vector<double> coefficients;
-    vector<IEvaluationFunction *> functions;
+    vector<std::shared_ptr<IEvaluationFunction>> functions;
 public:
 
-    LinearCombinationEvaluation(vector<double> coefficients, vector<IEvaluationFunction *> functions);
+    LinearCombinationEvaluation(vector<double> coefficients, vector<std::shared_ptr<IEvaluationFunction>> functions);
 
     virtual double operator()(const GameState& gameState, Color color, double timePassed) const;
 
