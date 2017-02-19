@@ -7,6 +7,7 @@
 #include "../evaluation/IEvaluationFunction.h"
 #include <memory>
 #include "../utils/MinMaxOutput.h"
+#include <future>
 
 /*
  * This IA will follow the minmax principle
@@ -15,11 +16,11 @@ class MinMaxPlayer : public IPlayer {
     std::shared_ptr<IEvaluationFunction> evaluationFunction;
     int depth;
 public:
-    MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_);
+    MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_);
 
-    virtual MinMaxOutput minMax(GameState& gameState, int profondeur, bool turn, Color color) const;
+    virtual MinMaxOutput minMax(const GameState& gameState, int profondeur, bool turn, Color color) const;
 
-    virtual Move getAction(const GameState& gameState) const;
+    virtual Move getBasicAction(const GameState& gameState) const;
 
     ~MinMaxPlayer();
 };

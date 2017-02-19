@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 export PYTHONPATH=$PWD
-cd InterfaceGraphique
+cd graphicalInterface
 python3 -m unittest Test

@@ -6,9 +6,9 @@
 // Structure for outputing the right thing
 struct MinMaxOutput {
     Move move;
-    float value;
+    double value;
 
-    MinMaxOutput(Move move, float value);
+    MinMaxOutput(Move move, double value);
     void max(const MinMaxOutput &other);
     void min(const MinMaxOutput &other);
 };

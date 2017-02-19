@@ -42,7 +42,7 @@ void Game::playGameWithoutDisplay() {
 
 void Game::playGameWithoutDisplayStoringTime(std::vector<double> &timeNeededToPlay) {
     while (getWinner(gameState) == Color::EMPTY) {
-        Move pickedMove = pickMoveStoringTime (gameState, timeNeededToPlay);
+        Move pickedMove = pickMoveStoringTime(gameState, timeNeededToPlay);
         applyMove(gameState, pickedMove);
     }
 }
@@ -131,7 +131,13 @@ std::vector<Move> Game::getLegalMoves(const GameState& gameState) {
     return getLegalMovesForColor(gameState, gameState.getColorPlaying());
 }
 
+
 bool Game::isValidMoveForColor(const GameState& gameState, const Move& move, Color color) {
+    // Cas où le mouvement est de passer
+    if (move == Move::passing()) {
+        return (getLegalMovesForColor(gameState, color)[0] == move);
+    }
+
     int x = move.getX();
     int y = move.getY();
 
@@ -250,5 +256,3 @@ Color Game::getWinner(const GameState& gameState) {
 std::string Game::toString() const {
     return gameState.getBoard().toString();
 }
-
-

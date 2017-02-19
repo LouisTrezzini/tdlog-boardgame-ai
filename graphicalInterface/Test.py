@@ -7,10 +7,10 @@ import hypothesis.strategies as st
 
 class OutcomeTest(unittest.TestCase):
     def setUp(self):
-        self.player1 = AlphaBetaPlayer(PawnNumberEvaluation(), 3)
-        self.player2 = MinMaxPlayer(PawnNumberEvaluation(), 3)
-        self.player3 = RandomPlayer()
-        self.player4 = RandomPlayer()
+        self.player1 = AlphaBetaPlayer(PawnNumberEvaluation(), 3, False)
+        self.player2 = MinMaxPlayer(PawnNumberEvaluation(), 3, False)
+        self.player3 = RandomPlayer(False)
+        self.player4 = RandomPlayer(False)
 
     @given(st.integers())
     @settings(max_examples = 100)
@@ -44,8 +44,8 @@ class OutcomeTest(unittest.TestCase):
 
 class EvaluationTest(unittest.TestCase):
     def setUp(self):
-        self.player1 = RandomPlayer()
-        self.player2 = RandomPlayer()
+        self.player1 = RandomPlayer(False)
+        self.player2 = RandomPlayer(False)
 
         self.game = Game(8, self.player1, self.player2)
 

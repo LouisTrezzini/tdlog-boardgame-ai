@@ -96,7 +96,7 @@ bool winPlaying(const Individu& individu, int sizeGrid, IPlayer *player2) {
     shared_ptr <IEvaluationFunction> evalForPlayer1(
             new LinearCombinationEvaluation(individu.getCoefficients(), individu.getEvaluationFunctions()));
     // FIXME Faire passer en paramètre ?
-    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3);
+    IPlayer *player1 = new AlphaBetaPlayer(evalForPlayer1, 3, false);
 
     Game game(sizeGrid, player1, player2);
     game.playGameWithoutDisplay();
