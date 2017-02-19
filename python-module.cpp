@@ -5,13 +5,23 @@
 #include "players/AlphaBetaPlayer.h"
 #include "players/MonteCarloTreeSearchPlayer.h"
 #include "evaluation/PawnNumberEvaluation.h"
+#include "evaluation/MobilityEvaluation.h"
+#include "evaluation/PositionEvaluation.h"
+#include "evaluation/LinearCombinationEvaluation.h"
 #include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
+#include <pybind11/stl_bind.h>
 
 namespace py = pybind11;
+PYBIND11_MAKE_OPAQUE(std::vector<double>);
+PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<IEvaluationFunction>>);
 
 
 PYBIND11_PLUGIN(boardgame_ai_py) {
     py::module m("boardgame_ai_py", "TDLOG Boardgame AI Python binding with pybind11");
+
+    py::bind_vector<std::vector<double>>(m, "DoubleVector");
+    py::bind_vector<std::vector<std::shared_ptr<IEvaluationFunction>>>(m, "EvalFctPtrVector");
 
     py::enum_<Color>(m, "Color")
         .value("WHITE", Color::WHITE)
@@ -21,10 +31,23 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
     ;
 
     py::class_<IEvaluationFunction, std::shared_ptr<IEvaluationFunction>>(m, "IEvaluationFunction")
+        .def("evaluate", &IEvaluationFunction::operator())
     ;
 
     py::class_<PawnNumberEvaluation, IEvaluationFunction, std::shared_ptr<PawnNumberEvaluation>>(m, "PawnNumberEvaluation")
         .def(py::init<>())
+    ;
+
+    py::class_<MobilityEvaluation, IEvaluationFunction, std::shared_ptr<MobilityEvaluation>>(m, "MobilityEvaluation")
+        .def(py::init<>())
+    ;
+
+    py::class_<PositionEvaluation, IEvaluationFunction, std::shared_ptr<PositionEvaluation>>(m, "PositionEvaluation")
+        .def(py::init<>())
+    ;
+
+    py::class_<LinearCombinationEvaluation, IEvaluationFunction, std::shared_ptr<LinearCombinationEvaluation>>(m, "LinearCombinationEvaluation")
+         .def(py::init<vector<double>, vector<std::shared_ptr<IEvaluationFunction>>>())
     ;
 
     py::class_<Move>(m, "Move")
@@ -40,6 +63,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
         .def(py::init<bool>())
+        .def("seedGenerator", &RandomPlayer::seedGenerator)
     ;
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
@@ -63,6 +87,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def(py::init<int>())
         .def("__str__", &Board::toString)
         .def("getColor", &Board::pieceAt)
+        .def(py::self == py::self)
         .def_property_readonly("blackStones", &Board::getBlackStones)
         .def_property_readonly("whiteStones", &Board::getWhiteStones)
     ;
@@ -84,6 +109,7 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
         .def("pickMove", &Game::pickMove)
         .def("playMove", &Game::playMove)
         .def("playGame", &Game::playGame)
+        .def("playGameWithoutDisplay", &Game::playGameWithoutDisplay)
         .def("isValidMove", &Game::isValidMove)
         .def_property_readonly("gameState", &Game::getGameState)
     ;

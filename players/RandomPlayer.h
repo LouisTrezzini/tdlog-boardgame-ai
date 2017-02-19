@@ -6,21 +6,31 @@
 #include "IPlayer.h"
 #include "../game/Move.h"
 #include "../game/GameState.h"
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <random>
+#include <algorithm>
+#include <iostream>
+#include <list>
+#include <memory>
+#include <chrono>
+#include <utility>
 
 
 /*
- * A random Othello player thats chooses random legal moves
+ * A random Othello player that chooses random legal moves
  */
 class RandomPlayer : public IPlayer {
+    static std::mt19937 generator;
+
 public:
-    RandomPlayer(bool bestFinish_) {
-        srand(time(NULL));
-        bestFinish = bestFinish_;
-    }
+    RandomPlayer(bool bestFinish_);
 
     virtual Move getBasicAction(const GameState& gameState) const;
 
     virtual ~RandomPlayer();
+
+    static void seedGenerator(int seed);
 };
 
 
