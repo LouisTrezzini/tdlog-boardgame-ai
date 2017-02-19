@@ -27,7 +27,7 @@ public:
                                   const std::shared_ptr<IEvaluationFunction> &evalFunction,
                                   int profondeur, bool turn, double alpha, double beta,
                                   const Color &colorPlaying,
-                                  std::chrono::time_point<std::chrono::system_clock> start) const ;
+                                  std::chrono::time_point<std::chrono::system_clock> start);
 
     virtual Move getBasicAction(const GameState& gameState);
 

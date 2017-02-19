@@ -38,13 +38,12 @@ public:
     virtual bool isHuman() {
         return false;
     }
-
-
-    virtual Move getAction(const GameState& gameState) = 0;
     
+    virtual Move getAction(const GameState& gameState);
+
     virtual Move getBasicAction(const GameState& gameState) = 0;
     
-    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const;
+    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay);
 
     virtual ~IPlayer() = 0;
 };

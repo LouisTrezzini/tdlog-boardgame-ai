@@ -20,7 +20,7 @@ public:
         bestFinish = bestFinish_;
     }
 
-    virtual Move getBasicAction(const GameState& gameState) const;
+    virtual Move getBasicAction(const GameState& gameState);
 
     virtual ~MonteCarloTreeSearchPlayer();
 };

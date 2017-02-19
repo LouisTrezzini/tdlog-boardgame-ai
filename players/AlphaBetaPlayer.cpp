@@ -15,7 +15,7 @@ MinMaxOutput AlphaBetaPlayer::alphaBeta(const GameState& gameState,
                                         const std::shared_ptr<IEvaluationFunction> &evalFunction,
                                         int profondeur, bool isMyTurn, double alpha, double beta,
                                         const Color &colorPlaying,
-                                        std::chrono::time_point<std::chrono::system_clock>  start) const {
+                                        std::chrono::time_point<std::chrono::system_clock>  start) {
 
     if (gameState.getBoard().isFull() || profondeur <= 0) {
         std::chrono::duration<double> timePassed = std::chrono::system_clock::now() - start;
@@ -88,7 +88,6 @@ Move AlphaBetaPlayer::getBasicAction(const GameState& gameState) {
             branchResults.push_back(std::async(std::launch::async, [nextGameState, this, colorPlaying]() -> double {
                 auto start = std::chrono::system_clock::now();
                 return alphaBeta(nextGameState, evaluationFunction, depth - 1, false, -INF, INF, colorPlaying, start).value;
-                return alphaBeta(nextGameState, evaluationFunction, depth - 1, false, -INF, INF, colorPlaying).value;
             }));
         }
 

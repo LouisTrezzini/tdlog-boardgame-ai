@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
-            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation());
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation()));
 
             vector<double> coefficients;
             for (int j = 0; j < 60 * evaluationFunctions.size(); j++) {
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
-            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation());
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation()));
 
 
             vector<double> coefficients;

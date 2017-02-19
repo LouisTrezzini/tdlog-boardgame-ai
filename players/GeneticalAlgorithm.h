@@ -159,11 +159,12 @@ void GeneticalAlgorithm(int N, int nbiteration,
 
     // Déinition des functions d'évaluation que nous allons utiliser
 
-    vector < IEvaluationFunction * > evaluationFunctions;
-    evaluationFunctions.push_back(new PawnNumberEvaluation());
-    evaluationFunctions.push_back(new PositionEvaluation());
-    evaluationFunctions.push_back(new MobilityEvaluation());
-    evaluationFunctions.push_back(new TimeEvaluation());
+    vector < std::shared_ptr<IEvaluationFunction> > evaluationFunctions;
+
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new TimeEvaluation()));
 
 
     // Définition de notre population
