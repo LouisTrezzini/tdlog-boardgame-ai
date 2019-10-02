@@ -19,7 +19,7 @@ const int positionValues[8][8] = {{99, -8, 8, 6, 6, 8, -8, 99},
  */
 class PositionEvaluation : public IEvaluationFunction {
 public:
-    virtual double operator()(const GameState& gameState, Color color) const;
+    virtual double operator()(const GameState& gameState, Color color, double timePassed) const;
 
     virtual ~PositionEvaluation();
 };

@@ -4,7 +4,7 @@ import sys
 import DataBaseHandler
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
-
+import Timer
 
 class GameBoard(QtGui.QWidget):
 
@@ -39,13 +39,21 @@ class GameBoard(QtGui.QWidget):
         self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
         self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
+        #Display Timer:
+        if self.player1.timeRemainingToPlay > 0:
+            self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+            self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+            self.timerCurrentPlayer.startTimer(1000)
+            self.timerCurrentPlayer.signal.end.connect(self.endGame)
+        else :
+            self.displayScoreWidget.timer.setText("No limit of Time !")
 
         # Création des boutons
         for i in range(nbRows):
             for j in range(nbRows):
                 self.grid.addWidget(self.cases[i + j * nbRows], i, j)
                 self.cases[i + j * nbRows].mousePressEvent = lambda x, i = i, j = j: self.change(i, j)
-        self.update()
+        self.updateCase()
 
     def change(self, i, j):
         """
@@ -57,11 +65,12 @@ class GameBoard(QtGui.QWidget):
         move = Move(i, j)
         if Game.isValidMove(self.game.gameState, move) and self.humanTurn():
             self.game.playMove(move)
-            self.update()
+            self.updateCase()
+            self.updateTime()
             QtCore.QTimer.singleShot(100, self.playTurn)
 
 
-    def update(self):
+    def updateCase(self):
         """
         Fonction pour mettre à jour l'affichage du plateau
         et le score des joueurs
@@ -81,25 +90,60 @@ class GameBoard(QtGui.QWidget):
         self.displayScoreWidget.scorePlayer1.display(self.game.gameState.board.blackStones)
         self.displayScoreWidget.scorePlayer2.display(self.game.gameState.board.whiteStones)
 
+    def updateTime(self):
+        """
+        Fonction pour mettre à jour l'affichage du temps restant aux joueurs
+        :return:
+        """
+        if self.player1.timeRemainingToPlay >= 0 and self.player2.timeRemainingToPlay >= 0:
+
+            if self.game.gameState.getColorPlaying() == Color.WHITE :
+                self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+                self.player2.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                                   self.timerCurrentPlayer.time[1],
+                                                                   self.timerCurrentPlayer.time[2]))
+                self.timeRemainingCurrentPlayer = Timer.secTohms(self.player1.timeRemainingToPlay)
+                self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+                self.timerCurrentPlayer.startTimer(1000)
+                self.timerCurrentPlayer.signal.end.connect(self.endGame)
+
+            else :
+                self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+                self.player1.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                                   self.timerCurrentPlayer.time[1],
+                                                                   self.timerCurrentPlayer.time[2]))
+                self.timeRemainingCurrentPlayer = Timer.secTohms(self.player2.timeRemainingToPlay)
+                self.timerCurrentPlayer = Timer.Timer(self.timeRemainingCurrentPlayer, self.displayScoreWidget)
+                self.timerCurrentPlayer.startTimer(1000)
+                self.timerCurrentPlayer.signal.end.connect(self.endGame)
+
+        else :
+            if self.player1.timeRemainingToPlay != -1 :
+                if self.player1.timeRemainingToPlay <= 0:
+                    self.endGame()
+                if self.player2.timeRemainingToPlay <= 0:
+                    self.endGame()
 
     def playTurn(self):
         """
         Fonction pour jouer un tour
         :return:
         """
+
         if Game.getWinner(self.game.gameState) != Color.EMPTY:
             data = DataBaseHandler.StatisticsDataBaseController()
             data.actualise(self.player1, self.player2, self.game.gameState.board.whiteStones,self.nbRows)
             data.actualise(self.player2, self.player1, self.game.gameState.board.blackStones,self.nbRows)
             data.close()
+            self.endGame()
             return
 
         if not self.humanTurn():
             pickedMove = self.game.pickMove(self.game.gameState)
             self.game.playMove(pickedMove)
+            self.updateCase()
+            self.updateTime()
             QtCore.QTimer.singleShot(200, self.playTurn)
-
-        self.update()
 
     def humanTurn(self):
         """
@@ -113,12 +157,42 @@ class GameBoard(QtGui.QWidget):
         cannotPlay = Move.passing()
         if (case1 or case2) and Game.isValidMove(self.game.gameState, cannotPlay):
             self.game.playMove(cannotPlay)
-            self.update()
+            self.updateCase()
             case1 = self.player1.isHuman() and self.game.gameState.getColorPlaying() == Color.WHITE
             case2 = self.player2.isHuman() and self.game.gameState.getColorPlaying() == Color.BLACK
             return case1 or case2
         return case1 or case2
 
+    def endGame(self):
+        """
+        Fonction permettant d'afficher la couleur du vainqueur
+        """
+        self.displayScoreWidget.stackedWidget.setCurrentWidget(self.displayScoreWidget.endGame)
+        self.timerCurrentPlayer.killTimer(self.timerCurrentPlayer.timerId())
+
+        color = self.game.gameState.getColorPlaying()
+
+        if color == Color.WHITE:
+            self.player2.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                               self.timerCurrentPlayer.time[1],
+                                                               self.timerCurrentPlayer.time[2]))
+
+        if color == Color.BLACK:
+            self.player1.setTimeRemainingToPlay(Timer.hmsTosec(self.timerCurrentPlayer.time[0],
+                                                               self.timerCurrentPlayer.time[1],
+                                                               self.timerCurrentPlayer.time[2]))
+
+        if Game.getWinner(self.game.gameState) == Color.BLACK:
+            self.displayScoreWidget.winner.setText("The Winner is the BLACK player !")
+        if Game.getWinner(self.game.gameState) == Color.WHITE:
+            self.displayScoreWidget.winner.setText("The Winner is the WHITE player !")
+        if Game.getWinner(self.game.gameState) == Color.EMPTY:
+            if self.player1.timeRemainingToPlay <= 0:
+                self.displayScoreWidget.winner.setText("The Winner is the WHITE player !")
+            if self.player2.timeRemainingToPlay <= 0:
+                self.displayScoreWidget.winner.setText("The Winner is the BLACK player !")
+            if self.player1.timeRemainingToPlay > 0 and self.player2.timeRemainingToPlay > 0 :
+                self.displayScoreWidget.winner.setText("Equality !")
 
 class GameBoardTheme():
     """

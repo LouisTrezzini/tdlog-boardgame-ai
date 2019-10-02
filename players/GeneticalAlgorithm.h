@@ -14,6 +14,7 @@
 #include "../evaluation/PawnNumberEvaluation.h"
 #include "../evaluation/PositionEvaluation.h"
 #include "../evaluation/MobilityEvaluation.h"
+#include "../evaluation/TimeEvaluation.h"
 #include "AlphaBetaPlayer.h"
 
 using namespace std;
@@ -157,11 +158,14 @@ void GeneticalAlgorithm(int N, int nbiteration,
     srand(time(NULL));
 
     // Déinition des functions d'évaluation que nous allons utiliser
+
     vector < std::shared_ptr<IEvaluationFunction> > evaluationFunctions;
 
     evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
     evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
     evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
+    evaluationFunctions.push_back(shared_ptr<IEvaluationFunction>(new TimeEvaluation()));
+
 
     // Définition de notre population
     vector <Individu> population;

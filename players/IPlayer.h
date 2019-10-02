@@ -14,9 +14,11 @@
  */
 class IPlayer {
     Color color;
+    float timeRemainingToPlay;
 protected:
     bool bestFinish;
 public:
+
     Color getColor() const {
         return color;
     }
@@ -25,20 +27,28 @@ public:
         IPlayer::color = color;
     }
 
+    float getTimeRemainingToPlay() const {
+        return timeRemainingToPlay;
+    }
+
+    void setTimeRemainingToPlay (float time) {
+        timeRemainingToPlay = time;
+    }
+
     virtual bool isHuman() {
         return false;
     }
-
-    virtual Move getBasicAction(const GameState& gameState) const = 0;
     
-    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay) const;
+    virtual Move getAction(const GameState& gameState);
 
-    virtual Move getAction(const GameState& gameState) const;
+    virtual Move getBasicAction(const GameState& gameState) = 0;
+    
+    virtual Move getActionStoringTime(const GameState& gameState, std::vector<double> &timeNeededToPlay);
 
     virtual ~IPlayer() = 0;
 };
 
-inline IPlayer::~IPlayer() { };
+inline IPlayer::~IPlayer() { }
 
 
 #endif //TDLOG_BOARDGAME_AI_IPLAYER_H

@@ -14,11 +14,13 @@ class MonteCarloTreeSearchPlayer : public IPlayer {
     std::unique_ptr<Node> computeTree(const GameState& rootState) const;
 
 public:
-    MonteCarloTreeSearchPlayer(bool bestFinish_) {
+
+    MonteCarloTreeSearchPlayer (bool bestFinish_, float timeRemainingToPlay_ = 0){
+        setTimeRemainingToPlay(timeRemainingToPlay_);
         bestFinish = bestFinish_;
     }
 
-    virtual Move getBasicAction(const GameState& gameState) const;
+    virtual Move getBasicAction(const GameState& gameState);
 
     virtual ~MonteCarloTreeSearchPlayer();
 };

@@ -24,9 +24,10 @@ class RandomPlayer : public IPlayer {
     static std::mt19937 generator;
 
 public:
-    RandomPlayer(bool bestFinish_);
 
-    virtual Move getBasicAction(const GameState& gameState) const;
+    RandomPlayer(bool bestFinish_, float timeRemainingToPlay_ = 0);
+
+    virtual Move getBasicAction(const GameState& gameState);
 
     virtual ~RandomPlayer();
 

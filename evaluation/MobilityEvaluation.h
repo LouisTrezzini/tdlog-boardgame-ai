@@ -10,7 +10,7 @@
 class MobilityEvaluation : public IEvaluationFunction {
 
 public:
-    virtual double operator()(const GameState& gameState, Color color) const;
+    virtual double operator()(const GameState& gameState, Color color, double timePassed) const;
 
     virtual ~MobilityEvaluation();
 };

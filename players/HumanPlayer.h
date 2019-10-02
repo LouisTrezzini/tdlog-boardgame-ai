@@ -13,12 +13,20 @@ class HumanPlayer : public IPlayer {
 	std::string name;
 
 public:
-    virtual Move getBasicAction(const GameState& gameState) const;
 
-    HumanPlayer(const std::string& name) {
-        this->name = name;
+    HumanPlayer(float timeRemainingToPlay_= 0){
+        setTimeRemainingToPlay(timeRemainingToPlay_);
         bestFinish = false;
     }
+
+    HumanPlayer(const std::string& name, float timeRemainingToPlay_= 0) {
+        this->name = name;
+        setTimeRemainingToPlay(timeRemainingToPlay_);
+        bestFinish = false;
+    }
+
+    virtual Move getBasicAction(const GameState& gameState);
+
 
     std::string getName() const{
         return name;

@@ -8,7 +8,6 @@
 
 using namespace std;
 
-const int InitialStones = 4;
 
 /*
  * Combination of evaluation functions over time
@@ -22,7 +21,7 @@ public:
     LinearCombinationOverTimeEvaluation(const vector<double>& coefficients,
                                         const vector<std::shared_ptr<IEvaluationFunction>>& functions);
 
-    virtual double operator()(const GameState& gameState, Color color) const;
+    virtual double operator()(const GameState& gameState, Color color, double timePassed) const;
 
     virtual ~LinearCombinationOverTimeEvaluation();
 };

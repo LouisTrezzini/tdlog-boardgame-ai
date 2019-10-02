@@ -7,8 +7,10 @@
 #include "../utils/MinMaxOutput.h"
 #include "../evaluation/IEvaluationFunction.h"
 #include <memory>
+#include <chrono>
 #include <thread>
 #include <future>
+
 
 
 /*
@@ -19,16 +21,17 @@ class AlphaBetaPlayer : public IPlayer {
     int depth;
 public:
 
-    AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_);
+    AlphaBetaPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_, float timeRemainingToPlay_ = 0);
 
     static MinMaxOutput alphaBeta(const GameState& gameState,
                                   const std::shared_ptr<IEvaluationFunction> &evalFunction,
                                   int profondeur, bool turn, double alpha, double beta,
-                                  const Color &colorPlaying);
+                                  const Color &colorPlaying,
+                                  std::chrono::time_point<std::chrono::system_clock> start);
 
-    virtual Move getBasicAction(const GameState& gameState) const;
+    virtual Move getBasicAction(const GameState& gameState);
 
-    virtual ~AlphaBetaPlayer();
+    ~AlphaBetaPlayer();
 };
 
 

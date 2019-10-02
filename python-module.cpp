@@ -1,4 +1,5 @@
 #include "game/Game.h"
+#include "players/IPlayer.h"
 #include "players/RandomPlayer.h"
 #include "players/HumanPlayer.h"
 #include "players/MinMaxPlayer.h"
@@ -59,28 +60,31 @@ PYBIND11_PLUGIN(boardgame_ai_py) {
 
     py::class_<IPlayer>(m, "IPlayer")
         .def("isHuman", &IPlayer::isHuman)
+        .def("setTimeRemainingToPlay", &IPlayer::setTimeRemainingToPlay)
+        .def_property_readonly("timeRemainingToPlay", &IPlayer::getTimeRemainingToPlay)
     ;
 
     py::class_<RandomPlayer, IPlayer>(m, "RandomPlayer")
-        .def(py::init<bool>())
+        .def(py::init<bool, float>())
         .def("seedGenerator", &RandomPlayer::seedGenerator)
     ;
 
     py::class_<HumanPlayer, IPlayer>(m, "HumanPlayer")
-         .def(py::init<std::string>())
+         .def(py::init<float>())
+         .def(py::init<std::string, float>())
          .def_property_readonly("name", &HumanPlayer::getName)
     ;
 
     py::class_<MinMaxPlayer, IPlayer>(m, "MinMaxPlayer")
-         .def(py::init<std::shared_ptr<IEvaluationFunction>, int, bool>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int, bool, float>())
     ;
 
     py::class_<AlphaBetaPlayer, IPlayer>(m, "AlphaBetaPlayer")
-         .def(py::init<std::shared_ptr<IEvaluationFunction>, int, bool>())
+         .def(py::init<std::shared_ptr<IEvaluationFunction>, int, bool, float>())
     ;
 
     py::class_<MonteCarloTreeSearchPlayer, IPlayer>(m, "MonteCarloTreeSearchPlayer")
-        .def(py::init<bool>())
+        .def(py::init<bool, float>())
     ;
 
     py::class_<Board>(m, "Board")

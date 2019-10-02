@@ -7,6 +7,7 @@
 #include "../evaluation/IEvaluationFunction.h"
 #include <memory>
 #include "../utils/MinMaxOutput.h"
+#include <chrono>
 #include <future>
 
 /*
@@ -16,11 +17,20 @@ class MinMaxPlayer : public IPlayer {
     std::shared_ptr<IEvaluationFunction> evaluationFunction;
     int depth;
 public:
-    MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_);
 
-    virtual MinMaxOutput minMax(const GameState& gameState, int profondeur, bool turn, Color color) const;
+    MinMaxPlayer(std::shared_ptr<IEvaluationFunction> eval, int depth_, bool bestFinish_, float timeRemainingToPlay_ = 0);
 
-    virtual Move getBasicAction(const GameState& gameState) const;
+
+    MinMaxOutput minMax(const GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
+                        std::chrono::time_point<std::chrono::system_clock>  start);
+
+    MinMaxOutput minMaxLength(const GameState& gameState, bool isMyTurn, Color colorPlaying,
+                              std::chrono::time_point<std::chrono::system_clock>  start);
+
+    virtual MinMaxOutput minMaxDepth(const GameState& gameState, int depth, bool isMyTurn, Color colorPlaying,
+                                     std::chrono::time_point<std::chrono::system_clock>  start) const;
+
+    virtual Move getBasicAction(const GameState& gameState);
 
     ~MinMaxPlayer();
 };

@@ -6,8 +6,6 @@ import DataBaseHandler
 from PyQt4 import QtGui, QtCore, uic
 from boardgame_ai_py import *
 
-
-
 class GraphicalInterface:
 
     """ Defines the graphism for the Game. """
@@ -42,7 +40,7 @@ class GraphicalInterface:
         positionBtn = int((self.widthWidget-self.widget.configureBtn.frameSize().width())/2)
         self.widget.configureBtn.move(positionBtn, 580)
         self.widget.statisticsBtn.move(positionBtn, 610)
-        
+
         # Dimensionnement de la table des statistiques
         self.widget.tableWidget.setMaximumSize(self.widthWidget - self.widthMarge,
                                          self.heightWidget - self.heightMarge)
@@ -54,8 +52,26 @@ class GraphicalInterface:
         self.widget.statisticsBtn.clicked.connect(self.displayStatistics)
         self.widget.stopGameBtn.clicked.connect(lambda _ : self.stopGameWidget())
         self.widget.goBackBtn.clicked.connect(self.goBackToConfiguration)
+        self.widget.goBackBtn2.clicked.connect(lambda _ : self.stopGameWidget())
+
+        #Personnalisation timer:
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Foreground,QtCore.Qt.red)
+        self.widget.timer.setPalette(palette)
+        f = QtGui.QFont( "Helvetica", 15)
+        f.setBold(True)
+        self.widget.timer.setFont(f)
+
+        #Personnalisation du endGame:
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Foreground,QtCore.Qt.red)
+        self.widget.timer.setPalette(palette)
+        f = QtGui.QFont( "Helvetica", 20)
+        f.setBold(True)
+        self.widget.winner.setFont(f)
 
         # Initialisation des joueurs
+        self.timeLimit = None
         self.player1 = None
         self.player2 = None
         self.plateau = None
@@ -103,6 +119,7 @@ class GraphicalInterface:
         self.configure_dialog.initUI()
         self.player1 = self.configure_dialog.player1
         self.player2 = self.configure_dialog.player2
+        self.timeLimit = self.configure_dialog.timeLimit
         self.play()
 
     def play(self):

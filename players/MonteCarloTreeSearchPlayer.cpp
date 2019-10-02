@@ -1,10 +1,13 @@
 #include <random>
 #include <chrono>
 #include <map>
+#include <iostream>
 
 #include "MonteCarloTreeSearchPlayer.h"
 #include "../game/Node.h"
 #include "../game/Game.h"
+
+using namespace std;
 
 std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& rootState) const {
     auto root = std::unique_ptr<Node>(new Node(rootState));
@@ -67,8 +70,11 @@ std::unique_ptr<Node> MonteCarloTreeSearchPlayer::computeTree(const GameState& r
     return root;
 }
 
-Move MonteCarloTreeSearchPlayer::getBasicAction(const GameState& gameState) const {
+
+Move MonteCarloTreeSearchPlayer::getBasicAction(const GameState& gameState) {
+
     auto moves = Game::getLegalMoves(gameState);
+    auto startTime = std::chrono::system_clock::now();
 
     if(moves.empty())
         return Move::passing();
@@ -121,7 +127,8 @@ Move MonteCarloTreeSearchPlayer::getBasicAction(const GameState& gameState) cons
             }
         }
     }
-
+    double timePassed = (std::chrono::system_clock::now() - startTime).count()/std::chrono::milliseconds::period::den;
+    setTimeRemainingToPlay(getTimeRemainingToPlay() - timePassed/1000000);
     return bestMoves[rand() % bestMoves.size()];
 }
 

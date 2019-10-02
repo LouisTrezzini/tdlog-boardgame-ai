@@ -4,13 +4,14 @@
 #include "../game/GameState.h"
 #include "../game/Color.h"
 
+const int InitialStones = 4;
 
 /*
  * Abstract for all evaluation function
  */
 class IEvaluationFunction {
 public:
-    virtual double operator()(const GameState& gameState, Color color) const = 0;
+    virtual double operator()(const GameState& gameState, Color color, double timePassed) const = 0;
 
     virtual ~IEvaluationFunction() = 0;
 };

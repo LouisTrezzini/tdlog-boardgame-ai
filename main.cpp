@@ -19,7 +19,9 @@ int main(int argc, char *argv[]) {
 
         // Algorithme génétique
         case 0: {
+
             IPlayer *enemy = new RandomPlayer(false);
+
             GeneticalAlgorithm(50, 500, 100, enemy);
             delete enemy;
         }
@@ -34,6 +36,7 @@ int main(int argc, char *argv[]) {
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation()));
 
             vector<double> coefficients;
             for (int j = 0; j < 60 * evaluationFunctions.size(); j++) {
@@ -49,9 +52,11 @@ int main(int argc, char *argv[]) {
 
             delete player1;
             evalForPlayer1.reset();
+
             evaluationFunctions[0].reset();
             evaluationFunctions[1].reset();
             evaluationFunctions[2].reset();
+            evaluationFunctions[3].reset();
         }
             break;
 
@@ -63,6 +68,8 @@ int main(int argc, char *argv[]) {
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PawnNumberEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new PositionEvaluation()));
             evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new MobilityEvaluation()));
+            evaluationFunctions.push_back(std::shared_ptr<IEvaluationFunction>(new TimeEvaluation()));
+
 
             vector<double> coefficients;
             for (int j = 0; j < evaluationFunctions.size(); j++) {
@@ -78,9 +85,12 @@ int main(int argc, char *argv[]) {
 
             delete player1;
             evalForPlayer1.reset();
+
             evaluationFunctions[0].reset();
             evaluationFunctions[1].reset();
             evaluationFunctions[2].reset();
+            evaluationFunctions[3].reset();
+
         }
             break;
 

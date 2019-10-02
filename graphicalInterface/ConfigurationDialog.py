@@ -2,6 +2,7 @@
 
 from PyQt4 import QtGui
 from boardgame_ai_py import *
+import time as Time
 import DataBaseHandler
 
 ###############################################################################
@@ -21,11 +22,13 @@ class ConfigurationDialog(QtGui.QWidget):
         self.player1 = None
         self.player2 = None
         self.depth = 0
+        self.timeLimit = 0
         self.setGeometry(300, 300, 500, 200)
 
     def initUI(self):
         """ Launchs several Dialogs in which the user can enter the value wanted
             for the Game. """
+        self.setTimeLimit();
         self.player1 = self.createPlayer(self.askPlayerType())
         self.player2 = self.createPlayer(self.askPlayerType())
 
@@ -56,6 +59,20 @@ class ConfigurationDialog(QtGui.QWidget):
                                   'Enter the force of the IA:', min = 1)
         self.depth = int(force)
 
+    def setTimeLimit(self):
+        """ Launchs a Dialog in which the user can decide to limit
+            the time to play. """
+        timesList = list([str(i) for i in range (5, 120, 5)])
+        timesList.append("No limit of time")
+        time, ok = QtGui.QInputDialog.getItem(self, 'Choice of a the limite of time to play',
+                                              'Limit of time to play',
+                                              timesList, editable = False)
+        if time != 'No limit of time':
+            time = int(float(time) * 60)  #Time in second
+            self.timeLimit = time
+        else :
+            self.timeLimit = -1
+
     def createPlayer(self, player_type):
         """ Configures the type of player with a string. """
         player_instance = None
@@ -67,23 +84,23 @@ class ConfigurationDialog(QtGui.QWidget):
             while (access.checkAccess(name,password,data) == False):
                 print("wrong password")
                 password = self.askPlayerPassword()
-            player_instance = HumanPlayer(name)
+            player_instance = HumanPlayer(name, self.timeLimit)
             data.close()
             access.close()
         elif player_type == "RandomPlayer":
-            player_instance = RandomPlayer(True)
+            player_instance = RandomPlayer(True, self.timeLimit)
         elif player_type == "MonteCarloTreeSearchPlayer":
-            player_instance = MonteCarloTreeSearchPlayer(True)
+            self.setDepth()
+            player_instance = MonteCarloTreeSearchPlayer(True, self.timeLimit)
         elif player_type == "MinMaxPlayer":
+            self.setDepth()
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3, True)
-        elif player_type == "MinMaxPlayer":
-            # FIXME
-            # Donner le choix à l'utilisateur
-            player_instance = MinMaxPlayer(PawnNumberEvaluation(), 3)
+            player_instance = MinMaxPlayer(PawnNumberEvaluation(), self.depth, True, self.timeLimit)
         elif player_type == "AlphaBetaPlayer":
+            self.setDepth()
             # FIXME
             # Donner le choix à l'utilisateur
-            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), 7, True)
+            player_instance = AlphaBetaPlayer(PawnNumberEvaluation(), self.depth, True, self.timeLimit)
+
         return player_instance

@@ -17,6 +17,8 @@ set(EVALUATION_FILES
         evaluation/PositionEvaluation.h
         evaluation/MobilityEvaluation.cpp
         evaluation/MobilityEvaluation.h
+        evaluation/TimeEvaluation.cpp
+        evaluation/TimeEvaluation.h
         )
 set(PLAYER_FILES
         players/GeneticalAlgorithm.h
